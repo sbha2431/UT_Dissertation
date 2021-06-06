@@ -1,0 +1,98 @@
+We represent \emph{runtime information} as $n$-dimensional real vectors, for a given $n \in \mathbb N$. We denote the set of all possible vector values for the runtime information by $\mathcal{P}\subseteq \mathbb{R}^n$. We score the performance of each play in the game using runtime information in $\mathcal{P}$ via a performance metric, $J: \plays(\game)\times\mathcal{P} \to \mathbb{R}$. 
+
+
+% \begin{itshape}
+% \textbf{Example.} Consider Figure~\ref{fig:gazeboworld}, where the robot has to infinitely often find a human. In this case, the runtime information $\overline{p} \in\mathbb{R}^8$ is a probability vector that represents the likelihood of a human being in each particular room. The set $\mathcal{P}=\{\overline{p}\in \mathbb{R}^8: \overline{p}\succeq 0, \overline{1}^\top\overline{p}=1\}$ is the probability simplex, with $\overline{1}$ as a vector of ones.
+% \label{ex:toy_ex}
+% \end{itshape}
+
+
+\subsubsection*{Assumption}
+For every $\overline p \in \mathcal{P}$ and every strategy $\rho_\out\in\mathcal{M}_\out$ such that $\rho_\out\models\spec$, there exists a strategy $\rho_\inp \in\mathcal{M}_\inp$ such that $  J(\Pi(\rho_\out,\rho_\inp), \overline p) \geq J(\Pi(\rho_\out,\rho_\inp'), \overline p)$ for every $\rho_\inp'\in\mathcal{M}_\inp$. 
+
+Assumption~\ref{ass:max-cost} ensures a well-defined cost function using the metric $J$. We can thus define
+\begin{align}
+C(\rho_\out,\overline{p}) = max_{\rho_\inp \in\mathcal{M}_\inp}J(\Pi(\rho_\out,\rho_\inp), \overline p)
+\end{align}
+as the cost function, with $C:\Sigma_\out \times \mathcal{P} \to \mathbb{R}$.
+% Under the above assumption, we can associate a cost value with each strategy $\rho_\out$ for the agent, and each instance of the runtime information $\overline p$:
+%In general, $\overline{p}$ serves as a way to introduce
+%additional information at runtime. We are interested in
+%using this information gained at runtime in order to act
+%more optimally. We thus introduce a notion of being
+%\emph{optimal with respect to this runtime information}. 
+Given the runtime information $\overline p \in \mathcal P$, a strategy $\rho_\out \in \mathcal M_\out$ for the agent that satisfies $\spec$ is \emph{optimal for $\overline p$} if and only if it is a solution to the following optimization problem.
+\begin{align}
+    \begin{array}{rl}
+        \underset{\rho_\out\in
+        \mathcal{M}_\out}{\mathrm{minimize}}&\quad
+        \ \\
+        \mathrm{subject\ to}&\quad \rho_\out\models \varphi
+    \end{array}\label{prob:opt}%
+\end{align}
+Let $C^\ast: \mathcal{P} \to \mathbb{R}$ denote the optimal value of \eqref{prob:opt}.
+
+% \begin{example}[]
+\begin{itshape}
+\textbf{Example.} Consider Figure~\ref{fig:gazeboworld}, where the robot has to infinitely often meet the human. Assume that the human can only be in rooms $R_1, R_4, R_8$. Let $q_1,q_2,q_3\in[0,1]$ be the probabilities of the human being in room $R_1$, $R_4$ and $R_8$ respectively. The runtime information is $\overline{p}= {[q_1\ q_2\ q_3]}^\top \in\mathcal{P}\subseteq \mathbb{R}^3$, where the set $\mathcal{P}$ is the probability simplex. The cost function is, 
+\begin{align}
+C(\rho_\out, \overline{p}) &= \mathbb E\lbrack\text{time to find human\rbrack}= \sum\nolimits_{i=1}^N T_i(\rho_\out)\, q_i\label{eq:cost_fun}
+\end{align}
+where $T_i$ is the time taken to reach room $i$ under the robot strategy $\rho_\out$. Figure \ref{fig:trivialtrajs} shows the resulting continuous trajectories from executing policies when the information vector tells the robot the exact room occupied by the human. \label{ex:toy_ex2}
+\end{itshape}
+% \end{example}
+
+
+% Information is only provided at runtime and the agent has no control over its value. One method to guarantee optimality with respect to the runtime information is to directly incorporate $\overline{p}$ into the state as an additional environment variable and solve \eqref{prob:opt} for all possible values for $\overline{p}$. Such an approach would fall under the framework presented in \cite{rudiger}. However, if $\overline{p}$ is continuous, this requires discretization which can blow up the state-space.
+% In Example \ref{ex:toy_ex2}, we can easily find a discretization of $p$ to guarantee optimality without a state-space explosion, however, this is not true in general. \todo[inline]{give the values} 
+
+% Another approach is to re-synthesize online when the value of $\overline{p}$ changes. Such an approach requires re-solving \eqref{prob:opt} at every instant $\overline{p}$ changes. 
+%  However, the computational effort required to solve \eqref{prob:opt}
+% is prohibitively high for an on-board deployment. Hence, we propose pre-synthesizing offline a set of \emph{representative strategies} for specific instantiations of $\overline{p}$.
+
+Given a set of representative strategies associated with instances of the runtime information, the task at runtime then becomes one of choosing a strategy depending on the current value of $\overline p$. As we have a finite set of strategies to choose from, the resulting behaviour of the agent will be \emph{approximately optimal}. Thus, we consider the problem of synthesizing an \emph{approximately optimal switching function} that also guarantees $\spec$.
+
+\begin{defn}
+Given a game structure $\game$ and a set of strategies $\{{\rho_\out}_i\in \mathcal{M}_\out\}_{i=1}^N$ for the agent, a \emph{switching function} is a function $\tau : \prefs(\game) \times \mathcal P^* \to \{1,\ldots,N\}$, which maps a play prefix and the sequence of values of $\overline p$ seen so far, to an index of a strategy in the given set.
+
+The set of plays resulting from applying the switching function $\tau$ to $\{{\rho_\out}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ is defined as the set of plays 
+$\plays(\{{\rho_\out}_i\in\mathcal{M}_\out\}_{i=1}^{N},\tau)$ such that 
+$\overline{\pi} = (g_0,\symb_{\inp,0},\symb_{\out,0}, g_1) 
+(g_1,\symb_{\inp,1}, \symb_{\out,1}, g_2) \ldots \in \plays(\{{\rho_\out}_i\in \mathcal{M}_\out\}_{i=1}^{N},\tau)$
+if and only if there exists $\overline \gamma \in \mathcal{P}^\omega$ such that
+for every $i \geq 0$,  it holds that $\symb_{\out,i} ={\rho_\out}_{\tau(\overline \pi[0,i],\overline \gamma[0,i])}(\pi[0,i],\symb_{\inp,i})$.
+\end{defn}
+
+Informally, we want to be able to \emph{switch} between pre-computed strategies based on values of the runtime information. In order to not violate the specification, switching needs to take into account the prefix of the play. We formalize this task below. 
+   We are given a game $(\game,\varphi)$, 
+   a set $\{\overline{p}_i\in \mathcal{P}\}_{i=1}^{N}$ of representative values of the runtime information, and 
+    strategies $\{{\rho_\out^\ast}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ such that ${\rho_\out^\ast}_i$ solves \eqref{prob:opt} for $\overline{p}_i$. 
+
+   %FIXME: What is i? \pi is not used in first bullet point, and we don't have a guarantee for every overline p. DONE
+   Given $\epsilon > 0$, compute a collection $\{\mathcal S_i\}_{i=1}^N$ of subsets of $\mathbb{R}^n$ such that $\overline{p}_i \in \mathcal{S}_i$, and a  switching function $\tau : \prefs(\game) \times \mathcal P^+ \to \{1,\ldots,N\}$ that satisfies the following conditions.
+   \begin{itemize}
+       \item For all $i =1,\ldots,N$ and all $\overline p \in \mathcal S_i \cap \mathcal P$ it holds that
+    \begin{align}
+  C({\rho_\out}_i^\ast,
+    \overline{p}) - \epsilon \leq
+        C^\ast(\overline{p}) \leq
+        C({\rho_\out}_i^\ast,
+    \overline{p}).
+    \label{eq:bounds}
+   \end{align}  
+   \item $\overline\pi \in \varphi$ for every play $\overline \pi \in \plays(\{{\rho_\out}_i\in\mathcal{M}_\out\}_{i=1}^{N},\tau)$.
+   \end{itemize}
+
+
+ In the next Section we discuss how to compute, using off-the-shelf synthesis methods, representative strategies that are \emph{correct}, that is, they satisfy $\spec$, and optimal for a given runtime information vector $\overline{p}$.
+
+ Then, we provide a method for computing a switching function
+ for the synthesized representative strategies that is also guaranteed to be \emph{correct}, and is approximately optimal with respect to suitably chosen lower and upper bound functions $L$ and $U$. As formalized in Problem~\ref{prob:switching}, correctness means that every play resulting from applying the switching function to the given strategies satisfies the specification $\spec$. Approximate optimally is with respect to the optimal value $C^\ast(\overline{p})$ for each runtime information value $\overline{p} \in \mathcal P$.
+
+% In Section~\ref{sec:synth_strats}, we show how to
+% synthesize representative strategies that are \emph{correct}, that is, they satisfy $\spec$, and optimal for a given runtime information vector $\overline{p}$. 
+
+% In Section \ref{sec:gen_strats} we provide a method for computing a switching strategy 
+% for the synthesized representative strategies that is also guaranteed to be \emph{correct}, and is approximately optimal with respect to suitably chosen lower and upper bound functions $L$ and $U$.
+
+%However, while we guarantee that the chosen strategies dominates the other pre-specified strategies, we cannot guarantee that, for a given $\epsilon$ and $\overline{p}$, the chosen strategy is $\epsilon-$optimal. We will thus also present an iterative procedure to generate more strategies offline that will guarantee, under certain conditions, that the chosen strategy will always be $\epsilon-$optimal for any $\overline{p}$. 

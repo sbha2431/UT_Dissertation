@@ -1,0 +1,42 @@
+\section*{Story}
+
+\begin{itemize}
+    \item MDP with unknown transition probabilities. Abstract as a two-player game (probabilistic transitions abstracted as adversarial nondeterminism).
+    \item We want to synthesize a strategy that satisfies a temporal logic specification in this game (surely, for all possible behaviours of the environment). 
+    \item We also want the synthesized strategy to be able to make use of information provided during runtime and based on that information make decisions that are optimal with respect to the currently available knowledge about the MDP model.
+    \item Introduce input variables corresponding to knowledge about parameter values (identify ranges of parameter values, then introduce input variables whose values correspond to those ranges).
+    \item Associate reward values with actions/policies.
+    \item Depending on parameter values, execute policy that maximizes expected reward in this case. 
+\end{itemize}
+\section{Problem formulation}
+\begin{itemize}
+    \item $\overline p$: unknown parameters in MDP $M$ with unknown transition probabilities
+    \item $\mathcal F$: family of (deterministic) policies in $M$ (paremeterized by $\overline q$)
+\end{itemize}
+
+\bigskip
+
+Goal: find a family of sets $\{R_f \subseteq Vals(\overline p)\}_{f \in \mathcal F}$ such that:
+\begin{itemize}
+    \item $\bigcup_{f \in \mathcal F} R_f = Vals(\overline p)$, and $R_{f_1} \neq R_{f_2}$ for all $f_1 \neq f_2$;
+    \item for every $f \in \mathcal{F}$ and every $\overline r \in Vals(\overline p)$ it holds that 
+    \[Reward(M_p,s,f) \geq Reward(M_p,s,f')\]
+    for every $f' \in \mathcal{F}$ and $s \in S$. 
+\end{itemize}
+
+Intuitively, we would like to partition the set of possible parameter values in a way that partitions correspond to policies in $\mathcal F$, and the set of parameter valuations associated with each policy $f$ is such that $f$ is the optimal policy in the MDP corresponding to each of the parameter valuations in the set $R_f$.
+
+\section*{Remarks}
+\begin{itemize}
+    \item We consider deterministic policies, as we are interested in strategies in the game abstraction of the MDP.
+    \item We assume for now that policies are stationary (for the general case, we would need policies with memory).
+    \item In this formulation, all policy decisions depend on all parameters in the MDP. This is normal (in known MDP the player knows the whole model), but for performance reasons it would be good to identify parameters on which individual decisions should depend.
+    
+\end{itemize}
+
+\section*{Challenges}
+\begin{itemize}
+    \item A large number of possible policies. Not feasible to enumerate them and compute for each of them a parameter range. (Would be more efficient to associate parameter ranges with the actions in the MDP).
+    \item The parameters $\overline q$ are discrete, and the parameters $\overline p$ are continuous.
+\end{itemize}
+\end{document}

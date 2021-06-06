@@ -1,0 +1,122 @@
+
+\definecolor{bodyyel}{HTML}{FFE58F}
+\definecolor{bodybl}{HTML}{85A1DC}
+
+    \begin{tikzpicture}[scale=1.0]
+		  %  \tikzstyle{system} = [thick,draw=blue,circle,fill=bodybl]
+		  %  \tikzstyle{shield} = [thick,draw=red,and gate US,fill=red!20!white]
+    %         \tikzstyle{vert} = [thick,draw=blue,rectangle,fill=bodybl,rounded corners]
+		  %  \tikzstyle{hub} = [thick,draw=red,and gate US,fill=red!20!white]
+            \node[vert](vert1){$\shield^1_1$};
+            \node[vert,below=5mm of vert1](vert2){$\shield^1_2$};
+            \node[vert,below=5mm of vert2](vert3){$\shield^2_1$};
+            
+            \node[hub,right=30mm of vert1] (hub1){$\design_1$};
+            \node[hub,right=30mm of vert3] (hub2){$\design_2$};
+            
+            \node[left=10mm of vert1.210,draw=none,text width=1.6cm] (in1) {};
+            \node[left=10mm of vert2.210,text width=1.5cm,rectangle,rounded corners,draw,minimum height=50mm,fill=yellow!20!white] (in2) {Orig-Dest requests};
+            \node[left=10mm of vert3.145,draw=none,text width=1.6cm] (in3) {};
+
+            \path[name path=odest] (in1)--node[above] {} (vert1.205);
+            
+            \path[->,draw,very thick] (in2)--node[above] {} (vert2.205);
+            \path[->,draw,very thick] (in3)--node[above] {} (vert3.145);
+            
+            \coordinate[right=2.5mm of vert1.30](c1);
+            \coordinate[right=5mm of vert1.330](c2);
+            
+            \path[draw,very thick] (vert1.30) |- (c1);
+            \path[name path=avail1] (vert1.330) |- (c2);
+            \path[name path=request2,very thick, draw] (vert2.30) -| (c1);
+            \path[draw,very thick] (vert2.330) -| (c2);
+            
+            \path[name intersections={of=avail1 and request2}];
+            \coordinate (S) at (intersection-1);
+            \path[name path=circle] (S) circle(1.0mm);
+            \path[name intersections={of = circle and avail1}];
+            \coordinate (I1) at (intersection-1);
+            \coordinate (I2) at (intersection-2);
+            \path[draw,very thick] (vert1.330) -- (I2);
+            \path[draw,very thick] (I1) -- (c2);
+            \tkzDrawArc[color=black,very thick](S,I1)(I2);
+            
+            
+            \path[->,draw,very thick] (c1) -- node[above]{Requests} (hub1.150);
+            \path[->,draw,very thick] (c2) -- node[below]{Availability} (hub1.210);
+            
+            \coordinate[above right=10mm and 5mm of hub1.30](out1);
+            \coordinate[below right=10mm and 5mm of hub2.330](out2);
+            \path[draw,very thick] (hub1.30) -| (out1);
+            \path[draw,very thick] (hub2.330) -| (out2);
+            \path[->,draw,very thick] (vert3.30) -- node[above]{Requests} (hub2.150);
+            \path[->,draw,very thick] (vert3.330) -- node[below]{Availability}  (hub2.210);
+            
+
+            \coordinate[right=12.5mm of hub1.0] (loiter1);
+            \coordinate[right=12.5mm of hub2.0] (loiter2);
+             \node [below left=15mm and 0mm of loiter2] {$V$};
+            \coordinate[above left=10mm and 5mm of vert1.150] (X1);
+            \coordinate[below left=10mm and 5mm of vert3.210] (X2);
+            \coordinate[below right=12.5mm and 2.5mm of hub1.330](Y1);
+            \coordinate[above right=12.5mm and 5.0mm of hub2.30](Y2);
+            
+            \path[->,draw, very thick] (hub1.0) --node[above right]{Loiter} (loiter1);
+            \path[->,draw, very thick] (hub2.0) --node[above right]{Loiter} (loiter2);
+            \path[draw, very thick] (out1) -- node[above]{Land allocation} (X1);
+            \path[draw, very thick] (out2) -- node[below]{Land allocation} (X2);
+            \path[->,draw,very thick](X1) |- (vert1.150);
+            \path[->,draw,very thick,name path=land2](X1) |- (vert2.150);
+            \path[->,draw,very thick](X2) |- (vert3.210);
+            
+            \path[draw,very thick] (hub1.330) -| node[below right] {Pass} (Y1);
+            \path[draw,very thick] (hub2.30) -| node[above right=5mm and 0mm] {Pass} (Y2);
+            \path[->,draw,very thick] (Y1) -| (hub2.120);
+            \path[->,draw,very thick] (Y2) -| (hub1.240);
+            
+            \path[name intersections={of=odest and land2}];
+            \coordinate (S2) at (intersection-1);
+            \path[name path=circle2] (S2) circle(1.0mm);
+            \path[name intersections={of = circle2 and odest}];
+            \coordinate (I1) at (intersection-1);
+            \coordinate (I2) at (intersection-2);
+            \path[draw,very thick] (in1) -- (I2);
+            \path[draw,very thick] (I1) -- (vert1.205);
+            \tkzDrawArc[color=black,very thick](S2,I1)(I2);
+            
+            % \begin{scope}[on background layer]
+        \node [below right=-42.5mm and -13.0mm of vert3,text width=55mm,draw,dashed,minimum height=60mm] (box) {};
+       
+            % \end{scope}
+
+            
+            
+            
+            
+            
+            % \node[system,above right=5mm and 25mm of mdp] (D1) {$\design_1$};
+            % \node[system,right= 24mm of mdp] (D2) {$\design_2$};
+            % \node[system,below right=5mm and 25mm of mdp] (D3) {$\design_3$};
+            % \node[shield,right=15mm of D1] (S1) {$\shield_1$};
+            % \node[shield,right=15mm of D2] (S2) {$\shield_2$};
+            % \node[shield,right=15mm of D3] (S3) {$\shield_3$};
+            % \coordinate[right=15mm of mdp] (X);
+            % \node[right=10mm of S1] (X1){};
+            % \node[right=10mm of S2] (X2){};
+            % \node[right=10mm of S3] (X3){};
+            % \path[->,draw,thick] (X)--node[above left,near end] {$\ialphabetx{1}$} (D1);
+            % \path[->,draw,thick] (X)--node[above] {$\ialphabetx{2}$} (D2);
+            % \path[->,draw,thick] (X)--node[below left,near end] {$\ialphabetx{3}$} (D3);
+            % \path[->,draw,thick] (D1)--node[above] {$\oalphabetx{1}$} (S1);
+            % \path[->,draw,thick] (D2)--node[above] {$\oalphabetx{2}$} (S2);
+            % \path[->,draw,thick] (D3)--node[below] {$\oalphabetx{3}$} (S3);
+            % \path[->,draw,thick] (D3)--node[at end,below right] {$\oalphabetx{3}$} (S2);
+            % \path[->,draw,thick] (D2)--node[at end,above right] {$\oalphabetx{2}$} (S3);
+            % \path[->,draw,thick] (D2)--node[below right,at end] {$\oalphabetx{2}$} (S1);
+            % \path[->,draw,thick] (D1)--node[above right,at end] {$\oalphabetx{1}$} (S2);
+            % \path[->,draw,thick] (S1)--node[above] {$\oalphabetx{1}'$} (X1);
+            % \path[->,draw,thick] (S2)--node[above] {$\oalphabetx{2}'$} (X2);
+            % \path[->,draw,thick] (S3)--node[above] {$\oalphabetx{3}'$} (X3);
+            
+                        
+		\end{tikzpicture}

@@ -1,0 +1,44 @@
+The key advantage of our approach is that we avoid the re-synthesis of strategies for each new value of the runtime information, when the parameter set is covered by the collection of polytopes ${\{\mathcal{S}_i\}}_{i=1}^N$,  $\mathcal{P}\subseteq\cup_{i=1}^N \mathcal{S}_i$.  We also avoid discretization of the set $\mathcal{P}$. This enables on-board deployment of our approach with guaranteed $\epsilon$-optimal performance. In contrast, traditional approaches rely either on re-synthesis or on discretization of the parameter space which requires either prohibitively high computational or memory costs~\cite{jangcontinuous,smith2011optimal}. When $\mathcal{P}\not\subseteq\cup_{i=1}^N \mathcal{S}_i$, none of the synthesized strategies guarantees $\epsilon$-optimal performance for the parameter values in $\mathcal{P}\setminus\cup_{i=1}^N \mathcal{S}_i$. In such cases, we can iteratively expand the candidate instantiations offline till the entire parameter space $\mathcal{P}$ is covered. Specifically, we add to the candidate instantiations randomly chosen parameter values in $\mathcal{P}\setminus\cup_{i=1}^N \mathcal{S}_i$. In future, we intend to investigate sufficient conditions under which such an expansion approach terminates in finite number of steps.
+
+
+
+% 1. Discussion of the partition not being complete. Why we can't do state augmentation with the parameter?
+% 2. All bets are off if the information vector is incorrect.
+%From Proposition~\ref{prop:nonempty}, the
+%collection of polytopes $\{\mathcal{S}_i\}$ forms an
+%incomplete partition of $ \mathcal{P}$, i.e., it is possible that 
+% $\mathcal{P}\not\subseteq\cup_{i=1}^n \mathcal{S}_i$.
+
+% Alternatively, we can choose parameters greedily that provides the largest volume polytope $\mathcal{S}_{(\cdot)}$. Note that the second construction results in a submodular maximization problem over an uncountable set~\cite{}.
+
+% Our approach implicitly assumes that the provided runtime information is correct. We expect our approach to exhibit suboptimal performance in problems with incorrect runtime information. We intend to investigate problems with false or misleading information in future. 
+
+% By construction, the polytopes $\mathcal{S}_i$ are either mutually disjoint or intersect at a hyperplane. 
+
+% As the additional information is only available during runtime, we would ideally synthesize a strategy that yields optimal behaviour for all instances of the vector $\overline p$. One way to achieve this is to include this information as an additional component of the input. Since, however, the input is discrete and the runtime information is real-valued this requires discretization, and, more importantly, can significantly increase the size of the problem instance. Another approach is to re-synthesize the strategy of the agent at runtime, that is, solve~\eqref{prob:opt} every time the value of $\overline{p}$ changes.
+% However, the computational effort required to solve 
+
+% Therefore, we propose a different approach. We first synthesize offline a set of \emph{representative strategies} that are \emph{optimal with respect to individual representative values of the runtime information}, and then combine them in a strategy that switches between the individual strategies based on the information received at runtime.
+
+% \begin{itshape}\textbf{Example cont'd.}
+% The robot only has enough charge to visit one of the three rooms and return to the charging station. Hence, knowing the likelihood of the human's location can greatly the reduce expected time to find them.  The optimal policy for each $p_i$ corresponds to an \emph{ordering} of which room to visit. Intuitively, the robot will visit rooms in decreasing order of likelihood of a human being there. 
+
+% Consider again the example in Figure~\ref{fig:gazeboworld}. Assume we have three representative instantiations of the runtime information vector given by $\overline{p}_1 =\lbrack 0.6, 0.3, 0.1\rbrack$, $\overline{p}_2 = \lbrack 0.7, 0.2, 0.1\rbrack$, and $\overline{p}_3 = \lbrack 0.9, 0.07, 0.03\rbrack$. Intuitively, the optimal policy in each case is the same - the robot first visits $R_1$, then recharges in $R_7$, then visits $R_4$, recharges, and finally visits $R_8$.
+
+% We see in Table~\ref{tab:examplesameroom}, that the same policy with the human in the same room results in different optimal values based on the current runtime information value.
+% \end{itshape}
+% \begin{table}[h]
+%     \centering
+%     \begin{tabular}{c|c|c}\toprule
+%         $\mathbf{\overline{p}}$  & \textbf{Human location}  &  $\mathbf{C^\ast}$ \\ \midrule
+%         $\lbrack 0.6, 0.3, 0.10\rbrack$ & $R_1$ & 11.1 \\
+%         $\lbrack 0.7 ,0.2, 0.10\rbrack$ & $R_1$ & 10.4\\
+%         $\lbrack 0.9, 0.1, 0.0\rbrack$ & $R_1$ & 7.9 \\ \bottomrule
+%     \end{tabular}
+%     \caption{Caption}
+%     \label{tab:examplesameroom}
+% \end{table}{}
+
+% Hence, our cost metric captures acting optimally with respect to the current knowledge about the environment. In the case where we have no knowledge whatsoever (corresponding to a uniform probability distribution in the previous example), the cost metric is equivalent to those defined in \cite{Ehlerscost}. 
+
+

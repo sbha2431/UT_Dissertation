@@ -1,0 +1,11 @@
+\subsubsection{Markov decision processes}
+We define a \emph{single-agent} MDP as a tuple $\mdp_z = (\stateSpace_z, \sI,\Act_z,\Trans_z,\Reward_z,\Target_z)$ with a finite set $\stateSpace_z$ states, an initial state $\sI \in \stateSpace_z$ a finite set $\Act_z$ of actions, a transition function $\Trans_z: \stateSpace_z \times \Act_z \times \stateSpace_z \rightarrow [0,1]$ such that $\forall \state \in \stateSpace_z~\forall~ a\in \Act_z : \sum_{\state'\in \stateSpace_z} \Trans_z(\state,a,\state') \in \lbrace 0,1 \rbrace$ and a cost function $\Reward_z:\stateSpace \times \Act \rightarrow \mathbb{R}$ such that $\Reward_z(s,a)$ represents the cost of taking action $a$ in state $\state$ and a target operator (or operators) $\Target_z \subset \stateSpace_z$. 
+
+Given $n$ agents, the overall MDP is formed from the product of the MDPs describing each individual MDP:
+$\mdp = (\stateSpace,\sI,\Act,\Trans,\Reward,\Target)$, where $\stateSpace = \prod_{z \in [1,n]} \stateSpace_z$, $\Act = \prod_{z \in [1,n]} \Act_z$, $\Trans$ and $\Reward$ are the transition and reward functions for the new product state space as defined in a similar manner above and the set of goal conditions for all agents is defined by $\Target = \prod_{z \in [1,n]} \Target_z \subset \stateSpace$ .
+
+\paragraph*{Runs and policies}
+A \emph{run} from state $\state_0$ with time horizon $T$ is a sequence $\rho = \state_0 a_0 \state_1 a_1 \dots ,\state_{T-1},a_{T-1},\state_{T}$ of states and actions such that for all $0 \leq t\leq T$ we have $\Trans_z(\state_{t+1}|\state_t,a_t)>0$. 
+%
+A \emph{policy} corresponds to a way of selecting actions based on the history of states and actions. In this paper, we consider deterministic, stationary policies denoted as $\pi:\stateSpace \rightarrow \Act$. 
+% \emph{Deterministic stationary} policies are known to be sufficient for certain classes of problems, such as pure reachability ~\cite{puterman2014}, policies in general can be non-deterministic and history dependent. 

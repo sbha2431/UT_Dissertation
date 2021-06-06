@@ -1,0 +1,25 @@
+In order to guarantee that the plays resulting from switching between the synthesized representative strategies satisfy the specification $\spec$, the switching function needs to keep track the satisfaction of the agent's liveness guarantees $\LTLglobally\LTLfinally F_i$ in $\spec$. Since the cost function $C$ captures the cost of achieving the liveness guarantees, when the specification is satisfied due to a violation of the environment assumptions, no switching would be necessary, as the cost would be $0$.
+
+To ensure that the switching between strategies does not prevent the agent from infinitely often visiting each of the sets $F_i$, the switching function will keep track of these visits, and only allow switching to a different strategy once all the sets $F_i$ have been visited under the current strategy. Furthermore, the switch can only occur from a state from which the next strategy can guarantee the satisfaction of $\spec$. Below we make this intuition precise by providing the construction of the switching function as a finite-state system.
+
+Let $\{{\rho_\out^\ast}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ be a set of strategies  for the agent such that ${\rho_\out}_i^\ast \models \spec$ for each $i \in \{1,\ldots,N\}$, and let $\{\mathcal S_i\}_{i=1}^N$ be the polytopes computed as in Section~\ref{sec:generalization}.
+
+For each ${\rho_\out^\ast}_i$, let $W_i = \{g\in G \mid \plays(\game,{\rho_\out^\ast}_i,g)\subseteq \spec\}$ denote the set of states from which the specification can be enforced by following the strategy ${\rho_\out^\ast}_i$.
+
+We define a finite state transition system with states $Q$, initial state $q_0$, transition function $\theta$ and alphabet $(G \times \ialphabet \times \oalphabet \times G) \times \{\mathcal S\}_{i=1}^N$. The set of states is $Q = \{ V \mid V \subseteq \{1,\ldots, n\}\} \times \{1,\ldots,N\}$, where $n$ is the number of liveness guarantees in $\spec$. States in $Q$ track the guarantees that have been satisfied and contain the index of the currently chosen strategy. The initial state is $q_0 = (\{1,\ldots,n\},1)$. The transition function $\theta : Q \times ((G \times \ialphabet \times \oalphabet \times G) \times \{\mathcal S\}_{i=1}^N) \to Q$ is defined such that 
+$\theta((V,i),((g,\symb_{\inp}, \symb_{\out}, g'),\mathcal S)) = (V',i')$, where
+\begin{itemize}
+\item if $V = \{1,\ldots,n\}, \mathcal S = \mathcal S_{j}, g' \in W_{j}$, then, $V' = \emptyset, i'=j$,
+\item $V' = V \cup \{j \in \{1,\ldots,n\} \mid g \in F_j\}$ and $i'=i$ otherwise.
+\end{itemize}
+That is, once all the sets $F_j$ have been visited under the current strategy, we can switch to the $i'$-th strategy and reset the tracking set to $\emptyset$. Otherwise we record the indices of the visited sets and keep the strategy index the same. We can extend $\theta$ to words in the usual way. 
+
+We define the switching function such that 
+$\tau (\varepsilon,\overline p_0) = \min(\{i \mid p_0 \in \mathcal S_i\}\cup \{N\})$, where $\varepsilon$ is the empty word, and for every 
+$\overline \pi =(g_0,\symb_{\inp,0},\symb_{\out,0}, g_1) \ldots
+(g_k,\symb_{\inp,k}, \symb_{\out,k}, g_{k+1})$ and every $\overline \gamma = \overline p_0\ldots\overline p_{k+1}$ we let
+$\tau (\overline \pi, \overline\gamma) = i$ where
+$\theta(((g_0,\symb_{\inp,0},\symb_{\out,0}, g_1),\mathcal S_{i_1}) \ldots
+((g_k,\symb_{\inp,k}, \symb_{\out,k}, g_{k+1}),\mathcal S_{i_{k+1}})) = (V,i)$ for some $V$, where for all $j\geq 1$ we have $i_j  = \min(\{i \mid \overline p_j \in \mathcal S_i\text{ and }g_j \in W_{i_j}\} \cup \{N\})$.
+
+As the switching function $\tau$ only allows switching to a different strategy once all $F_j$ have been visited under the current strategy, this means that if we switch strategy infinitely often then the liveness guarantee is satisfied. If, on the other hand, we stabilize at some strategy, $\spec$ is again guaranteed by the fact that this strategy satisfies the specification. 

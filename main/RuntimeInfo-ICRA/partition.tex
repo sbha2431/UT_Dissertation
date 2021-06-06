@@ -1,0 +1,126 @@
+Let $\{\overline{p}_i\in \mathcal{P}\}^{N}_{i=1}$ be the given candidate instantiations of the runtime information, and let 
+$\{{\rho_\out^\ast}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ be the corresponding optimal strategies. That is, for each $i$, ${\rho_\out}_i^\ast$ is an optimal solution of \eqref{prob:opt} for $\overline{p}_i$. 
+Under Assumption~\ref{assum:C_lin} below, we can compute a collection of polytopes ${\{\mathcal{S}_i\}}_{i=1}^N$ such that ${\rho_\out^\ast}_i$ is $\epsilon$-optimal, whenever $\overline p \in \mathcal{S}_i$.
+\subsubsection*{Assumption}\label{assum:C_lin}
+  The cost function $C: \mathcal M_\out\times \mathcal{P}
+  \to \mathbb{R}$ is such that for all $\rho_\out \in \mathcal M_\out$ and $\overline p = {[q_1\ q_2\ \ldots\ q_n]}^\top \in \mathcal P \subseteq \mathbb{R}^n$:
+  \begin{align}
+        C(\rho_\out, \overline{p}) = \sum_{i=1}^n
+        C(\rho_\out, \overline{e}_i)\, q_i,\label{eq:V_lin_decompose}
+    \end{align}
+    where $\overline{e}_i$ is the vector that has $1$ at
+     position $i$ and $0$ elsewhere.
+
+
+We address Problem~\ref{prob_st:main} by defining a collection of polytopes $\{\mathcal{S}_i\}_{i=1}^N$, where $\mathcal{S}_i= \{ \overline{p} \in \mathbb{R}^n \mid H_i \overline{p}\leq
+\overline{b}_i\}$ and
+{\small\begin{align}
+    H_i &= \left[
+        \begin{array}{ccc}
+            C({\rho_\out}_i^\ast, \overline{e}_1) -
+            C({\rho_\out}_1^\ast, \overline{e}_1) &
+            \cdots &
+            C({\rho_\out}_i^\ast, \overline{e}_n) -
+            C({\rho_\out}_1^\ast, \overline{e}_n)\\
+            C({\rho_\out}_i^\ast, \overline{e}_1) -
+            C({\rho_\out}_2^\ast, \overline{e}_1) &
+            \cdots &
+            C({\rho_\out}_i^\ast, \overline{e}_n) -
+            C({\rho_\out}_2^\ast, \overline{e}_n)\\
+            \vdots & \vdots & \vdots \\
+            C({\rho_\out}_i^\ast, \overline{e}_1) -
+            C({\rho_\out}_N^\ast, \overline{e}_1) &
+            \cdots &
+            C({\rho_\out}_i^\ast, \overline{e}_n) -
+            C({\rho_\out}_N^\ast, \overline{e}_n)\\
+            C({\rho_\out}_i^\ast, \overline{e}_1) -
+            C^\ast(\overline{e}_1) &
+            \cdots &
+            C({\rho_\out}_i^\ast, \overline{e}_n) -
+            C^\ast(\overline{e}_n)
+    \end{array}\right] \label{eq:A_defn} \\
+        \overline{b}_i&={[0\ 0\ \ldots\ 0\
+        \epsilon]}^\top\in \mathbb{R}^{N+1}\label{eq:b_defn}
+\end{align}}\normalsize%
+with $H_i\in \mathbb{R}^{(N+1)\times n}$. By \eqref{prob:opt} and Assumption~\ref{assum:C_lin}, we have the following upper bound on $C^\ast(\overline{p})$ for any runtime information vector $ \overline{p}={[q_1\ q_2\ \ldots\ q_n]}^\top\in
+\mathcal{P}$,
+\begin{align}
+    C^\ast( \overline{p})\leq
+    C({\rho_\out}_i^\ast,
+    \overline{p})=\sum_{j=1}^nC({\rho_\out}_i^\ast,
+    \overline{e}_j)q_j\label{eq:C_ub},\quad \forall
+    i\in\{1,\ldots,N\}.
+\end{align}
+
+Theorem~\ref{thm:bounds} below ensures that using ${\rho_\out^\ast}_i$ for vectors $\overline p \in \mathcal{S}_i$ results in $\epsilon$-optimal performance, provided the polytopes $\mathcal{S}_i$ are non-empty. In other words, the difference between $C^\ast(\overline p)$, the optimal performance for a runtime information $\overline{p}$,  and $C(\rho_{\out_i}^\ast, \overline p)$, the attained performance due to choice of strategy $\rho_{\out_i}^\ast$,  can not be larger than $\epsilon$, whenever $\overline p \in \mathcal{S}_i$. To complete the discussion, we provide a sufficient condition for non-empty polytopes $\mathcal{S}_i$ in Proposition~\ref{prop:nonempty}.
+ 
+\begin{thm}\label{thm:bounds}
+    Let the polytopes $\mathcal{S}_i$ be non-empty. Given runtime information $ \overline{p} \in \mathbb{R}^n$,
+    if $ \overline{p}\in \mathcal{S}_i$ for some
+    $i\in\{1,\ldots, N\}$, then
+    \begin{align}
+        C({\rho_\out}_i^\ast,
+    \overline{p}) - \epsilon \leq
+        C^\ast(\overline{p}) \leq
+        C({\rho_\out}_i^\ast,
+    \overline{p}). \nonumber
+    \end{align}
+\end{thm}
+\begin{proof}
+   The upper bound on $C^\ast( \overline{p})$ follows from
+   \eqref{eq:C_ub}. Consider the collection of polytopes $
+    \mathcal{T}_i$ constructed using the first $N$
+    hyperplanes in \eqref{eq:A_defn} and \eqref{eq:b_defn}.
+    For every $ \overline{p}\in \mathcal{T}_i$,
+    % ={[q_1\ %q_2\ \ldots\ q_n]}^\top\in \mathcal{T}_i\subset \mathbb{R}^n$,
+    \begin{align}
+        %\sum_{j=1}^nC(\overline{\gamma}_i^\ast,
+        %\overline{e}_j) q_j&\leq
+        %\sum_{j=1}^nC(\overline{\gamma}_k^\ast,
+        %\overline{e}_j)q_j,\ \forall
+        %k\in\{1,\ldots,N\}\setminus\{i\}\label{eq:dom}.
+        C({\rho_\out}_i^\ast, \overline{p})&\leq
+        C({\rho_\out}_k^\ast, \overline{p}),\ \forall
+        k\in\{1,\ldots,N\}\setminus\{i\}\label{eq:dom}.
+    \end{align}
+    In other words, among the $N$  strategies
+    ${\rho_\out}_{(\cdot)}^\ast$,
+    ${\rho_\out}_{i}^\ast$ provides the tightest upper
+    bound on $C^\ast( \overline{p})$ due to \eqref{eq:C_ub}. 
+    
+   
+   We next prove the lower bound. The last
+   hyperplane in \eqref{eq:A_defn} and \eqref{eq:b_defn}
+   guarantees that $ C(
+   {\rho_\out}_i^\ast, \overline{p}) -  \overline{\ell}^\top \overline{p} \leq \epsilon$ for
+   every $ \overline{p}\in \mathcal{S}_i$, where $\overline{\ell}_j = C^\ast( \overline{e}_j)$. On adding and
+   subtracting $C^\ast( \overline{p})$, we have
+   $C({\rho_\out}_i^\ast, \overline{p}) - C^\ast(
+   \overline{p}) + C^\ast(\overline{p}) -
+   \overline{\ell}^\top \overline{p} \leq \epsilon$. Since
+   $C( \cdot, \overline{e}_j)\geq \ell_j$ by definition of $
+   \overline{\ell}$, we have $C^\ast(\overline{p}) -
+   \overline{\ell}^\top \overline{p} \geq 0$ for every $
+   \overline{p}\in \mathcal{S}_j$. Therefore, $C({\rho_\out}_i^\ast, \overline{p}) - C^\ast(
+   \overline{p}) \leq \epsilon$.
+\end{proof}
+\begin{prop}\label{prop:nonempty}
+    Let Assumption~\ref{assum:C_lin} hold. For every $i=1,\ldots,N$ the polytope $\mathcal{S}_i$ is non-empty, provided that $\epsilon \geq \max_i\left\{ C( {\rho_\out}_i^\ast, \overline{p}_i) -
+    \overline{\ell}^\top \overline{p}_i\right\}$. Here,
+    $\overline{\ell}={[C^\ast( \overline{e}_1)\ C^\ast(\overline{e}_2)\ \ldots\ C^\ast( \overline{e}_n)]}^\top\in \mathbb{R}^n$.
+    % Moreover, each of the pairwise-intersections of the polytopes is either a hyperplane or is the empty set.
+\end{prop}
+\begin{proof}
+    The polytopes $ \mathcal{T}_i$ (defined in the proof of Theorem~\ref{thm:bounds}) are non-empty, since they
+    contain $ \overline{p}_i$ by the optimality of $
+    {\rho_\out}_i^\ast$ in \eqref{prob:opt}.
+    The last hyperplane in \eqref{eq:A_defn} and
+    \eqref{eq:b_defn} is also satisfied by $
+    \overline{p}_i$, thanks to the use of $\epsilon$ in $\overline b_i$.
+    Thus, its intersection with $ \mathcal{T}_i$, which
+    yields the polytope $ \mathcal{S}_i$, is non-empty.
+    % By construction, the
+    % pairwise-intersection of the polytopes $ \mathcal{T}_i$
+    % are either hyperplanes (overlapping boundary of
+    % $\mathcal{T}_i$ and $\mathcal{T}_k,\ k\neq i$) or empty. 
+\end{proof}

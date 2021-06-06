@@ -1,0 +1,63 @@
+\begin{definition}[Optimizing proposition]
+Similar to \cite{smith2011optimal} we first define an \emph{optimizing proposition} $p \in \Sigma$. Given a game $\mathcal G$, we consider LTL formulas of the form
+
+\begin{equation}
+\label{eq:temp_spec}
+\spec:=\bigwedge_{i=1}^{m} \mathcal{B}(E_{i}) \rightarrow \left(\phi \wedge \LTLglobally\,\LTLfinally\, p\right).
+\end{equation}
+with $E_i \subseteq G$
+
+\end{definition}
+
+Adding cost information does not change the ability of a system to satisfy a specification. Since there is, in general, no unique satisfying strategy, cost information typically conveys a \emph{preference} over correct strategies. We formally define this notion in the following. 
+\begin{definition}[Preference vector]
+Given a game $\game$, with $\Acc$ given by LTL formula $\varphi$, we denote finite set of strategies $\rho \in \mathcal{R}$ such that the corresponding induced set of plays $\Pi \subseteq \mathcal{L}(\game)$  $\pi \models \varphi$ for all $\pi \in \Pi$. We define the corresponding \emph{cost vector} $\mathbf{C}:\Pi \rightarrow \mathbb{R}^N$ associated with the set of policies as $C = \{\Val(\pi_i),\ldots,\Val(\pi_n)\}$. 
+
+We now define a preference vector $\mathbf{p} \in \mathbb{R}^n$ to be a weighting over the corresponding policies in $\Pi$
+
+ 
+\end{definition}
+
+The preference vector can lie in the continuous space. For example, the preference vector can be probabilities associated with knowledge being gained during runtime. 
+
+Intuitively, this vector can be used to direct the agent to behave more optimally as information is provided. Informally, we are interested in using this vector to choose the strategy in the set $\Pi$ that is the \emph{most optimal} given the current value of $p$. 
+
+We make the notion of optimality more concrete in the following
+
+\begin{definition}[Weighted value function]
+Given a particular $\overline{p} \in \mathbb{R}^n$
+\end{definition}
+
+Consider a winning play $\pi_i \in \Pi$ for LTL formula given in Equation \ref{eq:temp_spec}. 
+We are interested in all time instances when proposition $p$ is satisfied. 
+
+
+Let $\pi_p[i]$ be the $ith$ instance when $p = \top$. For some $j > i$, we define cost function 
+\begin{equation}
+    C(\pi_p[i,j]) = \sum_{k=i}^{j-1}\pi[k]
+\end{equation}
+Simply, $C$ is a cost function defined over intervals of satisfying the optimizing proposition. 
+
+We define the quantitative objective of the system as the following
+\begin{equation}
+    C(\pi_p[i,j]) = \sum_{k=i}^{j-1}\pi[k]
+\end{equation}
+
+
+\begin{prob}
+    Given a game $ \mathcal{G}$, strategies for the system $ \overline{\rho_s}_i$
+    synthesized for weights $ \overline{q}_i\in
+    \mathcal{S}_L$ for $i\in\{1,2,\ldots,N\}$, and a query
+    weight $\overline{p}\in \mathcal{S}_L$, identify the
+    policy $\pi_i$ such that for some user-specified
+    $\epsilon >0$,
+    \begin{align}
+        V^{\pi_i}(s_0; \overline{p})\leq
+        \max_{\pi\in\Pi}
+        V^{\pi}(s_0; \overline{p}) \leq V^{\pi_i}(s_0;
+        \overline{p}) + \epsilon,\ \forall s_0\in \mathcal{S}
+    \end{align}
+    Here, $\Pi$ denotes all the admissible policies that
+    satisfy some pre-determined specifications.
+\end{prob}
+

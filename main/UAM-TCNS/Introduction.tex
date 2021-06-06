@@ -1,0 +1,79 @@
+\subsection{Urban air mobility setting}
+
+Currently, major metropolitan areas endure pressure on their transportation infrastructure, manifesting as traffic jams or commuter delays which can negatively impact productivity~\cite{harriet2013assessment}.  As population and congestion increase in these urban and suburban areas, mobility challenges are expected to intensify. One proposed solution is the introduction of urban air mobility (UAM) which refers to urban  air  services  to  carry  passengers  and  cargo across  metropolitan  areas.
+%Urban air mobility (UAM) poses a possible solution to this problem, however it is not without its own challenges.  UAM refers to on-demand urban air services to carry passengers and cargo across metropolitan areas.
+Recent advances in electric vertical take-off and landing (eVTOL) aircraft have the potential to revolutionize UAM and make it commercially feasible in the near future~\cite{flightplan2030}. 
+
+UAM can not only help cities from an economic standpoint by allowing for faster movement of goods and people, but also has the potential to add to the public good by allowing for expedited public health services like air ambulances. However, establishing a framework, which allows for safe, orderly, and efficient flights in what will be a complex, high-traffic environment with competing requirements and priorities, remains crucial for UAM to be practically realized. 
+% In order for UAM to gain community acceptance, it is crucial that a framework is established for air 
+
+In this paper, we develop a method for scalable air traffic management (ATM) for UAM with \emph{provable guarantees} of safety properties. 
+
+\subsection{Challenges in air traffic management for UAM}
+
+UAM presents challenges that cannot yet be handled in existing ATM approaches. \textcolor{black}{Current and next generation ATM services, as described in~\cite{cook2007european,swenson2006next},} are designed to manage scheduled flights between established airports located in or near cities separated by a significant distance and occurring at conventional flight altitudes (e.g., above 10 000 ft). UAM will require management for on-demand, high-volume, short-range flights in close proximity to urban airspace (e.g., below 10 000 ft) with increasingly autonomous aircraft. Since these vehicles will be operating in urban airspaces with high traffic densities, they need to be able to operate with smaller separation standards than current ATM services can accommodate (e.g., closely spaced altitude separation). Any traffic management system for UAM will also need to be able to handle unpredictable situations in a safe manner without overly compromising the performance of the entire system. 
+
+Currently, there is no established infrastructure for traffic management of a UAM-like environment. A traffic management system for small unmanned aerial systems (UAS) called UTM (UAS Traffic Management) has been proposed, and takes a federated approach to ensuring airspace access~\cite{PRKRJJ2016}.  This approach may enable the incorporation of multiple safety oriented services~\cite{MBYDLGMC2018} such as aircraft separation~\cite{Daidalus} and geo-fencing~\cite{NCDDASC2018}.  However, there may be concerns in this approach with respect to scalability, in terms of the size of UAM vehicles as well as UAM traffic density. %Furthermore, UTM is designed primarily for small cargo carrying air vehicles. As such, UTM is not capable of providing the safety guarantees that a system involving larger passenger carrying vehicles would require.
+There is a growing need to explore the design of an ATM system architecture capable of safely and efficiently managing UAM operations. 
+
+Guaranteeing global satisfaction of safety properties for UAM operations has the following key challenges
+
+\begin{itemize}
+    \item The setting encompasses multiple service providers and stakeholders, each with potentially competing priorities and requirements. Consequently, the full state of the entire fleet of vehicles is unlikely to be controlled or even observed by a single entity. 
+    \item UAM will operate in a complex and diverse airspace environment(e.g., Class G \cite{FAA2014}, Class B etc.) that must support both conventional operations using legacy aircraft as well as emerging operations. Therefore verifying safety of such an evolving system at design-time is not practical.
+    \item While a centralized solution process allows for easier verification of correctness, the resulting state space explosion entailed in synthesis, especially under the projected traffic demands, makes a centralized solution computationally untenable. 
+\end{itemize}
+
+
+Removing reliance on full state-information for control requires a version of distributed synthesis. However, except for a few restricted classes of architectures, the distributed synthesis problem is undecidable~\cite{SCHEWE2014203}. The decidable versions of the problem lack practical solutions due to their non-elementary complexity~\cite{Schewe08}. Significant effort in runtime monitoring in this area is focused on providing efficient solutions by exploiting  the structure of the system~\cite{FalconeJNBB15,CassarF16} or the specification~\cite{FrancalanzaS15,BauerF16}. %
+
+
+\subsection{UAM ATM architecture}
+We propose a decentralized, hierarchical UAM ATM architecture for provably correct operations. We divide up the responsibilities of an ATM architecture for UAM into two broad classes
+\begin{itemize}
+    \item[1.] Pre-flight authorization: receiving flight requests with little notice, identifying a safe route, and authorizing the departure.
+\item[2.] Dynamic airspace management: managing routes and in-flight aircraft in response to an unpredictable environment stemming from the on-demand trip scheduling.
+\end{itemize}
+
+%\noindent Both of these responsibilities are complex and safety critical, due to the lack of schedules, projected high traffic densities and diverse nature of the vehicles and operations sharing the airspace (e.g., UAS, general aviation aircraft etc.). 
+
+Pre-departure planning and de-conflicting flight routes before take-off have been studied extensively in the literature \cite{6011668,7415976,7934784}. More recently, there have been efforts in applying these works in an on-demand UAM setting \cite{guerreiro2019mission}. In this work, we primarily focus on the latter case of guaranteeing safety during dynamic flight operations. We will assume the existence of an assured scheduler that is able to give pre-flight authorization for routes given passenger requests.
+% \begin{itemize}
+%     \item Paragraph on pre-departure planning and deconflicting solutions
+%     \item Automation of ATM operations?
+%     \item Tie in certification needs as motivation for safety guarantees using formal verifications? 
+% \end{itemize}
+
+%ATM in the UAM airspace will need to be flexible and and respond to traffic demands and disruptions, weather conditions, emergencies or any other unplanned, unexpected or unforeseen events. Furthermore, any proposed solution must handle disruptions while still guaranteeing all safety requirements over the individual vehicles in the fleet such as aircraft separation, and aircraft fuel reserves. 
+% In this paper, we propose a framework for ATM operations in UAM and a method to synthesize controllers in  that handle the traffic management for UAM vehicles with guarantees of liveness and safety. Specifically we provide a method to provably guarantee the satisfaction of user-provided safety requirements in linear temporal logic for all possible behaviours of the environment while still guaranteeing progress of vehicles. 
+
+
+In our proposed UAM ATM architecture, we leverage the geographical location of infrastructure to divide the region into sectors that are each overseen by \emph{vertihubs}. Each vertihub controls the flow of vehicles in and out of its sector. Within the purview of a vertihub are several \emph{vertiports} that control individual vehicle takeoff and landing. Such an architecture is similar to how airspace in the Terminal Radar Approach Control is managed, but is more general in its approach to tackling balkanization. 
+
+The UAM setting is unique as most flights will be on-demand and hence will require a controller that can \emph{react} to an unpredictable environment and provide guarantees of safety and liveness. Reactive synthesis~\cite{bloem2018graph} is a natural candidate to produce such controllers. A user (such as a regulatory body) can specify specifications in linear temporal logic for the operations of each vertihub and vertiport in the system. The task is to synthesize controllers for each vertihub and vertiport separately, guaranteeing that, together, the joint operation of the global system satisfies the conjunction of all specifications while still guaranteeing progress for the vehicles. In order to ensure that each controller does not impede the ability of other controllers to satisfy their requirements, we introduce a contract-based synthesis method which we formulate as a Generalized Reactivity(1) (GR(1))~\cite{bloem2012synthesis} synthesis problem that can be solved efficiently~\cite{wolff2013efficient,alur2016compositional}. Hence, our proposed solution architecture is scalable without sacrificing any safety or liveness guarantees. 
+ 
+\subsection{Related work}
+
+\textcolor{black}{ Some preliminary work is being done in cooperative ATM for next generation air traffic management \cite{prevot2005co}, but this work considers a scheduled approach for large passenger aircraft and cannot handle management for on-demand flights. Similarly, work has been done on distributed control for ATM of small unmanned aerial systems (UAS) \cite{FSLLK2015}, but this work relies on cloud based architectures that do not currently satisfy strict aviation safety requirements.  Hybrid control approaches have been applied \cite{tomlin1996hybrid}, however scalability proves to be an issue.}
+
+
+To the best of our knowledge, this is the first approach to
+controller synthesis with safety guarantees for large-scale UAM ATM operations. Formally verified tools such as DAIDALUS~\cite{Daidalus} provide safety guarantees at lower levels of operations, however, they do not handle the fleet-level operations. The most similar approach to the one presented in this paper is \emph{runtime enforcement}~\cite{Falcone10,Schneider00} of a specified property, in which a synthesized module detects and alters the behavior of the system in a way that maintains the desired property. An existing approach called shielding~\cite{BloemKKW15,KonighoferABHKT17} uses reactive synthesis and assumes that the shield has full knowledge and control of the whole system --- in this case the entire UAM system and the vehicles it handles. 
+
+A technique for synthesizing quantitative shields for multi-agent systems in a fully centralized manner was presented in \cite{multiagentshield}. All these approaches rely on restrictive assumptions on runtime communication (i.e., full network coverage) and the extent of awareness and control authority of the shield (e.g., the shield can affect any agent in the network instantaneously). This requirement was relaxed in~\cite{bhnfm} where a local shield was synthesized for each sector with contracts between neighbors to guarantee global correctness. However, the approach was formulated only for specific safety properties (e.g., minimum-separation) and not more general properties such as liveness as is done here. \textcolor{black}{We do not consider quantitative properties or optimality of behavior in this work, as the primary focus is the guarantee of specifications.}
+
+The work in this paper directly extends~\cite{bhnfm} by generalizing the class of allowable safety properties to any property in the GR(1)~\cite{bloem2012synthesis} fragment of linear temporal logic. Furthermore, the work in~\cite{bhnfm} was limited to very specific vehicle behaviors, and could not handle take-off or landing requests. In this work, we introduce vertiport controllers that operate in the sector regions to additionally handle take-off and landing requests. The induced hierarchical structure allows for \emph{separation of concerns} between the vertihub and vertiport controllers. A decentralized, hierarchical approach for ATM was proposed in~\cite{6011668}, but unlike the setting in this paper, cannot handle temporal logic specifications. Hence, we are able to systematically synthesize controllers for ATM that can guarantee complex temporal requirements unlike conventional ATM approaches such as~\cite{6011668}. 
+
+ 
+\subsection{Contributions of the paper}
+This work is the first that considers a hierarchical, decentralized synthesis procedure for UAM air traffic management. We break down our contributions as follows: 
+
+%The work guaranteed separation standards across the entire fleet, however, did not reason about the global guarantees that such operations provide
+
+
+\begin{itemize}
+    \item We design an architecture that allows a user (such as a regulatory body interested in guaranteeing safe operations) to specify safety requirements for the operations at each vertihub and vertiport. 
+    \item The architecture allows the controller for each vertihub and vertiport to be synthesized separately, hence avoiding the state-space explosion of centralized synthesis. 
+    \item We use contracts to guarantee that the joint interactions of all the individual controllers still satisfy all the safety requirements, and that vehicles will still make progress towards their goals. 
+    \item We provide high-fidelity simulations on large-volume projected UAM traffic data to showcase the applicability of our proposed architecture.
+\end{itemize}

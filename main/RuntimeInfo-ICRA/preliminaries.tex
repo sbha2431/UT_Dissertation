@@ -1,0 +1,49 @@
+\subsubsection{\textbf{Basic notation}}
+%
+We consider reactive systems with a finite set $\inp$ of Boolean \emph{inputs}, controlled by the \emph{E}nvironment, and a finite set $\out$ of Boolean \emph{ outputs}, controlled by the \emph{A}gent. Together, they define the system's input alphabet $\ialphabet=2^\inp$ and the output alphabet $\oalphabet=2^\out$. We define $\alphabet=\ialphabet \times \oalphabet$. 
+
+\subsubsection{\textbf{Game structures}}
+%
+We model the interaction between the agent and its environment as a two-player game. Formally, the game is played on a \emph{game structure} which is a tuple 
+$\game = (\gstates, \ginit, \alphabet, \delta)$,
+where:
+\begin{itemize}
+\item $\gstates$ is a finite set of states and $\ginit \in \gstates$ the initial state;
+\item $\alphabet = \ialphabet \times \oalphabet$ is the alphabet of actions available to the environment and the agent respectively;
+\item $\delta: \gstates \times \alphabet \rightarrow \gstates$
+is a complete transition function, that maps each state, input (environment action) and output (agent action) to a successor state.
+\end{itemize}
+
+  
+
+\subsubsection{\textbf{Winning conditions}} 
+%
+The \emph{winning condition} for the agent in a game $\game$ is given as a set of plays $\varphi \subseteq \plays(\game)$ that specifies the set of plays that result in the agent winning the game. We consider games in which the agent has a \emph{Generalized Reactivity 1} (GR(1)) winning condition, which are common in a variety of practical applications. In the following, we make use of the linear temporal logic (LTL) operators \emph{always} $\LTLglobally$ and \emph{eventually} $\LTLfinally$. For full details on LTL syntax and semantics, we refer the reader to~\cite{MCBook}.
+
+A GR(1) winning condition is defined by sets of states $S_\inp, S_\out \subseteq G$, $E_i \subseteq G$ for $i=1,\ldots,m$ and $F_j \subseteq G$ for $j=1,\ldots,n$, and consists of all plays $\overline \pi$ such that if $\overline{\pi} \in \LTLglobally S_\inp \cap \LTLglobally\,\LTLfinally\, E_{i}$ for all $i=1,\ldots,m$, then $\overline{\pi} \in \LTLglobally S_\out \cap \LTLglobally\,\LTLfinally\, F_{j}$ for all $j=1,\ldots,n$. Intuitively, for a play $\overline \pi$ to be winning, whenever the environment satisfies the assumptions $\LTLglobally\, S_\inp,\LTLglobally\,\LTLfinally\, E_{1},\ldots,\LTLglobally\,\LTLfinally\, E_{m}$, then the agent must satisfy all the guarantees $\LTLglobally\, S_\out,\LTLglobally\,\LTLfinally\, F_{j},\ldots,\LTLglobally\,\LTLfinally\, F_{n}$. By abuse of logical operators, we abbreviate GR(1)  conditions as
+$$\varphi =  \left(\LTLglobally\, S_\inp \wedge \bigwedge_{i=1}^{m}  \LTLglobally\,\LTLfinally\, E_{i}\right) \rightarrow
+\left(\LTLglobally\, S_\out \wedge \bigwedge_{i=1}^{n} \LTLglobally\,\LTLfinally\,F_{i}\right).$$
+
+
+\subsubsection{\textbf{Strategies}}
+%
+A \emph{strategy for the agent} is a function $\rho_\out:
+\prefs(\game) \times \ialphabet \rightarrow
+\oalphabet$ which maps a prefix (the history of the play so far) and an action of the environment to an action of the agent. 
+A \emph{strategy for the environment} is a function $\rho_\inp: \prefs(\game)\rightarrow \ialphabet$ that maps the prefix of the play so far to an action of the environment. We denote the sets of all strategies for the agent and for the environment by $\mathcal{M}_\out $ and $\mathcal{M}_\inp$ respectively.
+
+Every pair of strategies $\rho_\out \in \mathcal{M}_\out$ for the agent and $\rho_\inp \in \mathcal{M}_\inp$ for the environment define a play, denoted by $\Pi(\rho_\out,\rho_\in)$. More precisely,  
+$\Pi(\rho_\out,\rho_\in) = \overline{\pi} = (g_0,\symb_{\inp,0},\symb_{\out,0}, g_1) 
+(g_1,\symb_{\inp,1}, \symb_{\out,1}, g_2) \ldots \in \plays(\game)$
+where
+for every $i \geq 0$, $\symb_{\inp,i} = \rho_\inp(\overline\pi[0,i])$ and $\symb_{\out,i} = \rho_\out(\overline\pi[0,i],\symb_{\inp,i})$.
+Similarly, we define the set of plays starting at a state $g$ that are consistent with $\rho_\out$, denoted $\plays(\game,\rho_\out,g)$.
+
+Given a game structure $\game$ and a winning condition $\varphi$ for the agent, we seek to synthesize a strategy $\rho_\out\in \mathcal{M}_\out$ for the agent such that for every strategy $\rho_\inp \in \mathcal{M}_\inp$ for the environment it holds that $\Pi(\rho_\inp,\rho_\out) \in \varphi$, i.e., all resulting plays satisfy $\varphi$.
+In such cases we say that \emph{$\rho_\out$ satisfies $\spec$}, denoted $\rho_\out\models\spec$.
+
+
+
+
+
+

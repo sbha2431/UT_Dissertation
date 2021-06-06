@@ -1,0 +1,66 @@
+\label{sec:Decent_synth}
+\suda{Needs more details and explanation of Coordination graphs. Perhaps with some examples.}
+
+We describe the process for decentralized synthesis of the optimal policies for the individual UAM vehicles. % optimal policies for the by computing policies for individual vehicles and co-ordinating them. 
+%The Markov decision process $\mdp$ which consists of a product of the MDPs for $n$ vehicles 
+The MDP $\mdp$ described in Section~\ref{ssec:MDPenvironment} serves as a model for the coordination of $n$ vehicles. %
+The reward in $\mdp$ consists of a global payoff function $\Val \colon \Act \rightarrow \mathbb{R}$. %
+Since each action $a \in \Act$ is a collective action for the vehicles, solving the MDP $\mdp$ for an optimal policy yields an optimal coordination strategy for the agents. %
+%The action space $\Act$ of MDP $\mdp$ corresponds to the product of the individual vehicle action spaces $\Act_i$ and therefore scales exponentially with the number of vehicles. %
+Solving for the optimal policy in  $\mdp$ with this large action space $\Act$ is a centralized approach and is computationally expensive.
+
+In practice each vehicle interacts with only few other vehicles relative to the total number of vehicles at any time. %
+The concept of a coordination graph ~\cite{guestrin2002multiagent} captures this sparsity of mutual influence of actions on the global payoff $\Val$. %
+The sparse coordination graph implies that one can decompose $\Val$ as a sum of local payoff functions $\Val_j$ for each vehicle $\Agent_j$ so that the global coordination problem can be replaced by a number of smaller local coordination problems. %
+This decomposition implies that the optimal collective action $a$ is $\arg \max_{a \in \Act}(\sum_j \Val_j(a))$. 
+Using the procedure outlined in \cite{guestrin2002multiagent}, the vehicles can compute locally-optimal collective actions using a decentralized algorithm, thereby avoiding the computational cost of a centralized algorithm for solving the MDP $\mdp$. %
+
+% We present a decentralized approach, where the agents themselves compute the single-agent optimal policy prior to their departure and then co-ordinate with agents on their trajectory as they interact.
+% These interactions are managed by co-ordination graphs to maximize their joint utility. 
+
+% \subsection*{Decentralized procedure}
+% \label{sec:Coord}
+% We do not want to have to handle the product space of the overall model, which scales exponentially with the number of agents. 
+%Instead, we will leverage the concept of co-ordination graphs (CG) \cite{guestrin2002multiagent} for representing the system hand-off requirements and use these CGs to co-ordinate the agents' policies in the presence of other agents.
+
+The algorithm in~\cite{guestrin2002multiagent} involves the following steps: (1) Compute an approximate value function $\mathcal V$ for the MDP $\mdp$; (2) compute local payoff functions $\Val_j$ for agent $\Agent_j$ using value iterations involving $\mathcal V$ with one-step lookahead; (3) instantiate for each $\Agent_j$, its local payoff value $\Val_j$ using its current state $s$ and the states of a limited set of vehicles defined by the coordination graph; and (4) compute a locally optimal collective action for the MDP $\mdp$ via a variable elimination algorithm and message passing. %
+The first two steps are performed offline, the last two are performed online. %
+
+The topology of the coordination graph determines the decomposition of $\Val$. %
+The construction of a sparse coordination graph for the $n$ vehicles is as follows. %
+The nodes of the coordination graph consist of the vehicles. %
+We seek to penalize the situation where two agents will act to occupy the same sector in the next time instant. 
+Therefore, an edge exists between vehicle $\Agent_i$ and vehicle $\Agent_j$ in the coordination graph if both agents can take an action to move to the same sector $V_k$. %
+A necessary condition for two agents to be connected in the coordination graph is that the sectors, which are nodes in graph $G_\design$, corresponding to their current state be at distance two or less in the graph $G_\design$. 
+
+The local payoff functions that achieve the desired penalty given this topology for the coordination graph are as follows. %
+%A vehicle $\Agent_z$ in state $s_i \in \stateSpace_z$ corresponding to node $s_i \in G_{\design}$ takes action $a_j$ when attempting to transition to state $s_j \in \stateSpace_z$ corresponding to node $s_j \in G_{\design}$. %
+Let $Neighbor[z]$ be vehicles in sectors that are two edges away from the current sector occupied by $\Agent_z$. %
+%We define a context $<p; c:v>$ as a map $p \colon \stateSpace \times \Act \mapsto \mathbb{R}$ where $p = v$ if a logical statement $c$ defined on $\stateSpace \times \Act$ is true and zero otherwise. %
+%Then, $Q_z = \sum_{j \in Neighbor[z]} p_{zj} $, where $<p_{zj}; a_z = a_j: -q> $ for some $q \in \mathbb{R}_{>0}$. %
+Then, $\Val_z = \sum_{j \in Neighbor[z]} \Val_{jz}(a_{jk},a_{zl})$, where $\Val_{jz}(a_{jk},a_{zl}) = -q$ if $l= k$ and $\Val_{jz}(a_{jk},a_{zl}) = 0$ otherwise, for some penalty value $q >0$. %
+
+\endinput
+%Since the CGs operate on a one-step lookahead, each agent needs to co-ordinate with those agents that are two or less edges away from the occupied state.
+%This maximum requirement handles all possible configurations of agents that have the ability to impact the one-step lookahead behavior.
+% The basic algorithm structure is:
+% \begin{enumerate}
+%     \item Offline
+%     \begin{itemize}
+%         \item Each agent performs value iteration on the known environment to approximate the value function,
+%         \item Use a one-step lookahead to get a local $Q_j$ value function for each agent
+%     \end{itemize}
+%     \item Online
+%     \begin{itemize}
+%         \item Each agent instantiates its $Q_j$ for its current state from the values calculated above,
+%         \item Agents apply coordination graph algorithm for their local $Q_j$ functions to co-ordinate an approximately optimal global solution
+%     \end{itemize}
+% \end{enumerate}
+%These co-ordination graphs will be defined based upon the availability of a given operator: whether an agent is occupying their state or whether a request has just been made for the transition.
+% \subsection*{Co-ordination graphs for hand-offs}
+The coordination graph is formed with agents as the nodes and the $Q_j$ as the edges.
+We look at the coordination conditions on \emph{pairs} of agents, as these are connected by edges in the coordination graph.
+Consider agent $\mathcal{A}_1$ who has a planned trajectory that wants to take $a_1$ to transition to $s_1$, we assign penalties for two conditions: (1) if another agent $\mathcal{A}_2$ is occupying that state $s_1$, which $a_1$ is attempting to reach; and (2) the other agent $\mathcal{A}_2$ can take an action $a_2$ such that $\mathcal{A}_2$ will also occupy $s_1$ at the same time. 
+In these cases we can defined our co-ordinations through an addition the cost of the shared utility to go in a similar manner to \cite{kok2003multi}: (1) $\langle s(\mathcal{A}_2) = s_1 :-\infty \rangle$ (or $\langle Q(a_1,:) : -\infty \rangle$ and (2) $\langle Q(a_1,a_2) :-\infty \rangle$.
+
+These costs allow us to express the joint action $a$ as the action that maximizes the total reward for each agent $\max_{a}(\sum_jQ_j(a))$. Using the procedure outlined in \cite{guestrin2002multiagent}, we decompose each $Q_j$ as functions of fewer agents and using a variable elimination algorithm to determine the correct action allocation order.

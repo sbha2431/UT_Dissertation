@@ -1,0 +1,172 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+As autonomous systems become more widely used in society, we require provable guarantees of performance and safety in complex missions~\cite{belta2007symbolic,finucane2010ltlmop}. In many applications, it is not enough for an autonomous agent to satisfy its mission objective, but it is often required that it also optimizes some performance metric. Due to limits on communication, sensing, or computational power, the autonomous agent may have access to information that may be available only at the time of execution. Traditional approaches either ignore this information or can only make use of it at the cost of heavy computation or high memory requirements~\cite{Ehlerscost,jangcontinuous}. We propose a correct-by-construction switching strategy that utilizes such information at runtime for improved performance while guaranteeing the satisfaction of high-level mission specifications, and also alleviates the shortcomings of the existing methods to enable real-time deployment. 
+
+For example, consider a motion-planning problem for a service robot as shown in Figure~\ref{fig:gazeboworld}. A high-level mission for the robot is to meet the human infinitely often, while ensuring that it always has sufficient battery power (rechargeable by returning to a charging station). Given the probability of the human's location based on past observations (runtime information), the proposed approach finds the human in a shorter period of time (compared to strategies that ignore this probability information), while satisfying the safety specification. 
+
+For another, more complex example, consider the coordination of landing a collection of autonomous air vehicles in urban air mobility (UAM) operations \cite{goyal2018urban,gipson2017nasa}. 
+We seek to optimize performance (reduce  maximum delay in aircraft landing) while ensuring safe takeoff and landing operations \cite{thipphavong2018urban}. The on-demand nature of UAM means knowledge of air traffic demands is not available at design time. This necessitates a method that can use traffic information gained at runtime to adjust behavior for improved performance and safety. Previous approaches implement runtime safety enforcement \cite{bhnfm, AlshiekhShield,Konighofer2017,8815233}, but cannot handle more general specifications. 
+
+\begin{figure}
+    % \centering
+    \input{RuntimeInfo-ICRA/figs/gazeboworld.tex}
+    \caption{Path planning environment for a turtlebot (in blue) to infinitely often service a human (in red). The robot can recharge at a charging station (in green).}
+    \label{fig:gazeboworld}
+    \vspace{-0.5cm}
+\end{figure}
+
+The two scenarios described previously illustrate a \emph{reactive} planning problem. The autonomous system has to react to an uncontrolled environment, and guarantee correctness with respect to a given mission specification for all possible behaviours of the environment for all time points in the future. The standard approach to solve such a planning problem is to use \emph{reactive synthesis} \cite{piterman2006,bloem2012}. In particular, there is a large body of work focused on synthesis for a fragment of linear temporal logic (LTL) called GR(1)~\cite{Ehlerslugs,bh18,Alonso18,Moarref18}. The solution time is polynomial in the state space of the game structure, and exponential in the number of atomic propositions. Therefore, this approach typically relies on offline planning, that prevents easy incorporation of runtime information. In problems with a continuous state space, a discrete abstraction is used that preserves correctness. Such controllers however, can be significantly suboptimal with respect to the performance objective~\cite{jangcontinuous}. 
+
+We consider the \emph{runtime information} as a (possibly continuous) parameter associated with the environment. The work in~\cite{jangcontinuous} allows for near-optimal behaviour on continuous executions, however the authors focus on a specialized cost metric. Additionally, their method relies on online re-synthesis, which is not feasible for real-time deployment. This work was later extended in~\cite{Ehlerscost} to account for delay costs arising from a potentially adversarial environment. However, it relies on the discretization of the continuous parameter space, which fails to scale with the number of atomic propositions in the synthesis problem. 
+%In the service robot example, this information is a probability vector over possible human locations. In the UAM example, the information is the current incoming air traffic density. 
+
+Our approach incorporates parametrized runtime information by switching between pre-computed strategies. First, for a given set of \emph{candidate instantiations} of the parameter we synthesize offline optimal strategies that satisfy all task specifications. Next, we obtain bounds on the suboptimality incurred by the use of these policies at \emph{all} other parameter values. This computation does not require discretization of the parameter space. At runtime, we dynamically switch strategies based on the these suboptimality bounds, thereby incorporating runtime information into the offline synthesis of correct-by construction policies. 
+To this end, we derive a switching function that guarantees the resulting execution is provably correct, and near-optimal.
+
+The main contributions of this paper are: 1) a novel switching protocol between pre-synthesized correct strategies that improves performance, 2) correctness of the switching protocol with respect to the mission specification, and 3) characterization of the suboptimality bounds on performance. We demonstrate the proposed approach on a motion planning problem for a service robot, and a traffic scheduling problem for UAM. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Preliminaries}\label{sec_prel}
+
+\begin{figure*}[t!]
+\centering
+    \subfloat[$\overline{p}_1 = \lbrack1,0,0\rbrack $ \label{fig:gazebopolicies1}]{\includegraphics[width=0.33\linewidth]{RuntimeInfo-ICRA/figs/trivialtraj1.eps}}
+    \subfloat[$\overline{p}_2= \lbrack0,1,0\rbrack $]{\includegraphics[width=0.33\linewidth]{RuntimeInfo-ICRA/figs/trivialtraj2.eps}}
+    \subfloat[$\overline{p}_3 = \lbrack0,0,1\rbrack $]{\includegraphics[width=0.33\linewidth]{RuntimeInfo-ICRA/figs/trivialtraj3.eps}}
+    \caption{Continuous trajectories resulting from executing policies corresponding to the solution of~\eqref{prob:opt} for three different instantiations of runtime information vector $\overline{p} \colon \overline{p}_1 = [1,0,0]$, $\overline{p}_2 = [0,1,0]$, and $\overline{p}_3 = [0,0,1]$ .}\label{fig:trivialtrajs}
+\end{figure*}
+
+\input{RuntimeInfo-ICRA/preliminaries.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Problem formulation}\label{sec:prob}
+
+\input{RuntimeInfo-ICRA/prob_st.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Synthesis of correct-by-construction strategies with near-optimality guarantees}
+
+We address Problem~\ref{prob_st:main} by constructing a switching function that guarantees that the resulting plays satisfy the task specification $\spec$. We also provide suboptimality bounds for the performance when using the proposed method. We utilize existing synthesis techniques~\cite{Ehlerscost} to synthesize for each $i \in \{1,\ldots,N\}$ a strategy that is \emph{correct}, i.e., satisfies $\spec$, and optimal for the specific $\overline{p}_i$.
+
+\subsection{Suboptimality bounds for unknown runtime information}
+\label{sec:generalization}
+\input{RuntimeInfo-ICRA/partition.tex}
+
+\subsection{Switching function construction}\label{sec:switching}
+\input{RuntimeInfo-ICRA/switching.tex}
+
+\subsection{Discussion}
+\input{RuntimeInfo-ICRA/Switching_Discussion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Experiments}
+All experiments we report on were performed on an Intel i5-5300U 2.30 GHz CPU with 8 GB of RAM.  We used the tool \texttt{Slugs}~\cite{Ehlerslugs} for the strategy synthesis. 
+
+\subsection{Robot motion planning}
+
+We consider the example discussed in Section~\ref{sec:prob} (Figure~\ref{fig:gazeboworld}).
+Formally, the specification is
+\[
+    \varphi = \LTLglobally (h \in R_1 \cup R_4 \cup R_8) \rightarrow \Big( \LTLglobally \LTLfinally (r = h) \wedge \LTLglobally (\mathrm{Energy} > 0) \Big),
+\]
+where $h$ and $r$ are variables modelling the human and robot positions respectively, and $\mathrm{Energy}$ is the robot's energy level.
+The cost function $C(\cdot)$ is given in \eqref{eq:cost_fun}.
+The runtime information $\overline{p}$ is the probability distribution over the human's possible locations - $R_1, R_4,R_8$. 
+In our experiments, we used a Bayesian update to compute $\overline{p}$ using the current (and past) observations of the human's position. 
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}\toprule
+        Query point  & \multirow{2}{*}{Strategy} & \multicolumn{3}{c|}{Cost}  \\\cmidrule{3-5}
+        $\overline{p}$  & & L. bound & U. bound &  $C^\ast(\overline{p})$\\  \midrule
+        $[0.1, 0.8, 0.1]$ & $\rho_{\out_2}$ & 7.19 & 10.4 & 9.5 \\ 
+        $[0.0, 0.1, 0.9]$ & $\rho_{\out_3}$  & 6.39 & 9.6 & 7.9 \\ 
+        \rowcolor{red!10} $[0.6, 0.3, 0.1]$ & -- & -- & -- & 11.1\\ \bottomrule
+    \end{tabular}
+    \caption{Lower and upper bounds (Theorem~\ref{thm:bounds}) and the optimal value $C^\ast(\overline{p})$ for some runtime information vectors $\overline{p}$.}
+    % (lower $C^\ast(\rho_{\out_{i}}^\ast,\overline{p})-\epsilon$ and upper $C^\ast(\rho_{\out_{i}}^\ast,\overline{p})$)
+    \label{tab:perf}
+\end{table}{}
+\begin{figure}
+    \centering
+    \input{RuntimeInfo-ICRA/figs/presentationfigure}
+    % \includegraphics[width=1\linewidth]{figs/partition_symm_with_query.png}
+    \caption{State space partitioning of the runtime information vector $\overline{p}$ for $\epsilon = 3.2$. For runtime information vector belong to the darker shaded regions, we obtain $\epsilon$-optimality by reusing a specific strategy $\rho_{\out_{(\cdot)}}$, and avoid computationally expensive re-synthesis.}
+    \label{fig:partition}
+\end{figure}
+
+ 
+% Each strategy corresponds to a different ordering of the rooms searched by the robot. We note that all strategies are guaranteed to be correct in that the human will be found. However, the order in which the rooms are visited will affect the expected time to find the human. 
+
+% In the experiment, we start with a $p = [\frac{1}{3},\frac{1}{3},\frac{1}{3}]$. In this case, all the policies are equal, and the robot implements policy 1 shown in Figure~\ref{fig:gazebopolicies1}. Every time the robot `sees' the human in a room, it uses a Bayes update to change its current estimate of $p$. After a certain number of observations, policy 2 was determined to be the most optimal and the robot switches. This is shown in $Figure~\ref{fig:gazebopolicies1}$ which corresponds to visiting the room the human is currently in first. If the human moves to a different room, the robot will eventually switch policies again once the parameter has been updated to reflect the current belief in the human's position. 
+
+We used three candidate instantiations of $\overline{p}$ (Figure~\ref{fig:partition}). The robot only has enough charge to visit one of the three rooms and return to the charging station. The optimal robot strategy for each $\overline p_i$ corresponds to an \emph{ordering} of which room to visit. Intuitively, the robot will visit rooms in decreasing order of likelihood of a human being there, by executing the continuous trajectories shown in Figure~\ref{fig:trivialtrajs}. 
+
+
+Figure~\ref{fig:partition} shows the partition of the space of $\mathcal{P}$ generated from the corresponding polytopes $\mathcal{S}_i$ for $\epsilon = 3.2$. The choice of $\epsilon$ is dictated by Proposition~\ref{prop:nonempty}. The three candidate instantiations of $\overline{p}$ are represented by colored dots. The darker coloured regions are the polytopes $\mathcal{S}_i$, and they correspond to the regions of $\mathcal{P}$ in which the corresponding strategy is $\epsilon$-optimal. Note that $\mathcal{P}\not\subseteq\cup_{i=1}^N\mathcal{S}_i$, and there are parameters in $\mathcal{P}$ were none of the three strategies are $\epsilon$-optimal. The light shaded areas around each $\overline{p}_i$ corresponds to the portion of the parameter space in which the correspondingly coloured strategy dominates the others, but is not $\epsilon$-optimal.
+
+
+Table~\ref{tab:perf} shows the proposed optimality bounds obtained from our approach (Theorem~\ref{thm:bounds}). On comparing with the lowest delay possible (computed via re-synthesis), we see that the computed bounds holds in the first two rows.   
+% We compute the resulting cost from implementing the corresponding candidate strategy on the simulated turtlebot for different values of $\overline{p}$. We also compute the values of the upper and lower bounds from applying Theorem 1 as well as the true optimal value of the cost. Note that in the first two rows, implementing the pre-computed strategy keeps us within the $\epsilon$-bounds. However, this is not the case for the last row, shaded in red. In this case, 
+The last row has $\overline{p} = \lbrack 0.6,0.3,0.1 \rbrack$ lying outside $\cup_{i=1}^N\mathcal{S}_i$ (outside of the dark shaded region in Figure~\ref{fig:partition}), has no informative bounds. Here, $\rho_{\out_1}$ is the dominating strategy among $\rho_{\out_{(\cdot)}}$, with $C(\rho_{\out_1},\overline{p})=13.6$.
+
+% Figure~\ref{fig:robotplots} illustrates how switching policies at runtime allows the robot to reduce its expected time to find the human. Incorporating the runtime information allows the robot to choose the policy best suited for the current state of the environment without having to re-plan. 
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.85\linewidth]{figs/gazeboworld.jpeg}
+%     \caption{Place holder for line plot of performance over time}
+%     \label{fig:partition}
+% \end{figure}
+
+A video of the simulation of the robot meeting the human (infinitely often) as the human moves in real-time can be found at \url{https://youtu.be/pn6afwf5INc}.
+
+\subsection{Urban air mobility traffic management}
+
+We now consider an automated air traffic management system for urban air mobility (UAM) operations. The controller is required to optimize the throughput of a multi-pad UAM port, along with bounding the delays experienced by vehicles and passengers. We synthesize a controller for a UAM hub, which consists of a grouping of multiple UAM vertiports. The hub has restrictions on the number of aircraft it is allowed to simultaneously land across all vertiports. Hence, a controller, if necessary, must make incoming air vehicles wait until it is able to safely allow them to land. In this example, we consider three vertiports --- A ($red$), B ($yellow$), and C ($blue$) where an aircraft can request to land. Formally, the task specification is
+\vspace{-0.12cm}
+\begin{multline*}
+    \varphi = \LTLglobally (\text{Current Requests} < R) 
+\rightarrow \\ \qquad\;\LTLglobally (\text{No. Landing Aircraft} < M) \; \wedge \\ \LTLglobally (\text{Land Request} \rightarrow \LTLfinally \text{Land Allowed}),
+\end{multline*}
+where $R$ is maximum number of simultaneous requests and $M$ is the maximum number of aircraft allowed to land simultaneously. We model incoming aircraft as landing requests for vertiports drawn from a time-varying probability distribution. We model the performance metric as the \emph{maximum delay}. The cost function is
+\begin{align}
+C(\rho_A,\overline{p}) = \max_i(\text{delay}(V_i,\rho_\out))\cdot q_i\label{eq:cost_UAM}
+\end{align}
+where $\overline{p} = \lbrack q_1 , q_2,q_3,q_4 \rbrack$, $q_i$ is the probability of a request to land at vertiport hub $V_i$ for $i=\{1,2,3\}$, and $q_4$ is the probability of no landing request, and $\text{delay}(V_i,\rho_\out)$ is the processing delay at $V_i$ under strategy $\rho_\out$. We pre-compute strategies for three representative instantiations of the runtime information with each strategy taking 213 s to compute.
+Initially, we choose the true distribution to be one of the instantiations. At $t=150$ minutes, the underlying probability distribution of landing requests changes such that the uninformed strategy performs poorly and the new probability value is not part of any of the representative instantiations. At $t=400$ minutes, the probability distribution switches back to the initial probability distribution. The uninformed strategy is a fixed, runtime information-independent strategy that satisfies $\spec$.
+% Intuitively, if the hub knew which vertiports were more likely to get landing requests, it would prioritize those vertiports more in order to avoid a backlog of air vehicles waiting to land. The bottom plot in Figure~\ref{fig:delay} shows the probability distribution of requests to each vertiport over time. Green corresponds to no landing request being generated. 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.85\linewidth]{figs/UAMexample.jpeg}
+%     \caption{Place holder for UAM example figure}
+%     \label{fig:UAMexample}
+% \end{figure}
+
+% Figure~\ref{fig:UAMexample} illustrates the case study. Each blue circle corresponds to the region of influence of a traffic controller. Incoming aircraft request a specific vertiport to land. The controller decides when an aircraft can land. Part of the controller's safety objective is to not allow more than a certain number of aircraft landing simultaneously. 
+
+% The information vector in this example conveys the probability distribution over which vertiport incoming aircraft will request. Intuitively, if this information is known beforehand, the controller can prioritize landing requests accordingly to minimize backlog of requests for busy vertiports. 
+
+
+
+\begin{figure}
+    \centering
+    \input{RuntimeInfo-ICRA/figs/delaydata.tex}
+    \caption{Top: Average maximum delay times for $N=100$ runs with landing requests drawn from a time varying probability distribution shown in bottom figure. Black vertical lines corresponds to a switch in strategy. Below: The probability of an aircraft requesting to land at hubs A ($red$), B ($yellow$), C ($blue$), or not land ($green$).}
+    \label{fig:delay}
+\end{figure}
+
+
+
+Figure~\ref{fig:delay} compares the proposed switching strategy against an optimal strategy that relies on re-synthesis (requires heavy computation) and an uninformed strategy (does not incorporate runtime information). 
+% We assume the change is instantaneously known by the controller and it can shift strategies if need be.  
+Initially, during low traffic times, we see no deviation in delay times as expected. The proposed switching strategy provides a significant reduction of delay over time compared to an uninformed strategy. However, it is suboptimal to the strategy obtained via re-synthesis, which relies on heavy computation that rules out real-time execution. 
+% Thus, we attain superior performance by incorporating runtime information without compromising on safety or relying on heavy computation. 
+Since \eqref{eq:cost_UAM} does not satisfy Assumption~\ref{assum:C_lin}, we do not have suboptimality bounds on the performance (Theorem~\ref{thm:bounds}). Empirically, the proposed approach shows an improvement in performance.

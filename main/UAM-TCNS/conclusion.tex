@@ -1,0 +1,22 @@
+We introduced a novel UAM ATM architecture for high volume operations in urban environments. We show that by using contract-based reactive synthesis we can achieve  correctness guarantees in a scalable fashion that is not attainable via centralized synthesis. Controllers can be synthesized independently of one another as long as they satisfy additional contract specifications. These contract specifications guarantee that individual controllers will not impede the ability of connected systems to satisfy the desired emergent properties while satisfying their own specifications. Hence, the global connected system is theoretically guaranteed to be correct with respect to all user-provided temporal logic requirements. For future work, we aim to: (1) investigate the automated generation of assume-guarantee contracts based on a given network structure, \textcolor{black}{(2) use the designed framework as an \emph{ operating envelope} in which to optimize for metrics such as loiter times while always guaranteeing safety requirements,} (3) directly include resource-constrained planning in the presented UAM ATM framework, and \textcolor{black}{(4) perform airspace design exploration for vertihub and vertiport infrastructure placement}. 
+
+\begin{table}[t!]
+	\centering
+	\caption{Synthesis times for vertihub/vertiport controllers}
+	\label{tab:hubsyntime}
+	\centering
+	\scalebox{0.9}{
+		\begin{tabular}{l>{\raggedleft}p{2.5cm}>{\raggedleft}p{2.0cm}>{\raggedleft\arraybackslash}p{1.5cm}}
+			\toprule
+		& No. of vertiports / No. of landing pads & No. of states in controller ($|Q_i|$) &  Synthesis time (s)  \\
+			\midrule
+			 \multirow{3}*{Vertihub} & 3 & $2.1\times10^4$ & 22.75      \\
+			& 4 & $2.7\times10^6$ & 1272.95  \\
+			& 5 & $3.4\times10^8$ & 14300.65 \\
+			\multicolumn{4}{@{}c@{}}{\makebox[\linewidth]{\dashrule[black]}}\\
+			\multirow{3}*{Vertiport}&2 & $6.1\times10^2$ & 0.45      \\
+			&4 & $4.3\times10^4$ & 19.12  \\
+			&8 & $1.9\times10^8$ & 12403.86 \\
+			\bottomrule
+	\end{tabular}}
+\end{table}

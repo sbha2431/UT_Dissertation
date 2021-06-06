@@ -1,0 +1,96 @@
+\subsubsection{Forward belief-set propagation}
+
+To check if an abstract counterexample graph $\counterex_\abstr$ is concretizable, we construct a finite graph $\mathcal{D}$ whose nodes are labelled with elements of $\states_\belief$ and with nodes of $\counterex_\abstr$.
+By construction we will ensure that if a node $d$ in $\mathcal D$ is labelled with $\langle(l_a,B_t),v \rangle$, where $(l_a,B_t)$ is a belief state, and $v$ is a node in $\counterex_\abstr$, then $v$ is labelled with $(l_a,A_t)$ in $\counterex_\abstr$, and $B_t \subseteq \gamma(A_t)$. 
+
+Initially $\mathcal D$ contains a single node $d_0$ labelled with $\langle s_\belief^\init,v_0\rangle$, where $v_0$ is initial node of $\counterex_\abstr$. Consider a node $d$ in $\mathcal D$ labelled with $\langle(l_a,B_t),v \rangle$. For every child $v'$ of $v$ in $\counterex_\abstr$, labelled with an abstract state $(l_a',A_t')$ we proceed as follows. We select one belief set $B_t$ such that $((l_a,B_t),(l_a',B_t')) \in T_\belief$ and $B_t' \subseteq \gamma(A_t')$. If there exists a node $d'$ in $\mathcal D$ labelled with $\langle (l_a',B_t'),v\rangle$, then we add an edge from $d$ to $d'$ in $\mathcal{D}$. Otherwise, we create such a node and add the edge. We continue until no more nodes and edges can be added to $\mathcal D$. The procedure is guaranteed to terminate, since both  the graph $\counterex_\belief$, and $\states_\belief$ are finite, and we add a node labelled $\langle s_\belief, v\rangle$ to $\mathcal D$ at most once. Furthermore, the number of different graphs that we can construct in this way, by choosing different successor belief sets, is also finite. Thus, the set of graphs $\graphs(\counterex_\abstr)$ is also finite.
+
+If every graph $\mathcal D$ in $\graphs(\counterex_\abstr)$ contains a reachable cycle (it suffices to consider simple cycles, i.e., without repeating intermediate nodes) $\rho = d_0,\ldots,d_n$ with $d_0 = d_n$ such that some $d_i$ is labelled with $(l_a,B_t)$ where $(l_a,B_t) \models p_k$, then we can conclude that the abstract counterexample $\counterex_\abstr$ is not concretizable. If for some graph $\mathcal D$ no such cycle exists, then $\mathcal D$ is a concrete counterexample graph for $(G_\belief,\LTLglobally\LTLfinally p_k)$. 
+
+%\comment{
+\begin{algorithm}[h!] 
+%\small
+%\vspace{-.5cm}
+\KwIn{liveness surveillance game $(G,\LTLglobally\LTLfinally p_k)$, \newline 
+abstract counterexample graph $\counterex_\abstr$ with initial node $v_0$}
+\KwOut{a path $\pi$ in a graph $\mathcal D$ or {\sc concretizable}}
+
+\smallskip
+
+let $\mathcal D = (D,E)$ be a graph with\\
+nodes $D := \{d_0\}$ and edges $E := \emptyset$\;
+
+\smallskip
+
+annotate $d_0$ with $\langle s_\belief^\init, v_0\rangle$\; 
+
+\SetKwRepeat{Do}{do}{while}
+
+\Do{$\mathcal D \neq \mathcal D'$}{
+$\mathcal D' := \mathcal D$\;
+ \ForEach{node $d$ in $\mathcal D$ labelled with $\langle(l_a,B_t),v\rangle$}{
+  \ForEach{child $v'$ of $v$ in $\counterex_\abstr$ labelled $(l_a',A_t')$}{
+  let $B_t$ be such that $B_t' \subseteq \gamma(A_t')$ and $((l_a,B_t),(l_a',B_t')) \in T_\belief$\;
+  \eIf{there is a node $d' \in D$ labelled with $\langle (l_a',B_t'),v'\rangle$}{add an edge $(d,d')$ to $E$}
+  {add a node $d'$ labelled $\langle (l_a',B_t'),v'\rangle$\;
+  add an edge $(d,d')$ to $E$}
+}
+}
+}
+\leIf{there is a lasso path $\pi$ in $\mathcal D$ starting from $d_0$ such that some node in the cycle is annotated with $\langle s_\belief,v\rangle$ and $s_\belief\models p_k$}
+{\KwRet{$\pi$;}\newline}
+{\KwRet{{\sc concretizable}}}
+
+\smallskip
+
+\caption{Analysis of abstract counterexample graphs for games with liveness surveillance objectives.}
+\label{algo:cex-analysis-liveness}
+\end{algorithm}
+%}
+
+
+\bigskip 
+
+\begin{example}\label{ex:simple-liveness-unconcretizable}
+The abstract counterexample graph in the game $(\alpha_\part(G),\LTLglobally \LTLfinally p_2)$ discussed in Example~\ref{ex:simple-liveness-counterex} is not conretizable, since for the path in the abstract graph depicted in Figure~\ref{fig:simple-liveness-counterex} there exists a corresponding path in the unique graph $\mathcal D$ with a node in the cycle labelled with a set in $G_\belief$ that satisfies $p_2$. More precisely, the cycle in the graph $\mathcal D$ contains a node labelled with $(19,\{10\})$. Intuitively, as the agent moves from the upper to the lower part of the grid along this path, upon not observing the target, it can infer from the sequence of observations that the only possible location of the target is $10$. Thus, this infinite path is winning for the agent.
+\qed
+\end{example}
+
+\bigskip 
+
+\begin{theorem}
+If for some graph $\mathcal{D}$ in $\graphs(\counterex_\abstr)$  Algorithm~\ref{algo:cex-analysis-liveness} returns {\sc concretizable}, then $\counterex_\abstr$ is concretizable. Otherwise, if for every graph $\mathcal D$ in $\graphs(\counterex_\abstr)$ it returns path $\pi$ in $\mathcal D$, then $\counterex_\abstr$ is not concretizable.
+\end{theorem}
+{\it Proof.}\ \ 
+By applying Algorithm~\ref{algo:cex-analysis-liveness} in order to analyze all graphs in $\graphs(\counterex_\abstr)$, we check for each such graph if it is a concrete counterexample graph, that is, for each of its lasso paths the every state in the loop of that path violates $p_k$. By definition, Algorithm~\ref{algo:cex-analysis-liveness} returns {\sc concretizable} precisely when this is the case, that is when $\counterex_\abstr$ is concretizable. If for each graph in $\graphs(\counterex_\abstr)$ the algorithm returns a lasso path $\pi$ for which every state in its loop violates $p_k$, then this path demonstrates that the corresponding graph is not a concrete counterexample. If this is the case for all graphs in $\graphs(\counterex_\abstr)$, then $\counterex_\abstr$ is indeed spurious.
+\qed
+
+\bigskip 
+
+\subsubsection{Backward partition splitting}
+
+Consider a path in a graph $\mathcal{D}\in\graphs(\counterex_\abstr)$ of the form $\pi = d_0,\ldots, d_n,d_0',\ldots,d_m'$ where $d_n = d_m'$, and where for some $0 \leq i \leq m$ for the label $(l_a^i,B_t^i)$ it holds that $(l_a^i,B_t^i) \models p_k$. Let 
+$\pi_\abstr = v_0,\ldots, v_n,v_0',\ldots,v_m'$ be the sequence of nodes in $\counterex_\abstr$ corresponding to the labels in $\pi$. By construction of $\mathcal D$, $\pi_\abstr$ is a path in $\counterex_\abstr$ and $v_n = v_m'$. We apply the refinement procedure from Algorithm~\ref{algo:refinement-safety} to the whole path $\pi_\abstr$, as well as to the path-prefix $v_0,\ldots, v_n$.
+
+
+Let $\part$ and $\part'$ be two counterexample partitions such that $\part' \preceq \part$. Let $\counterex_\abstr$ be an abstract counterexample graph in $(\alpha_\part(G),\LTLglobally\LTLfinally p_k)$. We define $\gamma_{\part'}(\counterex_\abstr)$ to be the set of abstract counterexample graphs in $(\alpha_{\part'}(G),\LTLglobally\LTLfinally p_k)$ such that for every infinite path $\pi$ in $\counterex_\abstr'$ there exists an infinite path $\pi$ in $\counterex_\abstr$ such that for every node in $\pi'$ labelled with $(l_a,A_t')$ the corresponding node in $\counterex_\abstr$ is labelled with an abstract state $(l_a,A_t)$ such that $\gamma(A_t') \subseteq \gamma(A_t)$.
+
+
+\bigskip 
+
+\begin{theorem}If $\part'$ is the partition 
+obtained by refining $\part$ with respect to all graphs in the set $\graphs(\counterex_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\part(G),\LTLglobally\LTLfinally p_k)$, then $\gamma_{\part'}(\counterex_\abstr) = \emptyset$, and also $\gamma_{\part''}(\counterex_\abstr) = \emptyset$ for every partition $\part''$ with $\part'' \preceq \part'$.
+\end{theorem}
+{\it Proof.}\ \ 
+Let $\part'$ be the partition obtained by refining $\part$ with respect to all the graphs in $\graphs(C_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\part(G),\LTLglobally\LTLfinally p_k)$.
+
+For every graph in $\graphs(C_\abstr)$ and corresponding infinite path $(l_a^0,B_t^0)(l_a^1,B_t^1)\ldots$ represented as lasso, with which we have refined the abstraction, every abstract partition $\part'' \preceq \part'$, and every infinite lasso path $(l_a^0,A_t^0) (l_a^1,A_t^1)\ldots$ in $\alpha_{\part''}(G)$ with $\alpha_{\part''}(B_t^i) = A_t^i$ we have that $\widetilde A_t^j \models p_k$ for infinitely many $j$. That is, the performed refinement ensures that in every finer abstraction, the abstraction of the paths with respect to which the partition was refined is precise enough to ensure that the safety property is not violated on this path.
+
+Now, assume for the sake of contradiction that $\gamma_{\part''}(\counterex_\abstr) \neq \emptyset$, and let $\counterex_\abstr'' \in\gamma_{\part''}(\counterex_\abstr)$. By the definition of $\gamma$ and $\graphs$, we have that there exists a graph $D$ in $\graphs(\counterex_\abstr)$ that is also an element of $\graphs(\counterex_\abstr'')$. Thus, for some $(l_a^0,B_t^0)\ldots (l_a^m,B_t^m)$ in $D$ with respect to which we have refined the abstraction, it holds that $(l_a^0,\alpha_{\part''}(B_t^0)) (l_a^1,\alpha_{\part''}(B_t^1))\ldots$ is an infinite path represented as lasso in $\counterex_\abstr''$. By the property above, we have $\alpha(B_t^i)\models p_k$ for infinitely many $i$, which contradicts to the choice of $\counterex_\abstr''$ as a counterexample in $\alpha_{\part''}(G)$. This concludes the proof that $\gamma_{\part''}(\counterex_\abstr) = \emptyset$.
+\qed
+\bigskip 
+
+\begin{example}\label{ex:simple-liveness-refinement}
+We refine the abstraction partition $\part$ from Example~\ref{fig:simple-liveness-counterex} using the path identified in Example~\ref{ex:simple-liveness-counterex}, in order to eliminate the abstract counterexample. For this, following the refinement algorithm, we first split the set $Q_1$ into sets $Q_1' = \{10\}$ and $Q_2' = Q_1 \setminus \{10\}$, and let $Q_3' = Q_2$. However, since from some locations in $Q_2'$ and in $Q_3'$ the target can reach locations in $Q_2'$ and $Q_3'$, in order to eliminate the counterexample, we need to propagate the refinement backwards along the path and split $Q_2'$ and $Q_3'$ further. With that, we obtain an abstraction partition with $10$ sets, which is guaranteed to eliminate this abstract counterexample. In fact, in this example this abstraction turns out to be sufficiently precise to obtain a winning strategy for the agent.
+\qed
+\end{example}

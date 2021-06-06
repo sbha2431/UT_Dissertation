@@ -1,0 +1,136 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{1.00000,0.00000,1.00000}%
+\definecolor{mycolor2}{rgb}{0.00000,1.00000,1.00000}%
+%
+\begin{tikzpicture}[scale=0.95]
+
+\begin{axis}[%
+% width=6.396in,
+width=0.8\linewidth,
+% height=7.946in,
+at={(5.308in,1.073in)},
+scale only axis,
+plot box ratio=1 1 1,
+xmin=-0.05,
+xmax=1.2,
+xlabel = {$p_1$},
+tick align=outside,
+ymin=-0.05,
+ymax=1.2,
+ylabel = {$p_2$},
+zmin=-0.05,
+zmax=1.2,
+zlabel = {$p_3$},
+view={105}{35},
+axis line style={draw=none},
+ticks=none,
+axis x line*=bottom,
+axis y line*=left,
+axis z line*=left,
+xmajorgrids,
+ymajorgrids,
+zmajorgrids,
+legend cell align={left},
+legend style={at={(0.6,0.95)}, anchor=north west, draw=white!0.0!black},
+]
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=red, fill opacity=0, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.999999999999999	3.88578058618805e-16	4.44089209850063e-16\\
+1.66533453693773e-16	1	3.33066907387547e-16\\
+4.44089209850063e-16	3.88578058618805e-16	0.999999999999999\\
+}--cycle;
+\addplot3[area legend, dotted, line width=1.0pt, draw=black, fill=green, fill opacity=0.05, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.5	4.16333634234434e-16	0.5\\
+0.999999999999999	4.16333634234434e-16	3.60822483003176e-16\\
+0.5	0.5	4.71844785465692e-16\\
+0.333333333333333	0.333333333333333	0.333333333333333\\
+}--cycle;
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=green, fill opacity=0.3, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.999999999999999	1.52655665885959e-16	4.85722573273506e-16\\
+0.59875	1.52655665885959e-16	0.40125\\
+0.799375	0.200625	4.85722573273506e-16\\
+}--cycle;
+
+\addplot3[area legend, dotted, line width=1.0pt, draw=black, fill=mycolor1, fill opacity=0.05, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.5	0.5	-3.88578058618805e-16\\
+4.71844785465692e-16	1	-3.88578058618805e-16\\
+3.88578058618805e-16	0.333333333333333	0.666666666666666\\
+0.333333333333333	0.333333333333333	0.333333333333333\\
+}--cycle;
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=mycolor1, fill opacity=0.3, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+-3.46944695195361e-16	1	1.38777878078145e-17\\
+-2.4980018054066e-16	0.59875	0.401250000000001\\
+0.200625	0.799375	1.38777878078145e-17\\
+}--cycle;
+
+\addplot3[area legend, dotted, line width=1.0pt, draw=black, fill=mycolor2, fill opacity=0.05, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.5	-8.32667268468867e-17	0.5\\
+2.22044604925031e-16	-5.55111512312578e-17	1\\
+2.22044604925031e-16	0.333333333333333	0.666666666666666\\
+0.333333333333333	0.333333333333333	0.333333333333333\\
+}--cycle;
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=mycolor2, fill opacity=0.3, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+2.4980018054066e-16	-3.33066907387547e-16	1\\
+2.22044604925031e-16	0.200625	0.799375\\
+0.401250000000001	-3.88578058618805e-16	0.59875\\
+}--cycle;
+\addplot3[only marks, mark=*, mark options={}, mark size=3.5pt, color=black, fill=green] table[row sep=crcr]{%
+x	y	z\\
+0.7	0.1	0.2\\
+};\addlegendentry{$\overline{p_1} = \lbrack 0.7, 0.1, 0.2 \rbrack$}
+
+\addplot3[only marks, mark=*, mark options={}, mark size=3.5pt, color=black, fill=mycolor1] table[row sep=crcr]{%
+x	y	z\\
+0.1	0.7	0.2\\
+};\addlegendentry{$\overline{p_2} = \lbrack 0.1, 0.7, 0.2 \rbrack$}
+
+\addplot3[only marks, mark=*, mark options={}, mark size=3.5pt, color=black, fill=mycolor2] table[row sep=crcr]{%
+x	y	z\\
+0.2	0.1	0.7\\
+};\addlegendentry{$\overline{p_3} = \lbrack 0.2, 0.1, 0.7 \rbrack$}
+% \addplot3[only marks, mark=*, mark options={}, mark size=4pt, draw=black, fill=yellow] table[row sep=crcr]{%
+% x	y	z\\
+% 0.1	0.8	0.1\\
+% 0.0	0.1	0.9\\
+% 0.6	0.3	0.1\\
+% };\addlegendentry{Query $\overline{p}$'s}
+
+\addplot3[->, color=black, line width = 2.0pt,point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append}]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	1.125	0	0\\
+};
+\addplot3[->, color=black, line width = 2.0pt, point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append }]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	0	1.125	0\\
+};
+\addplot3[->, color=black,line width = 2.0pt, point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append}]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	0	0	1.125\\
+};
+\end{axis}
+\end{tikzpicture}%

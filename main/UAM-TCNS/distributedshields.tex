@@ -1,0 +1,205 @@
+%In this section, we present a correct-by-design approach to decentralized controller synthesis with assume-guarantee contracts.
+We first formalize the notion of assume-guarantee contracts, then we demonstrate the incorporation of these contracts as a GR(1) winning condition to a two-player game, which we solve using reactive synthesis~\cite{Piterman06,bloem2012synthesis}. 
+
+\subsection{Assume-guarantee contracts}
+
+We employ a decentralized synthesis process, whereby each controller is synthesized without an awareness of the specification and implementation details of both the vehicles in the fleet, as well as the controllers in connected vertihubs.
+However, a vertihub controller's outputs impact the controllers of its neighboring vertihubs. 
+In order to ensure that controllers don't hinder each others' abilities to satisfy their local specifications, every controller must additionally satisfy \emph{contract specifications} for each neighboring vertihub.
+Similarly, all vertiport controllers also impact the implementation of their corresponding vertihub controllers. Therefore, the vertiport controllers must also satisfy contract specifications with their hub controller and vice versa. 
+
+ These contract specifications take the form of \emph{assume-guarantee} contracts. 
+ Informally, a vertihub controller gives a \emph{guarantee} of satisfying a contract specification with a neighboring vertihub controller.
+ This guarantee is used as an assumption for the synthesis of the neighboring controller and vice-versa.
+ These contract specifications are taken into account in the synthesis process for all controllers. 
+% An assume-guarantee contract for a controller expresses the assumptions on the connected controllers' outputs and the guarantees on the corresponding controller's outputs. 
+
+
+ 
+ In this setting, we introduce two classes of contracts: contracts between connected vertihub controllers and contracts between a vertihub and its corresponding vertiport controllers. 
+ 
+ \subsubsection*{\textbf{Vertihub controller contracts}}
+% For ease of notation, the following definitions are with respect to the assumptions and guarantees of the $i^{th}$ hub controller. 
+ An \emph{assume-guarantee contract} for a vertihub controller $\design_i$ with connected hub controller $\design_j$ is a tuple $\mathcal \phi_{\design_i}^{\design_j} = (A_{\design_i}^{\design_j},B_{\design_i}^{\design_j})$ where
+\begin{itemize}
+\item $A_{\design_i}^{\design_j}$ is an assumption on the outputs of $\design_j$ as it pertains to ${\design_i}$ expressed as a specification in the form shown in Equation ~\eqref{eq:formalspechub}. 
+\item $B_{\design_i}^{\design_j}$ is a specification also in the form shown in Equation ~\eqref{eq:formalspechub}  which $\design_i$ must guarantee on the outputs pertaining to $\design_j$.
+\end{itemize}
+Similarly, the contract for $\design_j$ with $\design_i$ is denoted $\mathcal \phi_{\design_j}^{\design_i} = (A_{\design_j}^{\design_i},B_{\design_j}^{\design_i})$.
+
+
+\begin{eg}
+Consider Figure~\ref{fig:dist_shield}. An example of a contract that $\design_1$ will make with $\design_2$ is an upper bound on the length of time $\design_1$ can refuse to accept vehicles from $\design_2$ when requested. Such a contract is expressed as $\phi_{\design_2}^{\design_1}= (A_{\design_2}^{\design_1},B_{\design_2}^{\design_1})$ where $A_{\design_2}^{\design_1} = B_{\design_2}^{\design_1} = \LTLglobally \left(\text{delay } \leq \text{ T}\right)$ for some integer value $T$. Hence, the controller $\design_1$, in addition to satisfying its local specifications, must also guarantee $B_{\design_2}^{\design_1}$, i.e., it does not keep an aircraft from $\design_2$ waiting for more than $T$ timesteps. In order to help satisfy the additional specification, $\design_1$ makes the assumption $A_{\design_2}^{\design_1}$ that $\design_2$ will satisfy $B_{\design_1}^{\design_2}$. Recall that the user given specification for $\design_1$ is denoted $\varphi_{\design_1}$. Under this contract, the augmented requirement $\varphi_{\design_1}'$ for $\design_1$ is
+$$ \varphi_{\design_1}' := A_{\design_2}^{\design_1} \implies \varphi_{\design_1} \wedge B_{\design_2}^{\design_1} $$
+Simply, if the assumption on $\design_2$ holds, then the original specification must be satisfied in addition to contract specification $B_{\design_2}^{\design_1}$. The same procedure follows for $\design_2$. \end{eg}
+
+
+\subsubsection*{\textbf{Vertiport controller contracts}}
+Each vertihub controller must also make contracts with the vertiport controllers in its region. The procedure follows analogously as in the previous section as we assume that all outputs from the individual controllers are \emph{pairwise disjoint}. Hence, we can form separate contracts with each vertiport controller. Formally, we define a contract between a vertihub controller $\design_i$ and one of its vertiport controllers $\shield_i^j$ as $ \phi_{\shield^j_i}^{\design_i} = (A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ where $(A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ are, analogous to the hub contracts, the assumptions and guarantees on the vertiport controller respectively, expressed as temporal logic specifications of the form in~\eqref{eq:formalspechub}. 
+
+\subsubsection*{\textbf{Symmetric contracts}}
+We say contracts between two reactive systems $\design_i$ and $\design_j$ denoted by $\phi_{\design_i}^{\design_j}  $ and $\phi_{\design_j}^{\design_i}$ are \emph{symmetric} if $A_{\design_i}^{\design_j} = B_{\design_j}^{\design_i}$ and $A_{\design_j}^{\design_i} = B_{\design_i}^{\design_j}$. 
+
+Informally, this means that the assumptions $\design_i$ makes on the outputs of $\design_j$ corresponds to the \emph{guarantees} $\design_j$ gives on its own outputs. All the contracts we will use in the synthesis procedure will be symmetric as this will guarantee that the assumptions each reactive system make on the outputs of other systems will actually hold. 
+
+\subsubsection*{\textbf{Joint winning condition}}
+The addition of the contract specifications to the original user-provided specifications modifies the winning condition presented in~\eqref{eq:problem}. The following lemma presents the modified winning condition for hub controller $\design_i$ when contracts are incorporated. 
+\begin{lemma}
+For a set of vertihub controllers $\design$, hub connectivity graph $G_\design$, the winning condition for controller $\design_i \in \design$ with the set of vertiport controllers $\shield_i^j$ for $j = 1,\ldots,m$ is given by
+\begin{equation}\label{eq:contractproblem}
+     \varphi_{i}' := \left( \bigwedge_{j=1}^{m} A_{\shield_i^j}^{\design_i} \bigwedge_{\design_j\in J} A_{\design_j}^{\design_i} \implies \varphi_{\design_i} \wedge B_{\shield^i}^{\design_i} \bigwedge_{\design_j\in J} B_{\design_j}^{\design_i} \right)
+\end{equation}
+where $J = connect(\design_i)$.
+\end{lemma}
+% \begin{proof}
+% Follows from the construction of $\varphi_{\design_i}$.
+% \end{proof}
+\textcolor{black}{Note that~\eqref{eq:contractproblem} is in the same form as the specifications in~\eqref{eq:formalspechub} which allows us to use efficient GR(1) synthesis techniques~\cite{bloem2012synthesis}.} We state this formally in the following lemma. 
+\begin{lemma}\label{lemma:gr1}
+The winning condition in \eqref{eq:contractproblem} is GR(1).
+\end{lemma}
+
+
+\paragraph*{\textbf{Remark}} We note that the values in the assume-guarantee contracts are heavily dependent on the topology of the environment and the connections (see Fig. 3). For example, a hub with many connecting hubs may not be able to guarantee quick transit of vehicles through its regions. Generating these contracts automatically based on the given graph $G_{\design}$ is a subject of future work. In this paper, the contract values are chosen manually. 
+
+
+\subsection{Controller synthesis}
+We first present an overview of the synthesis procedure. Informally, we avoid the centralized synthesis problem by creating a series of smaller synthesis problems that are connected through the architecture introduced in Section III and the contract specifications introduced in Section IVA.
+The synthesis procedure for a vertihub controller $\design_i$ consists of the following steps:
+\begin{itemize}
+ \item[1)] First, we synthesize all the vertiport controllers $\shield_i^j$ for $j=1,\ldots,m$ operating under $\design_i$. For each controller $\shield_i^j$ we construct a game $\game_{i}^j$ with the acceptance condition given by the user-provided specification $\varphi_{\shield_i^j}$. We then augment the acceptance condition to include the contract specification $\phi_{\shield_i^j}^{\design_i}$. 
+  \item[2)] As shown in Lemma~\ref{lemma:gr1}, the winning condition stemming from augmenting $\varphi_i$ with the contract specifications is a GR(1) condition. We solve each game $\game_{i}^j$ using GR(1) reactive synthesis~\cite{bloem2012synthesis}. 
+  \item[3)] We compose the joint vertiport controllers to form $\shield_i$. We construct a game $\game_{i}$ from the given specification $\varphi_{\design_i}$ for the vertihub controller $\design_i$, again augmenting the acceptance condition with the vertiport contract specifications $\phi^{\shield_i^1}_{\design_i} \wedge \ldots \wedge \phi^{\shield_i^m}_{\design_i}$. We now additionally augment the acceptance condition with contract specifications $\phi_{\design_i}^{\design_j}$ from all connected vertihub controllers $\design_j \in connect(\design_i)$. Similar to before, this results in another GR(1) acceptance condition and we can compute a winning strategy. 
+\item[4)] The process is repeated for each hub controller.
+\end{itemize}
+
+%In the following subsections we present the synthesis of the shield $\shield_i$. For notational clarity we omit the subscript $i$ in the following description. 
+
+
+\subsubsection*{\textbf{Game construction}}
+Recall that computing the output function $\lambda_i$ corresponding to the reactive system $\design_i$ is framed as finding the winning strategy obtained from solving a game. The game construction is identical for the vertiport and vertihub controllers, just with different specifications and contracts. For brevity, we present the game construction for the synthesis for vertihub controller $\design_i$.
+
+Let $\varphi_{\design_i} = \LTLglobally S_i \wedge \LTLglobally \LTLfinally P_i$ with $P_i,S_i \in Q_i$ be the user-provided specification for reactive system $\design_i = (Q_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_i,\lambda_i)$. The corresponding game $\game$ is constructed as follows: $\game = \left(Q,q_0, \alphabet, \delta,\Acc \right)$
+where $Q = Q_i$, $q_{0} = q_{0_i}$, $\alphabet = (\ialphabetx{i} \times \oalphabetx{i})$, $\delta = \delta_i$, and $\Acc$ is the winning condition presented in Equation~\eqref{eq:contractproblem}. 
+The task is to synthesize a strategy $\rho$ that maps the current state $q_i$ and environment input $\sigma_i$ to an action $\sigma_0$ such that for all possible input sequences $\sigma_i \in \ialphabetx{i}^*$ we will have $\Acc(\pi) = \top$.
+From Lemma~\ref{lemma:gr1}, we know that $\Acc$ is a GR(1) winning condition. Hence, we are able to use the techniques in~\cite{bloem2012synthesis} in order to efficiently synthesize a strategy $\rho: Q\times\ialphabetx{i} \rightarrow \oalphabetx{i}$. Setting the output function $\lambda_i$ corresponding to hub controller $\design_i$ to be the winning strategy $\rho$ for game $\game$ as defined above  leads to the following lemma. 
+\begin{lemma}
+$\design_i \models \varphi_i$ if $\rho \models \varphi_i'$ and $ \left(\bigwedge_{j=1}^m A_{\shield_i^j}^{\design_i} \bigwedge_{\design_j\in J} A_{\design_j}^{\design_i} \right)$ holds. 
+\end{lemma}
+\begin{proof}
+%Proof:
+The proof relies on the game construction having an identical state space as the reactive system and the definition of $\varphi_i'$ being \emph{both} the original user-provided specification $\varphi_i$ as well as the contract specification. Since the game strategy satisfies $\varphi_i'$, then the same strategy must also satisfy $\varphi$ iff the assumptions made on neighboring vertihubs and interior vertiports are satisfied.
+\end{proof}
+\textcolor{black}{Informally, the lemma states that the hub controller $\design_i$ satisfies its given specification $\varphi_i$ if the synthesized strategy $\rho$ from the game $\game$ is winning with respect to the contract augmented specification $\varphi_i'$ and the contract assumptions hold.}
+\paragraph*{\textbf{Remark}} The above lemma is only a statement of \emph{sufficiency}. This is because the contract specifications that form $\varphi_i'$ are not unique. If $\rho \nvDash \varphi_i'$, for a particular set of contracts, this does not mean there does not exist a $\lambda_i$ such that $\design_i \models \varphi$.
+
+
+
+
+%  For each $\shield_i$, we construct a game $\mathcal G^{\shield_i}$ such that its most permissive strategy subsumes all possible shields that are correct w.r.t.\ $\varphi_i$ and the contract safety guarantees, given that the contract safety assumptions hold.
+% %
+% Let $J$ be the set of indices of sectors connected to $\shield_i$.
+% We first define two boolean variables $t_j$ and $u_j$  for all $j \in J$:
+% \begin{itemize}
+%     \item $t_j$ is true when a vehicle attempts to move from the sector shielded by $\shield_j$ to the sector of $\shield_i$, and $\shield_i$ does not allow it to enter. 
+%     \item $u_j$ is true when $\shield_i$ attempts to move a vehicle to a sector shielded by $\shield_j$ and $\shield_j$ does not allow it to enter. 
+% \end{itemize}
+% %\rayna{Who controls the variables $t_j$ and $u_j$? It appears that they encode both the desire of a UV/shield to move the UV, and the decision of the other shield to disallow this.}\suda{$t_j$ is a system variable and $u_j$ is an environment variable. The assumption is then encoded in slugs as a safety property in $u_j$}
+%  Given the contracts $C^{\shield_i}_{\shield_j}$, the shield must additionally satisfy contract-induced safety guarantees $B^{\shield_i}_{\shield_j}$ given assumptions $A_{\shield_i}^{\shield_j}$. To encode these contracts, the state space $G^{\shield_i}$ of $\mathcal G^{\shield_i}$ is constructed by augmenting the states $Q$ of $\varphi$ with two tuples of integer variables: $(v_j)$ and $(w_j)$  for all $j \in J$, as is explained below.
+ 
+% %  \hasan{$B^{\shield_i}_{\shield_j}$ is not a true safety specification, but one we make up to enable distribution of shielding. Is that correct?}\suda{It is one we make up in order to guarantee the synthesis problem is realizable. It is still a 'true' safety spec though. But not 'true' in the sense that the problem statement demands it. Perhaps artificial safety spec is the right word to use.} \hasan{How about induced, contract-induced, \textbf{contractual}, or conditional safety specifications?} 
+
+% We construct a game $\mathcal G^{\shield_i} = (G^{\shield_i}, g_0^{\shield_i}, \ialphabet,\oalphabet,\delta^{\shield_i}, \Acc^{\shield_i})$ such that 
+% $G^{\shield_i} = \{(g\bigotimes_j (v_j,w_j) \mid g \in Q, j\in J\}$ is the state space,
+% % $G^s = \{(g,(v_j),(w_j)) \mid g \in Q, j\in J\}$ is the state space,
+% $g_0^s = (g_0,(0,0),\ldots,(0,0))$ is the initial state %\natasha{hmmm...I don't know if there is any better way to indicate that there are as many (0,0) tuples as their are neigboring sectors.  Maybe it is obvious.},
+% $\delta^s$ is the next-state function, such that
+% $\delta^s((g,(v_j,w_j)),( \isymb,\osymb),\osymb')=(\delta(g, \isymb,\osymb'),(v_j',w_j'))$ 
+% %\natasha{Have we explained the difference between $\osymb'$ and $\osymb$?  Or do we not need to?}\suda{Former is the output of the sector controller and the latter is the shield output. This should be explained in section 3}
+% with
+% \begin{itemize}
+% \item if $v_j \leq b^{\shield_i}_{\shield_j}$, $t_j'=\top$, then $v_j' = v_j+1$,
+% \item if $v_j \leq b^{\shield_i}_{\shield_j}$, and $t_j'=\bot$, then $v_j'= 0$,
+% \item if $v_j = b^{\shield_i}_{\shield_j} +1$, then $v_j' =b^{\shield_i}_{\shield_j}+1$
+% \item if $w_j \leq a^{\shield_i}_{\shield_j}$, and $u_j'=\top$, then $w_j' = w_j+1$,
+% \item if $w_j \leq a^{\shield_i}_{\shield_j}$and $t_j'=\bot$, then $w_j' = 0$
+% \item if $w_j = a^{\shield_i}_{\shield_j} +1$, then $w_j' =a^{\shield_i}_{\shield_j}+1$; 
+% \end{itemize}
+% for all $j \in J$,
+% % and $F^s=\{(g,(v_j,w_j))\in G^s \mid (g\in W) \bigwedge_j \left((v_j\leq  B^{\shield_i}_{\shield_j})\vee (w_j >   A^{\shield_i}_{\shield_j})\right),  j \in J \}$.
+% and $\Acc^{\shield_i}$ is such that  $\Acc^{\shield_i}(\overline{\pi})=\top$ iff\looseness=-1
+% \begin{itemize}
+% \item $\exists t \geq 0 \scope g_t^{\shield_i}= (g_t,(v_{j_t},w_{j_t}))$ with $w_{j_t} > a^{\shield_i}_{\shield_j}$, or
+
+% \item there are inf. many $g_t^{\shield_i}= (g_t,(v_{j_t},w_{j_t}))$ with $ \bigwedge_j v_{j_t} \leq b^{\shield_i}_{\shield_j}$ for all $j\in J$.
+% \end{itemize} 
+
+% Intuitively, the counter $w_j$ tracks the number of consecutive times $\shield_j$ refuses to accept a vehicle, and is reset to $0$ when the vehicle is accepted. If $w_j$ exceeds the bound $ A^{\shield_i}_{\shield_j}+1$, it remains $ A^{\shield_i}_{\shield_j}+1$ forever.
+% Using this counter $w_j$, we encode the assumption $\shield_i$ makes on the behaviour of $\shield_j$. 
+% Similarly, the counter $v_j$ tracks the number of consecutive times $\shield_i$ refuses to accept a vehicle from $\shield_j$ and is reset to $0$ when a vehicle is accepted. We use $v_j$ to encode the guarantee $\shield_i$ must give to $\shield_j$. We note that encoding the integers in this manner means $\Acc^{\shield_i}$ is a safety acceptance condition and $\mathcal{G}^{\shield_i}$ is a safety game.
+
+% %We note that we have implicitly assumed without loss of generality only one vehicle from each sector can transit to a neighbouring sector at a time 
+
+
+% % \begin{itemize}
+% % \item if $v_j \leq k_{\shield_j}$, $w_j \leq f_{\shield_j}$ and $t_j'=\top$, then $v_j' = v_j+1$, $w_j' = 0$,
+% % \item if $v_j \leq k_{\shield_j}$, $w_j \leq f_{\shield_j}$ and $t_j'=\bot$, then $v_j'= 0$, and $w_j' = w_j+1$ \natasha{are we using the bottom symbol to signify false?}
+% % \item if $v_j = k_{\shield_j} +1$, then $v_j' =k_{\shield_j}+1$
+% % \item if $w_j = f_{\shield_j}+1$ and $t_j'=\bot$, then $w_j' = f_{\shield_j}$; 
+% % \end{itemize}
+% % \natasha{Have we made some kind of implicit assumption in the persistence of the request?  That is, once a shield requests transit, it continues to request transit until the UVs have fully transited?  Or presumably there is some form of controller in the sector that makes sure that UVs don't get shuttled from border to border, requesting access into differing neighboring sectors in a periodic fashion, thereby trapping them in the sector indefinitely?}\suda{There is an implicit assumption that the the controller does not shuttle the UVs from border to border. Implicitly, when a UV requests to leave a region, the shield of the region it wants to enter assumes 'control'. The shield only has the power to force loiter of entering UVs, so UVs will not be shipped from border to border. The region the UV is currently in does not care what happens to the UV as it leaving the region on its own accord is the best case scenario for the shield. }
+% We use standard algorithms for safety games (e.g.~\cite{Mazala01})
+% to compute the winning region $W^s$ and the most permissive winning strategy $\rho^s: G \times \ialphabet \rightarrow 2^{\oalphabet}$ of $\mathcal G^s$. 
+
+
+\subsection{Correctness}
+In this section we present the correctness result that states that if there exists a set of controllers  synthesized using the construction detailed earlier, they must be winning with respect to the conjunction of all user provided specifications.  
+\begin{thm}
+If there exists a set of controllers $\design = [ \design_1,  \dots, \design_k ]$ with corresponding vertiport controllers $\shield^j_i$ for $j=1,\dots,m$ and $i=1,\dots,k$ such that $\design_i \models \varphi_i'$  where $\varphi_i'$ is given in Equation~\eqref{eq:contractproblem}, then the controllers must also satisfy Equation~\eqref{eq:problem}. 
+\end{thm}
+% \begin{proof}
+% Proof by contradiction. 
+% \end{proof}
+% \begin{theorem}
+% $(\design_1 \comp \shield_1) \comp \ldots \comp (\design_k \comp \shield_k) \models \spec_1 \wedge \ldots \wedge \spec_k$.
+% \end{theorem}
+% \begin{proof}
+% By contradiction. Proceed by cases.
+% \begin{description}
+%     \item [1 ] Suppose $\exists \shield_i \mid \design_i \comp \shield_i  \nvdash \spec_i \bigwedge_{j \in J} B^{\shield_i}_{\shield_j}$. By construction, if assumptions $\bigwedge_{j \in J} A^{\shield_i}_{\shield_j}$ hold, each shield is synthesized from the corresponding safety game $\mathcal{G}^{\shield_i}$, whose winning region must satisfy $\spec_i \bigwedge_{j \in J} B^{\shield_i}_{\shield_j}$. Contradiction.
+%     \item [2 ] Suppose assumption $\bigwedge_{j \in J} A^{\shield_i}_{\shield_j}$ is violated. If so, there is no guarantee that $(\design_i \comp \shield_i)$ is correct with respect to $\spec_i$ and the contract-induced safety requirements $\bigwedge_{j \in J} B^{\shield_i}_{\shield_j}$. However, by design, $A_{\shield_j}^{\shield_i} = B_{\shield_i}^{\shield_j}$. Hence, if $\bigwedge_{j \in J} A^{\shield_i}_{\shield_j}$ is violated, $\exists j \in J$ such that $\shield_j \nvdash \spec_j \wedge B^{\shield_j}_{\shield_i}$. Reduction to Case 1.
+% \end{description}
+% \end{proof}
+
+We remark that this construction guarantees correctness if there exists a set of winning strategies in the game construction, leading to a proof by construction using \textit{Lemmas} $2,3$. However, since the game acceptance condition is augmented with contract-induced specifications, the construction cannot always guarantee that such a controller exists. 
+
+%For future work, we aim to generate the assume-guarantee contracts in an automated fashion. 
+
+% \subsection{Synthesis with contract assumptions and liveness guarantees}
+% Recall, that the guarantees of shields from connected sectors $\shield_j$ for all $j\in J$ function as assumptions for $\shield_i$. Therefore, we construct a new game graph, that incorporates this knowledge and can be used to synthesize a deterministic strategy that additionally satisfies contract liveness guarantees $B_{\shield_j}^l$ for all $j \in J$. We introduce two more tuples of integer variables $(p_j)$, and $(r_j)$ for $j \in J$.
+% %
+% We start from the safety game $\mathcal G^s = (G^s, g_0^s, \ialphabet,\oalphabet,\delta^s,F^s)$ with winning region $\Win^s$ and permissive winning strategy $\rho^s$, assumptions $A_{\shield_j}^{\shield_i} = (A_{\shield_j}^s,A_{\shield_j}^l)$ for all $j\in J$.
+% %
+% We construct a new game $\mathcal G^{a} = (G^{a}, g_0^{a},\ialphabet,\oalphabet,\delta^{a},\Acc^{a})$
+% where $G^{a} = \{\Win^s \bigotimes_{j} (r_j,p_j)\mid j \in J\}$ is the set of states,
+% $g_0^{a} = (g_0^s,(0,0),\ldots,(0,0))$ is the initial state,
+% $\delta^{a}$ is the next-state function, such that
+% %
+% $\delta^{a}((g^s,(r_j,p_j)),(\isymb,\osymb),\osymb')=( \delta^s(g^s, \isymb,\osymb')\cap\rho^s(g^s, \isymb),(r_j',p_j'))$ such that
+% \begin{itemize}
+% \item if $r_j \leq k^{\shield_j}$, $p_j \leq f^{\shield_j}$ and $u_j'=\top$, then $r_j' = r_j+1$, $p_j' = 0$,
+% \item if $r_j \leq k^{\shield_j}$, $w_j \leq f^{\shield_j}$ and $u_j'=\bot$, then $r_j'= 0$, and $p_j' = p_j+1$
+% \item if $r_j = k^{\shield_j} +1$, then $r_j' =k^{\shield_j}+1$
+% \item if $p_j = f^{\shield_j}+1$ and $u_j'=\bot$, then $p_j' = f^{\shield_j}$; 
+% \end{itemize} \natasha{Are we using the superscripts on $f$ and $k$ to indicate that the maximum refusal period and required minimum unblocked acceptance period are not necessarily symmetric between shields.  That is, shield i can have a bigger max blocking time for UVs from j, than j has for UVs from i?}
+% and $\Acc^{a}$ is such that  $\Acc^{a}(\overline{\pi})=\top$ iff\looseness=-1
+% \begin{itemize}
+% \item $\exists t \geq 0 \scope g_t^{a}= (g^s_t,(p_{j_t},r_{j_t}))$ with $(p_{j_t} >  k^{\shield_j} \vee (p_{j_t} > m^{\shield_j} \wedge w_{j_t} < m^{\shield_j})\}$, or
+% \item there are inf. many $g_t^{a}= (g_t,(v_{j_t},w_{j_t}),(p_{j_t},r_{j_t}))$ with $ \bigwedge_j v_{j_t} \geq B_{\shield_j}^l$ for all $j\in J$.
+% \end{itemize} \natasha{Is this a restatement of the liveness condition $l_{\shield_j}$?  Are we assuming some fixed finite $l$?}
+
+% Thus, the set $\Acc^a$ of winning plays in $\mathcal G^a$ consists of all infinite plays that violate the assumptions plus the infinite plays that satisfy the liveness guarantee. Hence, $\Acc^a$ is a GR(1)  condition. \natasha{note: I like your description in the tex file below that intuitively tells us what the counters represent.  You've currently got it commented out.}
+% Intuitively, the counter $v$ tracks the length of the current sequence of wrong outputs by the system, and is reset to $0$ when the output of the system is correct. If $v$ exceeds the bound $b$, it remains $b+1$ forever.
+% Using this counter $v$, we encode the assumption on the system. 
+
+

@@ -1,0 +1,77 @@
+
+\newcommand{\OperatorSpace}[5]{
+				%\draw[rounded corners = 15pt,dashed] (#1-#4,#2-#5) rectangle (#1+#4,#2+#5);
+		\fill[fill=green,opacity=0.2] (#1,#2) circle (#3);
+		\draw[draw = black,dashed](#1,#2) circle (#3);
+		%\node at (#1,#2-#5+0.5) {$V_{#6}$};
+	}
+
+	
+
+		\subfloat[ Example UAM operating environment \label{fig:RegionsOutline}]{
+		\scalebox{0.85}{
+		\begin{tikzpicture}[scale=0.3]
+			\OperatorSpace{0}{0}{3}{5}{5}
+			%\node at (-4.25,4.25){$S_1$};
+			\node at (-1.5,1.5){$V_1$};
+			\OperatorSpace{3}{-4}{3}{5}{5}
+			%\node at (-1.25,-8.25){$S_2$};
+			\node at (2.5,-4.5){$V_2$};
+			\node[red] at (2.5,3) (H13) {$H_{13}$};
+			\draw [->,red,line width = 0.75mm] (H13) -- (2.5,1.25);
+			\OperatorSpace{5}{0}{3}{5}{6}
+			%\node at (5-4.25,5.5){$S_3$};
+			\node at (5-0.5,2){$V_3$};
+			\node[red] at (6.5,3.5) (H35) {$H_{35}$};
+			\draw [->,red,line width = 0.75mm] (H35) -- (6.75,0.65);
+			\OperatorSpace{10}{0}{4}{6}{7}
+			
+			\node at (8.5-0.5,-5.5){$V_4$};
+% 			\node[red] at (6.5,3.5) (H35) {$H_{35}$};
+			\draw [->,red,line width = 0.75mm] (H35) -- (6.75,0.65);
+			\OperatorSpace{6.5}{-4}{2.5}{0}{0}
+			
+			%\node at (10+5.25,-6.5){$S_5$};
+			\node at (10+1.5,-1.5){$V_5$};
+			\OperatorSpace{15}{2}{3}{5}{5}
+			\fill[blue] (-1.5,-1.5) rectangle (-1,-1);
+			%\node at (15-4.25,5+3.25){$S_6$};
+			\node at (15,3.5){$V_6$};
+			\node[red] at (11,4.5) (H56) {$H_{56}$};
+			\draw [->,red,line width = 0.75mm] (H56) -- (12.5,2.75);
+			\draw (17,3) node[cross,blue]{};
+			\draw[blue,line width = 0.5mm] plot [smooth,tension=1] coordinates{(-1.5,-1.5) (3,0.5) (10,0) (17,3)};
+			\draw (-0.5,2) node[cross,black]{};
+			\fill[black] (7.5,-5.5) rectangle (7.0,-5.0);
+			\draw[black,line width = 0.5mm] plot [smooth,tension=1] coordinates{(-0.5,2) (3,-0.5) (7,-5.0)};
+			
+		\end{tikzpicture}}}\\
+\subfloat[Connectivity graph \label{fig:Environment_directed}]{
+\scalebox{0.85}{
+\begin{tikzpicture}[auto,node distance=8mm,>=latex,font=\small]
+        \tikzstyle{round} = [thick,draw=black,circle]
+\tikzstyle{action} = [circle, draw, fill=black,inner sep=0pt, minimum size=4pt]
+\node[round] (s1) {$\design_{1}$};
+\node[round, right=15mm of s1] (s3){$\design_{3}$};
+\node[round, below right=15mm and 5mm of s1] (s2){$\design_{2}$};
+\node[round, right=15mm of s3] (s5){$\design_{5}$};
+\node[round, right=10mm of s2] (s4){$\design_{4}$};
+\node[round, right= 10mm of s5] (s6){$\design_{6}$};
+
+\draw[<->] (s1) -- node[left]{$e_{12}$} (s2);
+\path[<->,draw] (s1) -- node{$e_{13}$} (s3);
+\path[<->,draw] (s2) -- node{$e_{23}$} (s3);
+\path[<->,draw] (s2) -- node{$e_{24}$} (s4);
+\path[<->,draw] (s3) -- node{$e_{34}$} (s4);
+\path[<->,draw] (s3) -- node{$e_{35}$} (s5);
+\path[<->,draw] (s4) -- node[right]{$e_{45}$} (s5);
+\path[<->,draw] (s5) -- node[below]{$e_{56}$} (s6);
+
+% \path[->,draw] (s1) edge[loop above] node {$e_{1}$} (s1);
+% \path[->,draw] (s2) edge[loop below] node {$e_{2}$} (s2);
+% \path[->,draw] (s3) edge[loop above] node {$e_{3}$} (s3);
+% \path[->,draw] (s4) edge[loop below] node {$e_{4}$} (s4);
+% \path[->,draw] (s5) edge[loop above] node {$e_{5}$} (s5);
+% \path[->,draw] (s6) edge[loop above] node {$e_{6}$} (s6);
+
+\end{tikzpicture}}}

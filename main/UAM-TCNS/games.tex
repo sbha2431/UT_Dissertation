@@ -1,0 +1,292 @@
+%\subsection{Overview}\label{sec:problemoverview}
+ Consider an environment consisting of an operating space and a network formed from a series of $k$ UAM vertiport hubs labeled $V_1,\cdots,V_k$. A UAM vertiport hub (henceforth referred to as a vertihub) consists of a grouping of multiple vertiports, each of which may have multiple takeoff/landing pads. A vertihub is responsible for managing requests by UAM vehicles (henceforth referred to as vehicles) to either \emph{land at} or \emph{take off from} a desired vertiport in its region or \emph{pass through} to a neighboring region. Each vertiport inside a vertihub is in charge of taking off and landing vehicles at its landing pads. An example of such an environment is illustrated in Figure~\ref{fig:RegionsOutline}. Note that vertihub control regions need not be circular. 
+\begin{example}
+The vertihub controller for region $V_6$ in Figure~\ref{fig:RegionsOutline} controls the operational area defined by $V_6 - (V_6 \cap V_5)$. The area of overlap $H_{56} = V_5 \cap V_6$ is the region where the handoff takes place, wherein the vertihub controller of the region the vehicle is about to enter takes responsibility for the vehicle.
+Hence, $V_6$ can force vehicles incoming from $V_5$ to loiter in the handoff region $H_{56}$ until it is safe to allow them to enter.
+\end{example}
+
+The number of vehicles allowed inside each vertihub is upper bounded both by the separation standards between the vehicles as well as with the complexity of the airspace (e.g., intersection with general aviation traffic etc.).
+Vertihubs cannot accept vehicles (i.e., accept a handoff) if the additional vehicle exceeds the maximum operational capacity or induces a conflict. Furthermore, vertiports cannot allow vehicles to take-off if it will violate the maximum operational capacity of the vertihub, and must force incoming vehicles to loiter if all of their pads are occupied. In order to avoid violating airspace requirements and to avoid build up of loitering vehicles (which can delay vehicles desiring to pass through or create safety issues), a vertiport must coordinate with its corresponding vertihub. We model the vertihub controller and vertiport controllers as \emph{reactive systems}.
+%The hub can then act tactically by blocking a vehicle's entry to the region by making it loiter in a \emph{handoff region}.
+
+\paragraph*{\textbf{Definition}}
+We consider a finite set $\inp$ ($\out$) of Boolean \emph{inputs (outputs)}.
+The input alphabet is
+$\ialphabet=2^\inp$, the output alphabet is $\oalphabet=2^O$, and
+$\alphabet=\ialphabet \times \oalphabet$. The set of finite (infinite) traces
+over $\alphabet$ is denoted by $\alphabet^*$ ($\alphabet^\omega$), and
+we define $\alphabet^{\infty} = \alphabet^* \cup \alphabet^\omega$.  A reactive system is a
+tuple $\design = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$,
+where
+$\states$ is a finite set of states,
+$q_{0} \in \states$ is the initial state,
+$\ialphabet$ is the input alphabet,
+$\oalphabet$ is the output alphabet,
+$\delta: \states \times \Sigma_{\inp} \to \states$ is the complete transition function, and $\lambda : \states \times \Sigma_{\inp} \to \Sigma_{\out}$ is the output function.
+%
+Given an input trace $\itrace = x_0 x_1 \ldots \in \ialphabet^\infty$, a reactive system $\mathcal{\design}$ produces an
+output trace $\otrace = \mathcal{\design}(\itrace) = \lambda(q_0, x_0)
+\lambda(q_1, x_1) \ldots \in \oalphabet^\infty$ with $q_{i+1} = \delta(q_i, x_i)$ for all $i \ge 0$.
+The set of words produced by
+$\mathcal{\design}$ is denoted $\lang(\mathcal{\design}) = \{\itrace \parallel \otrace \in
+\alphabet^\infty \mid \mathcal{\design}(\itrace) = \otrace\}$.
+
+
+
+\begin{figure}[h!]
+	\centering
+\input{regionspace}
+\caption{
+(a) Green circles correspond to the region of a vertihub. UAM vehicles (blue and black) move between origin-destination vertiports in the environment.
+(b)
+The corresponding connectivity graph $G_\design$ of the vertihub controllers $\design$ modeling the sectors $V$. 
+Each edge $e_{ij}$ corresponds to $\design_i$ and  $\design_j$ being connected, i.e., the outputs of $\design_i$ are inputs to $\design_j$ and vice versa.
+}
+%		\setlength{\belowcaptionskip}{-2pt}
+	       %\label{fig:RegionsOutline}
+    \end{figure}
+
+Ensuring the safety of the takeoff and landing operations at vertiports that share the same airspace must be balanced with bounding the delays experienced by vehicles. Furthermore, vehicles cannot loiter indefinitely due to energy constraints.
+Hence, vertihubs must additionally guarantee a finite upper bound on the delays experienced by vehicles.
+All of these requirement guarantees (and others) can be expressed as \emph{temporal logic specifications} that controllers must satisfy. %In addition to satisfying their own specification, each controller must not cause other controllers to violate their specification. We formalize this notion in Section~\ref{sec:distshield}. 
+
+
+\paragraph*{\textbf{Definition}}
+%
+A \emph{linear temporal logic (LTL) specification} $\varphi$ defines a set of allowed traces $L(\varphi) \subseteq \plays(\design)$ for the reactive system $\design$.  A reactive system $\design$ is \emph{winning} with respect to specification $\varphi$ iff $L(\design) \subseteq L(\varphi)$ and is denoted $\design \models \varphi$. Given a set of propositions \texttt{AP}, a formula in LTL describes a language in $(2^{\texttt{AP}})^\omega$. LTL extends Boolean logic by the introduction of temporal operators such as $\bigcirc$ (next time), $\LTLglobally$ (always), $\LTLfinally$ (eventually), and $\mathcal{U}$ (until). 
+
+
+ Informally, the main problem addressed in this paper is designing \emph{controllers} for vertihubs and vertiports that guarantee all safety and progress requirements, assuming they have been correctly captured in the design process. More formally, the task of computing a satisfying controller in reactive systems involves constructing the function $\lambda$ and can be typically framed as computing the \emph{winning strategy of a game}. 
+
+
+
+\paragraph*{\textbf{Definition}}
+%
+A \emph{game structure} is a tuple 
+$\game = (\states, \state_0, \alphabet, \delta,\Acc)$,
+where 
+\begin{itemize}
+\item $\states$ is a finite set of states, $\state_0 \in \states$ the initial state,
+\item $\alphabet = (\ialphabet \times \oalphabet)$ is the alphabet of actions available to the environment and the controller respectively, 
+\item $\delta: \states \times \alphabet \rightarrow \states$
+is a complete transition function, that maps each state, input (environment action) and output (controller action) to a successor state.
+\item $\Acc: \left(\states \times \alphabet \times \states\right)^\omega \rightarrow \mathbb{B}$ is the \emph{winning condition} of the game. 
+% \item $\mathcal L:\gstates
+% \rightarrow \ialphabet \times \oalphabet$ is the labeling
+% function.
+\end{itemize}
+
+
+At every state $\state \in \states$ (starting with
+$\state_0$), the environment chooses an input $\isymb \in
+\ialphabet$, and then the controller chooses some output $\osymb
+\in \oalphabet$. These choices define the next state $\state' =
+\delta(\state,(\isymb, \osymb))$, and the process then continues from $\state'$. This order of moves
+ensures that at each step the controller's action reacts to the \emph{current}
+action of the environment. The resulting
+(infinite) sequence $\pi = (\state_0,\symb_{\inp,0},
+\symb_{\out,0}, \state_1) (\state_1,\symb_{\inp,1},
+\symb_{\out,1}, \state_2) \ldots$ is
+called a \emph{play}, where $\state_0$ is the initial state, and for every $i \geq 0$ we have that $\state_{i+1} = \delta(\state_i,\symb_{\inp,i},\symb_{\out,i})$.  A play $\pi$ is \emph{winning} if $\Acc(\pi) = \top$. 
+%The set $L(\game)$ is the set of all plays in the game $\game$.
+
+
+We consider winning conditions expressed from a fragment of LTL specifications called \emph{Generalized Reactivity 1} (GR(1)), which is common in a variety of practical applications~\cite{Moarref18,Alonso18,bh18,Maoz2015}.
+A GR(1) winning condition is defined by sets of states $S_\inp, S_\out \subseteq \states$, $E_i \subseteq \states$ for $i=1,\ldots,m$ and $F_j \subseteq \states$ for $j=1,\ldots,n$, and consists of all plays $ \pi$ such that if $\pi \in \LTLglobally S_\inp \cap \LTLglobally\,\LTLfinally\, E_{i}$ for all $i=1,\ldots,m$, then $\pi \in \LTLglobally S_\out \cap \LTLglobally\,\LTLfinally\, F_{j}$ for all $j=1,\ldots,n$. Intuitively, for a play $ \pi$ to be winning, whenever the environment satisfies the assumptions $\LTLglobally\, S_\inp,\LTLglobally\,\LTLfinally\, E_{1},\ldots,\LTLglobally\,\LTLfinally\, E_{m}$, then the controller must satisfy all the guarantees $\LTLglobally\, S_\out,\LTLglobally\,\LTLfinally\, F_{j},\ldots,\LTLglobally\,\LTLfinally\, F_{n}$. By abuse of logical operators, we abbreviate GR(1)  conditions as
+$$\left(\LTLglobally\, S_\inp \wedge \bigwedge_{i=1}^{m}  \LTLglobally\,\LTLfinally\, E_{i}\right) \implies
+\left(\LTLglobally\, S_\out \wedge \bigwedge_{j=1}^{n} \LTLglobally\,\LTLfinally\,F_{j}\right).$$
+
+
+\paragraph*{\textbf{Definition}}
+%
+% We seek to compute a strategy for the agent to enforce a given winning condition, or determine that it cannot ensure winning.
+
+A \emph{strategy for the controller} is a function $\rho_\out:
+\prefs(\game) \times \ialphabet \rightarrow
+\oalphabet$ which maps a prefix of a run (the history of the play so far) and an action of the environment to an action of the controller. 
+A \emph{strategy for the environment} is a function $\rho_\inp: \prefs(\game)\rightarrow \ialphabet$ that maps the prefix of the play so far to an action of the environment. We denote the sets of all strategies for the controller and for the environment by $\mathcal{M}_\out $ and $\mathcal{M}_\inp$ respectively.
+
+Every pair of strategies $\rho_\out \in \mathcal{M}_\out$ for the controller and $\rho_\inp \in \mathcal{M}_\inp$ for the environment define a play, denoted by $\Pi(\rho_\out,\rho_\inp)$. More precisely,  
+$\Pi(\rho_\out,\rho_\inp) = \pi = (\state_0,\symb_{\inp,0},\symb_{\out,0}, \state_1) 
+(\state_1,\symb_{\inp,1}, \symb_{\out,1}, \state_2) \ldots \in \plays(\game)$
+where
+for every $i \geq 0$, $\symb_{\inp,i} = \rho_\inp(\pi[0,i])$ and $\symb_{\out,i} = \rho_\out(\pi[0,i],\symb_{\inp,i})$.
+Similarly, we define the set of plays starting at a state $g$ that are consistent with $\rho_\out$, denoted $\plays(\design,\rho_\out,g)$.
+
+Given a game structure $\design$ and a winning condition $\varphi$ for the agent, the synthesis problem is to generate a strategy $\rho_\out\in \mathcal{M}_\out$ for the controller such that for every strategy $\rho_\inp \in \mathcal{M}_\inp$ for the environment it holds that $\Pi(\rho_\inp,\rho_\out) \in \varphi$, i.e., all resulting plays satisfy $\varphi$.
+In such cases we say that \emph{$\rho_\out$ satisfies $\spec$}, denoted $\rho_\out\models\spec$.
+
+
+
+
+% \subsection{Basic notations}
+% We consider reactive systems with a finite set $\inp$ ($\out$) of Boolean \emph{inputs (outputs)}.
+% The input alphabet is
+% $\ialphabet=2^\inp$, the output alphabet is $\oalphabet=2^O$, and
+% $\alphabet=\ialphabet \times \oalphabet$. The set of finite (infinite) traces
+% over $\alphabet$ is denoted by $\alphabet^*$ ($\alphabet^\omega$), and
+% we define $\alphabet^{\infty} = \alphabet^* \cup \alphabet^\omega$.  
+
+% \subsection{Reactive systems}
+
+% A \emph{reactive system} is defined by a
+% tuple $\design = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$,
+% where
+% $\states$ is a finite set of states,
+% $q_{0} \in \states$ is the initial state,
+% $\ialphabet$ is the input alphabet,
+% $\oalphabet$ is the output alphabet,
+% $\delta: \states \times \Sigma_{\inp} \to \states$ is the complete transition function, and $\lambda : \states \times \Sigma_{\inp} \to \Sigma_{\out}$ is the output function.
+% %
+% Given an input trace $\itrace = x_0 x_1 \ldots \in \ialphabet^\infty$, a reactive system $\mathcal{\design}$ produces an
+% output trace $\otrace = \mathcal{\design}(\itrace) = \lambda(q_0, x_0)
+% \lambda(q_1, x_1) \ldots \in \oalphabet^\infty$ with $q_{i+1} = \delta(q_i, x_i)$ for all $i \ge 0$.
+% The set of words produced by
+% $\mathcal{\design}$ is denoted $\lang(\mathcal{\design}) = \{\itrace \parallel \otrace \in
+% \alphabet^\infty \mid \mathcal{\design}(\itrace) = \otrace\}$.
+% In reactive systems, the synthesis task involves constructing the function $\lambda$ and can be typically framed as computing the \emph{winning strategy of a game}. 
+
+
+
+
+% \subsection{Specifications}
+% %
+% A \emph{linear temporal logic (LTL) specification} $\varphi$ defines a set of allowed traces $L(\varphi) \subseteq \plays(\design)$ for the reactive system $\design$.  A reactive system $\design$ is \emph{winning} with respect to specification $\varphi$ iff $L(\design) \subseteq L(\varphi)$ and is denoted $\design \models \varphi$. Given a set of propositions \texttt{AP}, a formula in linear temporal logic (LTL) describes a language in $(2^{\texttt{AP}})^\omega$. LTL extends Boolean logic by the introduction of temporal operators such as $\bigcirc$ (next time), $\LTLglobally$ (always), $\LTLfinally$ (eventually), and $\mathcal{U}$ (until). 
+
+
+
+
+
+%In the following, we make use of LTL operators $\LTLglobally$ and $\LTLfinally$ which are operators for \emph{always} and \emph{eventually} respectively. For full details on LTL syntax, we refer the reader to~\cite{MCBook}.
+
+% A \emph{safety} winning condition $\varphi$ is defined by a set of states $S \subseteq G$ and is such that for a play $\overline{\pi}\in \plays(\game)$ we have $\overline\pi\in\varphi$ if and only if $g_i \in S$ for all $i \in\mathbb{N}$.
+
+% A \emph{\buchi} winning condition $\varphi$ is defined by a set of states $F \subseteq G$ and is such that for a play $\overline{\pi} \in \plays(\game)$ we have $\overline\pi\in\varphi$ iff $\inf(\overline{\pi})\cap F \neq \emptyset$,  where $\inf(\overline{\pi}) \subseteq G$ is the set of states that occur infinitely often in $\overline{\pi}$.
+% We abbreviate the \buchi condition as $\varphi = \LTLglobally\,\LTLfinally\, F$.
+
+
+
+%Note that if the agent has a winning condition $\varphi$, then all plays in $\plays(\game)\setminus\varphi$ are winning for the environment player.
+
+
+
+
+\iffalse
+\subsection{Serial composition}
+Consider two reactive systems  $\design = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$ and $\shield = (\states', q_{0}',\alphabet', \delta',\lambda')$.
+The \emph{serial composition} of $\design$ and $\shield$ is obtained by feeding the output of $\design$ to $\shield$ and results in a new reactive system $\design \comp \shield=(\hat{\states}, \hat{q_{0}}, \ialphabet,\oalphabet, \hat{\delta},
+\hat{\lambda})$, where
+   $\hat{\states} = \states \times \states'$,
+   $\hat{q_{0}} = (q_{0}, q_{0}')$,
+   $\hat{\delta}((q,q'),\isymb) = (\delta(q,\isymb), \delta'(q',(\isymb,\lambda(q,\isymb))))$, and
+   $\hat{\lambda}((q,q'),\isymb) = \lambda'(q',(\isymb,\lambda(q, \isymb)))$.
+\fi
+   
+% \subsubsection{Multi-agent reactive systems}
+% A \emph{multi-agent reactive system} $\design$ is a tuple $(\proc, \ialphabet,  \oalphabet)$, where $\proc = \{\proc_1,\ldots,\proc_n\}$ is a set of agents, where each $\proc_i = (\states_i, q_{0,i},\ialphabeti,\oalphabeti,\delta_i,\lambda_i)$ is a reactive system. For more details on the construction of multi-agent reactive system, we refer the reader to \cite{multiagentshield}. 
+
+%Since we perform a localized synthesis procedure in this paper, the multi-agent reactive systems dealt with in \cite{multiagentshield} will instead be decentralized single-agent reactive systems.
+%
+% While multiple agents may be able to read the same input variables to indicate
+% broadcast from the environment, the sets of outputs are pairwise disjoint: for $i \neq j$, we have $\out_i \cap \out_j = \emptyset$. Furthermore, agents cannot directly read each others outputs, that is, for all $i$ and $j$, we have $\out_i \cap \inp_j = \emptyset$. The outputs of the multiagent system  $\design$ are $\out = \bigcup_{i=1}^n \out_i$, and its inputs are $\inp  = \bigcup_{i=1}^n \inp_i$.
+% %
+% The joint behaviour of the multi-agent system is a reactive system 
+% $\design=(\states, q_{0}, \ialphabet,\oalphabet, \delta,
+% \lambda)$ defined as follows: the set $\states = \bigotimes_i \states_i$ of states is formed by the product of
+% the states of all agents $\proc_i \in \proc$. The initial state $q_{0}$ is formed
+% by the initial states $q_{0,i}$ of all $\proc_i \in \proc$. The transition function $\delta$ updates, for each agent $\proc_i \in \proc$, the $\states_i$ part of the state in accordance with the transition function $\delta_i$, using
+% the projection $\symb(I_p)$ as input. The output function $\lambda$ labels each state with the
+% union of the outputs of all $\proc_i \in \proc$ according to $\lambda_i$.
+
+
+
+% \subsection{Specifications}
+
+% A \emph{specification} $\spec$ defines a set $\lang(\spec) \subseteq \alphabet^\infty$ of allowed traces.
+% %
+% A reactive system $\design$ \emph{realizes} $\spec$, denoted by $\design \models \spec$, iff
+% $\lang(\design) \subseteq \lang(\spec)$.
+% Given a set of propositions $\mathsf{AP}$, a formula in \emph{linear temporal logic} (LTL) describes a language in $(2^\mathsf{AP})^\omega$. LTL extends Boolean logic by the introduction of temporal operators such as $\LTLX$ (next time), $\LTLG$ (globally), $\LTLF$ (eventually), and $\LTLU$ (until)~\cite{Pnueli77}.
+% %
+% $\varphi$ is called a \emph{safety specification} if every trace $\trace$ that is not in  $\lang(\spec)$  has a prefix $\tau$ such that all words starting with $\tau$ are also not in the language $\lang(\spec)$.
+% We represent a safety specification $\varphi$ by a safety automaton
+% $\varphi = (Q, q_0, \alphabet, \delta, F)$, where $F\subseteq Q$ is a set of safe states.
+
+% \subsection{Games}
+% %
+% A game is a tuple $\game = (\gstates,
+% \ginit, \alphabet, \delta, \Acc, \Val)$,
+% where $\gstates$ is a finite set of states, $\ginit \in \gstates$ is the initial state,
+% $\delta: \gstates \times \alphabet \rightarrow \gstates$
+% is a complete transition function, $\Acc: (\gstates \times \alphabet \times \gstates)^\omega \rightarrow \bools$ is a winning condition
+% and defines the qualitative objective of the game, and $\Val: (\gstates \times \alphabet \times \gstates)^\omega \rightarrow \mathbb{R} \cup \{-\infty, \infty \}$ is a value function defining the quantitative objective of the game. A game can have a winning condition, a value function, or both.
+% %
+% The game is played  by two players:  the system and the environment. In every state $g\in \gstates$
+% (starting with $\ginit$), the environment chooses an input
+% $\isymb \in \ialphabet$, and then the system chooses some output $\osymb \in \oalphabet$. These choices define the next state $g' = \delta(g,(\isymb, \osymb))$, and so on. The resulting (infinite)
+% sequence $\overline{\pi} = (g_0,\isymb, \osymb, g_1) (g_1,\isymb, \osymb, g_2) \ldots$ is called a \emph{play}.
+% A deterministic  \emph{strategy} for the environment is a function
+% $\rho_e: \gstates^* \rightarrow \ialphabet$.
+% A nondeterministic \emph{strategy} for the system is a relation $\rho_s:
+% \gstates^* \times \ialphabet \rightarrow 2^{\oalphabet}$ and a
+% deterministic  strategy for the system is a function $\rho_s:
+% \gstates^* \times \ialphabet \rightarrow \oalphabet$.\looseness=-1
+
+% A play $\overline{\pi}$ is \emph{won} by the system iff $\Acc(\overline{\pi})=\top$.
+%  A strategy is \emph{winning} for the system if all plays $\overline{\pi}$ that can be
+% constructed when defining the outputs using the strategy result in
+% $\Acc(\overline{\pi})=\top$. The \emph{winning region} $\Win$ is the set of states
+% from which a winning strategy exists.
+% A \emph{permissive} winning strategy  $\rho_s:
+% \gstates^* \times \ialphabet \rightarrow 2^{\oalphabet}$ is a strategy that is not only winning for the system, but also contains all deterministic winning strategies.
+
+% A \emph{safety game} defines $\Acc$ via a set $F\subseteq \gstates$ of
+% safe states: $\Acc(\overline{\pi})=\top$ iff $g_i \in F$ for all $i \geq 0$, i.e., if only safe states are visited in the play $\overline{\pi}$. Otherwise, $\Acc(\overline{\pi})=\bot$. The quantitative objective of the system is to minimize $\Val(\overline{\pi})$, while the environment
+%  tries to maximize it.\looseness=-1
+%If a safety game is won by the system player, then there exists a permissive strategy $\rho_s$ that is \emph{memoryless}, i.e., has the form $\rho_s:
+%\gstates \times \ialphabet \rightarrow 2^{\oalphabet}$.
+%
+% The \emph{\buchi} winning condition is $\Acc(\overline{\pi})=\top$ iff $\inf(\overline{\pi})
+% \cap F \neq \emptyset$, where $F \subseteq Q$ is
+% the set of accepting states and $\inf(\overline{\pi})$ is the set of states that occur infinitely often in $\overline{\pi}$.
+% We abbreviate the \buchi condition as $\mathcal{B}(F)$.
+% A \emph{Generalized Reactivity 1} (GR(1))
+% acceptance condition is a predicate $\bigwedge_{i=1}^{m} \mathcal{B}(E_{i}) \rightarrow \bigwedge_{i=1}^{n} \mathcal{B}(F_{i})$, with
+% $E_i \subseteq Q$ and $F_i \subseteq Q$.
+%  A \emph{Streett}
+% acceptance condition 
+% %with $k$ pairs 
+% is 
+%  $\bigwedge_{i=1}^{k} \mathcal{B}(E_{i}) \rightarrow \mathcal{B}(F_{i})$.
+
+
+%
+\iffalse MEAN-PAYOFF
+A \emph{mean-payoff game} is a game where $\Val$ is defined via an edge labeling function $r :
+\delta \rightarrow \{-W,\dots, W\}$, which assigns values between $-W$ and $W$ to edges. For a play $\pi =
+e_0 e_1 e_2 \dots \in \delta^\omega, \Val(\overline{\pi}) = \lim \sup_{n\rightarrow\infty} \frac{1}{n+1} \sum_{i=0}^{n} r(e_i)$.
+\fi
+
+
+% \subsubsection{Properties of traces}
+% A finite trace $\trace
+% \in \alphabet^*$ is \emph{wrong} w.r.t. a specification $\varphi$, if the corresponding play cannot be won,
+% i.e., if there is no way for the system to guarantee that any
+% extension of $\trace$ satisfies $\spec$.
+% An output $\osymb$
+% is called \emph{wrong} for a trace $\trace$ and input $\isymb$, if it makes the trace wrong, i.e. when $\trace$ is not wrong, but $\trace \cdot (\isymb,\osymb)$ is. Given a sequence $(\itrace\parallel\otrace\parallel\otrace') \in (\ialphabet\times\oalphabet\times\oalphabet)^\infty$, we denote with $\widx(\itrace\parallel\otrace\parallel\otrace')$ the positions of occurrences of wrong outputs in $\otrace$. Formally, $i \in \widx(\itrace\parallel\otrace\parallel\otrace')$ iff  $\otrace[i]$ is wrong for the trace
+% $(\itrace[0,i)\parallel\otrace'[0,i))$ and the input $\itrace[i]$.
+
+% %
+% We denote with $\Proc = \{1,\ldots,n\}$ the set of agent ids of a multi-agent system $\design$.
+% %
+% For a set $\Pi \subseteq \Proc$, we define $O_{\Pi} = \bigcup_{p \in \Pi} O_p$ and $\alphabet_{O_{\Pi}} = 2^{O_{\Pi}}$. For $\osymb \in \oalphabet$ and $p \in \Proc$, we denote with $\osymb(O_p)$ the projection of $\osymb$ on $O_p$. For $\Pi \subseteq \Proc$, we define $\osymb(O_{\Pi})$ similarly. 
+
+% For  $\osymb,  \osymb' \in \oalphabet$, the set $\Diff(\osymb,\osymb') = \{p \in \Proc \mid \osymb(O_p) \neq \osymb'(O_p)\}$ gives the set of agents whose outputs in $\osymb$ differ from those in $\osymb'$.
+% Let $(\otrace \parallel \otrace')\in (\oalphabet\times\oalphabet)^\infty$ be a sequence of output pairs.
+% We call $(\otrace \parallel\otrace')$ a \emph{deviation period} if (1) $\otrace[i] \neq \otrace'[i ]$ for every $i < |\otrace|$  and (2) if $|\otrace| < \infty$, then $\otrace[|\otrace|] = \otrace'[|\otrace|]$.
+% Thus, a deviation period is either a finite sequence $(\otrace\parallel\otrace')$  consisting of differing outputs followed by a last letter where the two outputs agree, or an infinite sequence $(\otrace\parallel\otrace')$ where the outputs always differ. \looseness=-1
+%We denote with $\Deviations(\otrace||\otrace')$ the set of all deviation periods of $(\otrace||\otrace')$.
+
+
+

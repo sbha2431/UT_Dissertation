@@ -1,0 +1,187 @@
+\section{Preliminaries}
+\label{sec_prel}
+
+\subsubsection{\textbf{Basic notations}}
+We consider reactive systems with a finite set
+$\inp$ ($\out$) of Boolean \emph{inputs (outputs)}.
+The input alphabet is
+$\ialphabet=2^\inp$, the output alphabet is $\oalphabet=2^O$, and
+$\alphabet=\ialphabet \times \oalphabet$. The set of finite (infinite) words
+over $\alphabet$ is denoted by $\alphabet^*$ ($\alphabet^\omega$), and
+we define $\alphabet^{\infty} = \alphabet^* \cup \alphabet^\omega$.  We will also refer
+to words as \emph{(execution) traces}\todo{Can we stick to
+one?}.  We write $|\trace|$ for the
+length of a trace $\trace\in \alphabet^*$. For an infinite trace $\trace\in \alphabet^\omega$ we define $|\trace| =\infty$. For $\itrace = x_0
+x_1 \ldots \in \ialphabet^\infty$ and $\otrace = y_0 y_1 \ldots \in
+\oalphabet^\infty$, we write $\itrace \parallel \otrace$ for the
+composition $(x_0,y_0) (x_1,y_1) \ldots \in \alphabet^\infty$.
+For $i \in \nats$ and a word $\trace = \sigma_0\sigma_1\ldots \in \awords\Sigma$, we define $\trace[i] = \sigma_i$, and we define $\trace[i,j) = \sigma_i\sigma_{i+1}\ldots\sigma_{j-1}$ if $j \in \nats$ and $\trace[i,j) = \sigma_i\sigma_{i+1}\ldots$ if $j = \infty$.
+A \emph{language} is a set $\lang
+\subseteq  \alphabet^\infty$ of words.
+\todo{Are we using all the notations?}
+%We denote the set of all languages as $\langset = 2^{\alphabet^\infty}$.
+
+\iffalse
+\subsubsection{Reactive systems}
+
+A \emph{reactive system} is defined by a
+6-tuple $\proc = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$,
+where
+$\states$ is a finite set of states,
+$q_{0} \in \states$ is the initial state,
+$\ialphabet$ is the input alphabet,
+$\oalphabet$ is the output alphabet,
+$\delta: \states \times \Sigma_{\inp} \to \states$ is the complete transition function, and $\lambda : \states \times \Sigma_{\inp} \to \Sigma_{\out}$ is the output function.
+%
+Given an input trace $\itrace = x_0 x_1 \ldots \in \ialphabet^\infty$, a reactive system $\mathcal{\proc}$ produces an
+output trace $\otrace = \mathcal{\proc}(\itrace) = \lambda(q_0, x_0)
+\lambda(q_1, x_1) \ldots \in \oalphabet^\infty$ with $q_{i+1} = \delta(q_i, x_i)$ for all $i \ge 0$.
+The set of words produced by
+$\mathcal{\proc}$ is denoted $\lang(\mathcal{\proc}) = \{\itrace \parallel \otrace \in
+\alphabet^\infty \mid \mathcal{\proc}(\itrace) = \otrace\}$.
+
+
+\subsubsection{Serial composition of reactive systems}
+Consider two reactive systems  $\proc = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$ and $\shield = (\states', q_{0}',\ialphabet\times\oalphabet, \oalphabet,\delta',\lambda')$.
+The \emph{serial composition} of $\proc$ and $\shield$ is obtained by feeding the input and output of $\proc$ to $\shield$ and results in a new reactive system $\proc \comp \shield=(\hat{\states}, \hat{q_{0}}, \ialphabet,\oalphabet, \hat{\delta},
+\hat{\lambda})$, where
+   $\hat{\states} = \states \times \states'$,
+   $\hat{q_{0}} = (q_{0}, q_{0}')$,
+   $\hat{\delta}((q,q'),\isymb) = (\delta(q,\isymb), \delta'(q',(\isymb,\lambda(q,\isymb))))$, and
+   $\hat{\lambda}((q,q'),\isymb) = \lambda'(q',(\isymb,\lambda(q, \isymb)))$.
+
+   
+\subsubsection{Multi-agent reactive systems}
+A \emph{multi-agent reactive system} $\proc$ is a tuple $(\proc, \ialphabet,  \oalphabet)$, where $\proc = \{\proc_1,\ldots,\proc_n\}$ is a set of agents, where each $\proc_i = (\states_i, q_{0,i},\ialphabeti,\oalphabeti,\delta_i,\lambda_i)$ is a reactive system.
+%
+While multiple agents may be able to read the same input variables to indicate
+broadcast from the environment, the sets of outputs are pairwise disjoint: for $i \neq j$, we have $\out_i \cap \out_j = \emptyset$. Furthermore, agents cannot directly read each others outputs, that is, for all $i$ and $j$, we have $\out_i \cap \inp_j = \emptyset$. The outputs of the multiagent system  $\proc$ are $\out = \bigcup_{i=1}^n \out_i$, and its inputs are $\inp  = \bigcup_{i=1}^n \inp_i$.
+%
+The joint behaviour of the multi-agent system is a reactive system 
+$\proc=(\states, q_{0}, \ialphabet,\oalphabet, \delta,
+\lambda)$ defined as follows: the set $\states = \bigotimes_i \states_i$ of states is formed by the product of
+the states of all agents $\proc_i \in \proc$. The initial state $q_{0}$ is formed
+by the initial states $q_{0,i}$ of all $\proc_i \in \proc$. The transition function $\delta$ updates, for each agent $\proc_i \in \proc$, the $\states_i$ part of the state in accordance with the transition function $\delta_i$, using
+the projection $\symb(I_i)$ as input. The output function $\lambda$ labels each state with the
+union of the outputs of all $\proc_i \in \proc$ according to $\lambda_i$.
+
+
+
+\subsubsection{Specifications}
+
+A \emph{specification} $\spec$ defines a set $\lang(\spec) \subseteq \alphabet^\infty$ of allowed traces.
+%
+A reactive system $\proc$ \emph{realizes} $\spec$, denoted by $\proc \models \spec$, iff
+$\lang(\proc) \subseteq \lang(\spec)$.
+Given a set of propositions $\mathsf{AP}$, a formula in \emph{linear temporal logic} (LTL) describes a language in $(2^\mathsf{AP})^\omega$. LTL extends Boolean logic by the introduction of temporal operators such as $\LTLnext$ (next time), $\LTLglobally$ (globally), $\LTLfinally$ (eventually), and $\LTLuntil$ (until)~\cite{Pnueli77}.
+%
+$\varphi$ is called a \emph{safety specification} if every trace $\trace$ that is not in  $\lang(\spec)$  has a prefix $\tau$ such that all words starting with $\tau$ are also not in the language $\lang(\spec)$.
+We represent a safety specification $\varphi$ by a safety automaton
+$\varphi = (Q, q_0, \alphabet, \delta, F)$, where $F\subseteq Q$ is a set of safe states.
+\fi
+
+\subsubsection{\textbf{Linear temporal logic}}
+A linear temporal logic formula $\spec$ defines a set $\lang(\spec) \subseteq \alphabet^\infty$ of allowed traces. $\varphi$  is generated by the grammar\\
+\[\varphi := p \mid \true \mid \false \mid \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \LTLnext  \varphi  \mid \varphi \LTLuntil \varphi \mid \varphi \LTLrelease \varphi,\]\\
+where $p \in \Sigma$ is an atomic proposition, $\LTLnext$ is the \emph{next} operator, $\LTLuntil$ is the \emph{until} operator, and $\LTLrelease$ is the \emph{release} operator. We also define the derived operators 
+\emph{finally}, defined as $\LTLfinally \varphi = \true \LTLuntil \varphi$ and 
+\emph{globally}, defined as $\LTLglobally \varphi = \false \LTLrelease \varphi$.
+LTL formulas are interpreted over (infinite) runs. If a trace $\pi$ satisfies an LTL formula $\varphi$, we write $\pi \models \varphi$. The formal definition of LTL semantics can be found in~\cite{BaierKatoen08}.
+
+\subsubsection{\textbf{Games}}
+%
+The game is played by two players --- the agent and the
+environment. It is characterized by the tuple $\game = (\gstates,
+\ginit, \ialphabet, \oalphabet, \delta,\mathcal L, \Acc)$,
+where $\gstates$ is a finite set of states, $\ginit \in
+\gstates$ is the initial state, $\ialphabet, \oalphabet$ are
+the alphabets available to the environment and the agent respectively, 
+$\delta: \gstates \times \alphabet \rightarrow \gstates$
+is a complete transition function, $\mathcal L:\gstates
+\rightarrow \ialphabet \times \oalphabet$ is the labeling
+function, and $\Acc: \playDomain \rightarrow \bools$ is a
+winning condition. 
+%and defines the qualitative objective of
+%the game, and $\Val: \playDomain \rightarrow \mathbb{R}$ is
+%a value function defining the quantitative objective of the
+%game. 
+%\todo[inline]{Should we replace qualitiative with
+%feasibility and quantitative with objective?}
+%A game can have a
+%winning condition, a value function, or
+%both.\todo[inline]{Is this optionality really important? Can't we
+%set $\Acc$ to be always true or $\Val$ function to be always
+%zero?}
+%
+
+The game is played  by two players: the agent and the
+environment. In every state $g\in \gstates$ (starting with
+$\ginit$), the environment chooses an input $\isymb \in
+\ialphabet$, and then the agent chooses some output $\osymb
+\in \oalphabet$. These choices define the next state $g' =
+\delta(g,(\isymb, \osymb))$, and so on. The resulting
+(infinite) sequence $\overline{\pi} = (g_0,\isymb, \osymb,
+g_1) (g_1,\isymb, \osymb, g_2) \ldots$ is called a
+\emph{play}\todo{Should we mention why does agent get the
+    second chance?  Because of reactivity?}.  A
+    deterministic  \emph{strategy} for the environment is a
+    function $\rho_e: \gstates^* \rightarrow \ialphabet$.  A
+    nondeterministic (deterministic) \emph{strategy} for the
+    agent is a relation $\rho_s: \gstates^* \times
+    \ialphabet \rightarrow 2^{\oalphabet}$  (function
+    $\rho_s: \gstates^* \times \ialphabet \rightarrow
+    \oalphabet$).\todo{What is $\gstates^*$?} A strategy is
+    \emph{winning} for the agent if all plays
+    $\overline{\pi}$ that can be constructed when defining
+    the outputs using the strategy result in
+    $\Acc(\overline{\pi})=\top$. 
+
+%\todo[inline]{Is the remainder of this section equivalent to
+%the following max-min optimization problem? Here, $\Pi:
+%\mathcal{P}_s\times \mathcal{P}_e \rightarrow \playDomain$
+%Will we be using the terminology introduced?}
+%\begin{subequations}
+%    \begin{align}
+%        \underset{\rho_e}{\mathrm{max}}\ \underset{\rho_s}{\mathrm{min}}&\quad
+%        \Val(\Pi(\rho_s,\rho_e) )\\
+%        \mathrm{subject\ to}&\quad \rho_s\in\mathcal{P}_s\\
+%   						    &\quad \rho_e\in\mathcal{P}_e\\
+%                            &\quad
+%                            \Pi(\rho_s,\rho_e)\models \varphi
+%    \end{align}%
+%\end{subequations}%
+%
+%A play $\overline{\pi}$ is \emph{won} by the system iff $\Acc(\overline{\pi})=\top$. We assume our acceptance conditions are given as LTL formulas. Hence, for a game $\game$ and LTL formula $\spec$ we will have $\Acc(\overline{\pi})=\top$ iff $\overline{\pi} \models \varphi$.
+%
+%
+% A strategy is \emph{winning} for the system if all plays $\overline{\pi}$ that can be
+%constructed when defining the outputs using the strategy result in
+%$\Acc(\overline{\pi})=\top$. The \emph{winning region} $\Win$ is the set of states
+%from which a winning strategy exists.
+%
+
+% A \emph{safety game} defines $\Acc$ via a set $F\subseteq \gstates$ of
+% safe states: $\Acc(\overline{\pi})=\top$ iff $g_i \in F$ for all $i \geq 0$, i.e., if only safe states are visited in the play $\overline{\pi}$. Otherwise, $\Acc(\overline{\pi})=\bot$.
+% %If a safety game is won by the system player, then there exists a permissive strategy $\rho_s$ that is \emph{memoryless}, i.e., has the form $\rho_s:
+% %\gstates \times \ialphabet \rightarrow 2^{\oalphabet}$.
+% %
+% The \emph{\buchi} winning condition is $\Acc(\overline{\pi})=\top$ iff $\inf(\overline{\pi})
+% \cap F \neq \emptyset$, where $F \subseteq G$ is
+% the set of accepting states and $\inf(\overline{\pi})$ is the set of states that occur infinitely often in $\overline{\pi}$.
+% We abbreviate the \buchi condition as $\mathcal{B}(F)$.
+% A \emph{Generalized Reactivity 1} (GR(1))
+% acceptance condition is a predicate $\bigwedge_{i=1}^{m} \mathcal{B}(E_{i}) \rightarrow \bigwedge_{i=1}^{n} \mathcal{B}(F_{i})$, with
+% $E_i \subseteq G$ and $F_i \subseteq G$.
+
+%The quantitative objective of the system is to minimize $\Val(\overline{\pi})$.\looseness=-1
+
+% %
+% \iffalse MEAN-PAYOFF
+% A \emph{mean-payoff game} is a game where $\Val$ is defined via an edge labeling function $r :
+% \delta \rightarrow \{-W,\dots, W\}$, which assigns values between $-W$ and $W$ to edges. For a play $\pi =
+% e_0 e_1 e_2 \dots \in \delta^\omega, \Val(\overline{\pi}) = \lim \sup_{n\rightarrow\infty} \frac{1}{n+1} \sum_{i=0}^{n} r(e_i)$.
+% \fi
+% 
+% 
+% 
+

@@ -1,0 +1,80 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{1.00000,0.00000,1.00000}%
+\definecolor{mycolor2}{rgb}{0.00000,1.00000,1.00000}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=1.0\linewidth,
+height=0.82\linewidth,
+at={(0.459in,0.305in)},
+scale only axis,
+xmin=-0.0500000000000005,
+xmax=1.05,
+tick align=outside,
+ymin=-0.0500000000000008,
+ymax=1.05,
+zmin=-0.0499999999999996,
+zmax=1.05,
+view={75}{35},
+axis line style={draw=none},
+ticks=none,
+axis x line*=bottom,
+axis y line*=left,
+axis z line*=left,
+xmajorgrids,
+ymajorgrids,
+zmajorgrids
+]
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=white, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+1	0	0\\
+0	1	0\\
+0	0	1\\
+}--cycle;
+\addplot3[only marks, mark=*, mark options={}, mark size=1.5811pt, color=blue, fill=blue] table[row sep=crcr]{%
+x	y	z\\
+0.7	0.1	0.2\\
+0.1	0.7	0.2\\
+0.1	0.2	0.7\\
+};
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=green, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0.333333333333333 0	0.666666666666667\\
+1	0	0\\
+0.5	0.5	0\\
+0.428571428571429	0.428571428571429	0.142857142857143\\
+}--cycle;
+
+
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=mycolor2, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0	0.75	0.25\\
+0.428571428571429	0.428571428571428	0.142857142857143\\
+0.333333333333333 0	0.666666666666667\\
+0 0 1\\
+}--cycle;
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=mycolor1, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y	z\\
+0	0.75	0.25\\
+0	1	0\\
+0.5	0.5	0\\
+0.428571428571429	0.428571428571429	0.142857142857143\\
+}--cycle;
+
+
+\end{axis}
+\end{tikzpicture}%

@@ -1,0 +1,51 @@
+In this section, we introduce our novel reactive system architecture for UAM ATM. We first define the reactive controller models for the individual components in the architecture. We then construct the composition of all the controllers and present the formal synthesis problem statement. In the following section, we present our contract-based synthesis method for decentralized reactive synthesis of vertiport hubs and vertiport controllers. 
+
+
+% \begin{equation}\label{eq:specs}
+% \varphi_i = \LTLglobally \text{ safe } \wedge \LTLglobally \LTLfinally \text{ progress}    
+% \end{equation}
+
+% Informally, this states that a controller that must always guarantee safety while always eventually ensuring progress. We formalize this notion in the next section. 
+ 
+% In the rest of this section, we formalize the problem statement. 
+%In the following, we present the contract-based assume-guarantee synthesis framework.  
+
+
+
+
+%  However, sectors must ensure that if a vehicle needs to pass through its region, it is eventually allowed to do so in order to make progress towards its goal. Thus, a sector can send an idle vehicle out of its region by requesting a handoff with a neighbour in order to make room for transiting vehicles to enter. 
+% However, this action can cause violations of safety requirements for the neighbouring regions. 
+% Hence, we propose the use of a runtime monitor or \emph{shield} that can correct the decisions of the sector as necessary to avoid such violations. 
+
+%This corrected sector action becomes a corrected vehicle 
+
+
+% When considering the environment the following are assumed:
+% (1) each tower's VLOS region is 2D, which may not be the case, since physical objects may create regions where the operator cannot see behind; 
+% and (2) the operator is capable of maintaining a vehicle within its region of control, i.e. we ignore the case when loitering too long causes the vehicle to leave the VLOS region.
+
+% In the following section, we formulate the set of vehicles moving in the environment as a Markov decision process (MDP). We then synthesize a policy in the MDP for each vehicle to transit from its origin to its destination with minimal cost and dynamically update the policy to avoid conflicts. We then formally define shields and their composition with sector control in order to guarantee the individual vehicle policies do not violate safety specifications of the sectors it transits. 
+
+
+% For a set of $k$ towers we represent the environment as a directed graph $\Graph$ with vertices $\regionSet = \{v_1,\dots,v_k\}$ and edges $\Edges \subseteq \regionSet \times \regionSet$.
+% Let each tower be a $\region_i \in \regionSet$ vertex in the directed graph and in each region, the loiter $\edge_{ii} \in E$ and transitions $\edge_{ij} \in E$ are the edges of $\Graph$, see Fig.~\ref{fig:Environment_directed} for an example. \hasan{Definition of edges needs more. Here, just named self edges as loiter and others as transition.}
+
+% \subsection{MDP formulation of the environment}
+% \label{ssec:MDPenvironment}
+% First consider the case of a single vehicle labelled $\Agent_z$ transiting in the environment.
+% We can model its behavior using a Markov decision process, defined by a tuple $\mdp_z = (\stateSpace_z,\sI,\Act_z,\Trans_z,\Reward_z,\Target_z)$. \looseness=-1
+% We define a state $\state_i\in \stateSpace_z$ as the condition where sector controller $V_i$ has authority over the vehicle.
+% For each state $\state_i$ there are two types of actions: \emph{loiter} $a_i \in \Act_z$  or \emph{hand-off request} $a_{ij} \in \Act_z$ to state $\state_j$.
+% The loiter in state $\state_i$ corresponds to a self-transition with probability $1$.
+% We define $p$ as the probability of a successful hand-off, i.e. a transition from sector $V_i$ to sector $V_j$.
+% Formally, we denote $\Trans_z(\state_i,a_{ij},\state_j) = p \in [0,1]$.
+% An unsuccessful hand-off can occur from events such as authority-responsibility mismatches between the two sector controllers, communications interference, or the shield of the sector denying entry. This results in the agent remaining inside its previous states $\Trans_z(\state_i,a_{ij},\state_i) = 1-p$. \looseness=-1
+
+% Extending the problem to $n$ vehicles, the overall model is formed from the product of the MDPs describing each individual vehicle:
+% $\mdp = (\stateSpace,\sI,\Act,\Trans,\Reward,\Target)$, where $\stateSpace = \prod_{z \in [1,n]} \stateSpace_z$, $\Act = \prod_{z \in [1,n]} \Act_z$, $\Trans$ and $\Reward$ are the transition and reward functions for the new product state space as defined in a similar manner above and the set of goal operators for all vehicles is defined by $\Target = \prod_{z \in [1,n]} \Target_z \subset \stateSpace$ .
+% This product system scales exponentially with the number of vehicles, $|\stateSpace| = |\stateSpace_z|^n$ and $|\Act| = |\Act_z|^n$.
+% Instead of calculating the optimal centralized policy, we decentralize by having each agent compute (offline) an optimal individual policy based upon its knowledge of the environment and co-ordinate (online) with other agents as they interact \cite{guestrin2002multiagent}. This approach is detailed section~\ref{sec:Decent_synth}. 
+
+% Since the policy is computed in a decentralized manner, we assume each vehicle has only limited information on the status of the entire UAM airspace.
+% This limited information can result in vehicles potentially violating safety requirements that they are not aware of by trying to move into a sector that is at capacity, thereby causing a conflict.
+% A shield is needed to guarantee that a sector does not accept a vehicle that will create a conflict within is region.   

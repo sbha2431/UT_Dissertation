@@ -1,0 +1,59 @@
+A winning strategy for the target in a game with a safety surveillance objective can be represented as a tree. 
+An \emph{abstract counterexample tree} $\counterex_\abstr$ for $(G_\abstr,\LTLglobally p_k)$ is a finite tree,  whose nodes are labelled with states in $\states_\abstr$ such that the following conditions are satisfied:
+\begin{itemize}
+\item[(1)] The root node is labelled with the initial state $s_\abstr^\init$.
+\item[(2)] A node is labelled with an abstract state  which violates $p_k$ (that is, $s_\abstr$ where $s_\abstr \not\models p_k$) iff it is a leaf.
+\item[(3)] The tree branches according to all possible transition choices of the agent. Formally, if an internal node $v$ is labelled with $(l_a,A_t)$, then there is unique $A_t'$  such that: (i) $((l_a,A_t),(l_a',A_t')) \in \trans_\abstr$ for some $l_a' \in L_a$, and (ii) for every $l_a' \in L_a$ such that $((l_a,A_t),(l_a',A_t')) \in \trans_\abstr$, there is a child $v'$ of $v$ labelled with $(l_a',A_t')$.
+\end{itemize}
+
+
+A \emph{concrete counterexample tree} $\counterex_\belief$ for $(G_\belief,\LTLglobally p_k)$ is a finite tree defined analogously to an abstract counterexample tree with nodes labelled with states in $\states_\belief$. Formally: 
+\begin{itemize}
+\item[(1)] The root node is labelled with the initial state $s_\belief^\init$;
+\item[(2)] A node is labelled with a belief state which violates $p_k$ (that is, $s_\belief$ where $s_\belief \not\models p_k$) iff it is a leaf;
+\item[(3)] The tree branches according to all possible transition choices of the agent. Formally, if an internal node $v$ is labelled with $(l_a,B_t)$, then there exists a unique $B_t'$  such that: (i) $((l_a,B_t),(l_a',B_t')) \in \trans_\belief$ for some $l_a' \in L_a$, and (ii) for every $l_a' \in L_a$ such that $((l_a,B_t),(l_a,B_t')) \in \trans_\belief$, there is a child $v'$ of $v$ labelled with $(l_a',B_t')$.
+\end{itemize}
+
+\bigskip
+
+Due to the overapproximation of the belief sets, not every counterexample in the abstract game corresponds to a winning strategy for the target in the concrete belief-set game.
+
+An abstract counterexample $\counterex_\abstr$ in $(G_\abstr,\LTLglobally p_k)$ is \emph{concretizable} if there exists a concrete counterexample 
+tree $\counterex_\belief$ in $(G_\belief,\LTLglobally p_k)$, that differs from $\counterex_\abstr$ only in the node labels, and each node labelled with $(l_a,A_t)$ in $\counterex_\abstr$ has label $(l_a, B_t)$ in $\counterex_\belief$ for which $B_t \subseteq \gamma(A_t)$.
+
+\bigskip
+
+\begin{figure}
+\subfloat[Abstract counterexample tree\label{fig:simple-safety-counterex-abstr}]{
+\input{figs/simple-safety-counterex-abstr.tex}\hspace{.5cm}
+}
+\hfill
+\subfloat[Concrete counterexample tree\label{fig:simple-safety-counterex-concr}]{
+\input{figs/simple-safety-counterex-concr.tex}\hspace{.5cm}
+}
+\caption{Abstract and corresponding concrete counterexample trees for the surveillance game discussed in Example~\ref{ex:simple-safety-counterex}.}
+\label{fig:simple-safety-counterex}
+
+\end{figure}
+
+\begin{example}\label{ex:simple-safety-counterex}
+Figure~\ref{fig:simple-safety-counterex-abstr} shows an abstract counterexample tree $\counterex_\abstr$ for the game $(\alpha_\part(G),\LTLglobally p_1)$, where $G$ is the surveillance game structure from Example~\ref{ex:simple-surveillance-game} and $\part$ is the abstraction partition from Example~\ref{ex:simple-abstr-game}, shown in Figure~\ref{fig:simple-abstr-game-partition}. The counterexample corresponds to the choice of the target to move to one of the locations $17$ or $23$, which, for every possible move of the agent, results in an abstract state with abstract belief $A_t = \{Q_4,Q_5\}$ violating $p_1$.
+A concrete counterexample tree $\counterex_\belief$ that demonstrates that $\counterex_\abstr$ is concretizable, since $\{17,23\} \subseteq \gamma(\{Q_4,Q_5\})$, is shown Figure~\ref{fig:simple-safety-counterex-concr}.
+\qed
+\end{example}
+
+\bigskip
+
+Since each abstract belief set can overapproximate multiple different concrete belief sets, there are potentially multiple trees labelled with concrete belief sets for which we need to check if they concretize a given abstract counterexample.
+
+For each counterexample $\counterex_\abstr$ in $(G_\abstr,\LTLglobally p_k)$ we define a set of trees $\trees(\counterex_\abstr)$, that consists of all trees $T$ that satisfy the following conditions:
+\begin{itemize}
+    \item The nodes of $T$ are labelled with states of $G_\belief$.
+    \item $T$ differs from $\counterex_\abstr$ only in the node labels, and each node labelled with $(l_a,A_t)$ in $\counterex_\abstr$ has a corresponding label $(l_a, B_t)$ in $T$ for which $B_t \subseteq \gamma(A_t)$.
+    \item $T$ satisfies conditions (1) and (3) from the definition of a concrete counterexample tree. That is, its leaf nodes are not necessarily labelled with states that violate $p_k$.
+\end{itemize}
+
+
+Thus, in order to check whether an abstract counterexample $\counterex_\abstr$ is concretizable, we need to check if the set $\trees(\counterex_\abstr)$ contains a tree for which \emph{all of its leaf nodes} are labelled with states $(l_a, B_t)$ such that $(l_a,B_t) \not \models p_k$.
+
+\emph{Remark:} In games with perfect sensing and no static sensors, each set $\trees(\counterex_\abstr)$ contains a single tree since for each state $(l_a,B_t)$ in $G_\belief$ all except for at most one of the successor states are labelled with singleton belief states that are captured precisely by the abstraction. Thus, an abstract counterexample has at most one potential concretization.

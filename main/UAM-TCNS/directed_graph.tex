@@ -1,0 +1,35 @@
+% \begin{figure}[h!]
+% 	\centering
+% \subfloat[\label{fig:fig:RegionsOutline}]{}
+% \subfloat[\label{fig:Environment_directed}]{
+% \begin{tikzpicture}[auto,node distance=8mm,>=latex,font=\small]
+%         \tikzstyle{round} = [thick,draw=black,circle]
+% \tikzstyle{action} = [circle, draw, fill=black,inner sep=0pt, minimum size=4pt]
+% \node[round] (s1) {$\design_{1}$};
+% \node[round, right=15mm of s1] (s3){$\design_{3}$};
+% \node[round, below right=15mm and 5mm of s1] (s2){$\design_{2}$};
+% \node[round, right=15mm of s3] (s5){$\design_{5}$};
+% \node[round, right=10mm of s2] (s4){$\design_{4}$};
+% \node[round, right= 10mm of s5] (s6){$\design_{6}$};
+
+% \draw[<->] (s1) -- node[left]{$e_{12}$} (s2);
+% \path[<->,draw] (s1) -- node{$e_{13}$} (s3);
+% \path[<->,draw] (s2) -- node{$e_{23}$} (s3);
+% \path[<->,draw] (s2) -- node{$e_{24}$} (s4);
+% \path[<->,draw] (s3) -- node{$e_{34}$} (s4);
+% \path[<->,draw] (s3) -- node{$e_{35}$} (s5);
+% \path[<->,draw] (s4) -- node[right]{$e_{45}$} (s5);
+% \path[<->,draw] (s5) -- node[below]{$e_{56}$} (s6);
+
+% % \path[->,draw] (s1) edge[loop above] node {$e_{1}$} (s1);
+% % \path[->,draw] (s2) edge[loop below] node {$e_{2}$} (s2);
+% % \path[->,draw] (s3) edge[loop above] node {$e_{3}$} (s3);
+% % \path[->,draw] (s4) edge[loop below] node {$e_{4}$} (s4);
+% % \path[->,draw] (s5) edge[loop above] node {$e_{5}$} (s5);
+% % \path[->,draw] (s6) edge[loop above] node {$e_{6}$} (s6);
+
+% \end{tikzpicture}}
+% \caption{The connectivity graph $G_\design$ of the UAM hub controllers $\design$ modeling the sectors $V$ in  Figure~\ref{fig:RegionsOutline}. 
+% Each edge $e_{ij}$ corresponds to $\design_i$ and  $\design_j$ being connected, i.e., the outputs of $\design_i$ are inputs to $\design_j$ and vice versa.}
+% \label{fig:Environment_directed}
+% \end{figure}

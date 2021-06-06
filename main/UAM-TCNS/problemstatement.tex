@@ -1,0 +1,192 @@
+\subsection{Controller models}
+\subsubsection*{Vertihub controller}We model the controller of each vertihub $V_i$ as a reactive system $\design_i = (\states_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_{i},\lambda_{i})$ with input and output variables $I_i$ and $O_i$ respectively. The specific instantiation of such a controller is problem-specific, however, we present an illustrative example. 
+
+% \begin{itemize}
+%     \item $Q_i$ is a set of states,
+%     \item the input alphabet $\ialphabetx{i}$ is the set of all possible environment inputs to the reactive controller,
+%     \item the output alphabet $\oalphabetx{i}$ is the set of all possible control actions by the reactive controller,
+%     \item the transition function $\delta_i$ maps the current state, environment input, controller output, to the next state,
+%     \item the output function $\lambda_i$ maps the current state and environment input to a controller output.
+% \end{itemize}
+\begin{eg}
+Consider the environment in Figure~\ref{fig:RegionsOutline} with vehicles moving between origin-destination vertiports. Each region $V_i$ is a vertihub with corresponding vertihub controller $\design_i$ where 
+\begin{itemize}
+    \item The state space $Q_i$ is the number of vehicles currently in the airspace of $V_i$, as well as the current delay time of any loitering vehicles in the airspace.
+    \item $q_{0_i}$ is the starting airspace configuration of aircraft in $V_i$.
+    \item The input alphabet is given by $\ialphabetx{i} = 2^{\inp_i}$. $\inp_i$ is the set of input variables and corresponds to \emph{requests} for the hub controller and the number of available landing slots in the region. We divide the requests into the following: landing, pass-through, take-off. 
+    \item The output alphabet is given by $\oalphabetx{i} = 2^{\out_i}$. $\out_i$ is the set of output variables and corresponds to the following actions: allow vehicles to pass through, send vehicles to a vertiport in the region to land, or force vehicles to loiter until it is safe to allow them to enter. We note that the output can allow multiple requests to be granted simultaneously. 
+    \item The transition function $\delta_i$ increments or decrements the number of vehicles and their corresponding delay times in the region based on the environment inputs and the resulting controller output. 
+\end{itemize}
+\end{eg}
+
+
+
+
+Together, all $k$ vertihub controllers form a connected system which we define as set of reactive systems $\design = \{\design_1, \dots \design_k\}$ with a corresponding \emph{connectivity graph} $G_{\design}$.
+We define a connectivity graph as a directed graph with each vertex corresponding to a reactive system.
+We say two reactive systems are \emph{connected} if they share an edge in the graph. \textcolor{black}{ We define the set of reactive systems $\design_j \in \design$, $i \neq j$ that share an edge with $\design_i$ as $connect(\design_i)$.}
+\begin{eg}
+In Figure~\ref{fig:RegionsOutline}, overlapping operational regions share an edge in the corresponding directed graph in Figure~\ref{fig:Environment_directed} and therefore the corresponding reactive systems are connected. We say that $connect(\design_1) = \{\design_2,\design_3 \}$.
+\end{eg}
+
+
+Note that a hub controller forcing vehicles to loiter in the handoff region affects the connected hub controller.
+For example, in Figure \ref{fig:RegionsOutline}, $\design_5$ forcing a vehicle loiter in $H_{56}$ affects the airspace of $\design_6$ and will as a result limit the number of vehicles that $\design_6$ can accept.
+These handoffs necessitate the use of \emph{contracts} between hubs to guarantee the global system behaves as desired. 
+
+\input{UAM-TCNS/directed_graph}
+
+\subsubsection*{Vertiport controller} We assume without loss of generality that all regions $V_i$ contain $m$ vertiports. We model the \emph{vertiport controller} corresponding to region $V_i$ as a reactive system  $\shield_i^j = (\states^j_i,q^j_{0_i},\ialphabetx{i}^{j'},\oalphabetx{i}^j,\delta^j_i,\lambda^j_i)$ with $\states^j_i$ being the state space and $q^j_{0_i}$ being the initial state. The input alphabet $\ialphabetx{i}^{j'}$ is defined to be $\ialphabetx{i}^{j'} = \ialphabetx{j}^i\times \oalphabetx{i}$. This construction allows for the output of $\design_i$ to form part of the input for $\shield^i_j$ for $j = 1,\dots,m$. %Furthermore, the output of the vertiport controller feeds directly as input to the vertihub controller. Formally, $\out^j_i \subset \inp_i$. 
+
+Figure \ref{fig:dist_shield} illustrates the relationship between hubs and vertiport controllers as well as the architecture of the composition. 
+
+
+\begin{eg}
+Continuing the running example based on Figure~\ref{fig:RegionsOutline}, each vertiport controller in the region $V_i$ has a corresponding set of input variables denoted $\inp_i^j$ and a resulting alphabet $\ialphabetx{i}^j$. This input corresponds to vehicles requesting to land that have been cleared by the corresponding vertihub controller  $\design_i$ and vehicles desiring to take off at one of its pads.
+Hence, the output of $\design_i$ forms part of the input of $\shield^i_j$ for $j = 1,\dots,m$.
+The output of the vertiport controller is the accepted or rejected take-off and landing requests as well as the number of remaining available landing pads which will then form part of the input to the hub controller. 
+\end{eg}
+
+
+%the outputs from the vertiport controllers feeding into the corresponding hub controllers. 
+
+\begin{figure}[h!]
+    % \hfill 
+    \centering
+\input{UAM-TCNS/shield_flow.tex}
+\caption{(a) Example region space with three vertiports and two operating regions with corresponding vertihubs and (b) Architecture of the composition of reactive systems. }
+\label{fig:dist_shield}
+\end{figure}
+%As seen in Figure~\ref{fig:dist_shield}, the vertiport controller outputs the number of available landing slots to its corresponding hub controller.
+In order for the reactive hub controller to be able to guarantee liveness properties, such as an upper bound on delay for all agents (a requirement), it needs to know the maximum time the vertiport controller will occupy a landing slot, i.e., it needs to know the worst case length of time a landing slot will be unavailable. 
+Such an interaction between vertiport controller and hub controller is an example of a \emph{contract} and will be formally detailed in section~\ref{sec:distshield}.
+
+\subsection{Controller composition}\label{sec:comp}
+As mentioned previously, the inputs and outputs of the vertihub and vertiport controllers are linked. In this section, we formalize this notion by constructing the \emph{composition} of controllers.
+We first define the composition of the $m$ vertiport controllers $\shield_i^j$ for all $j = 1,\dots,m$ corresponding to hub controller $\design_i$.
+Formally, the vertiport controllers $\{\shield_i^1, \ldots,\shield_i^m\}$ in region $V_i$ can be composed as $\shield_i = \shield_i^1 \comp \ldots \comp \shield_i^m$. %\textcolor{magenta}{Is it intentional that you define the compsition as $S_i$, but the reactive system as $S^i$ in the next sentence?}
+The resulting composition is also a reactive system
+$\shield^i=(\overline{\states}_i, \overline{q}_{0_i},\overline{\Sigma}_{\inp_i}, \overline{\Sigma}_{\out_i}, \overline{\delta}_i, \overline{\lambda}_i)$ defined as follows:
+\begin{itemize}
+    \item the set $\overline{\states}_i = \bigotimes_j \states_i^j$ of states is formed by the product of the states of all vertiports $\shield^i_j \in \shield^i$.
+    \item The initial state $\overline{q}_{0}$ is formed by the initial states $q_{0_i}^j$ of all $\shield_i^j \in \shield^i$.
+    \item The input alphabet $\overline{\Sigma}_{\inp_i}$ is given by $\overline{\Sigma}_{\inp_i}  = \bigotimes_{j=1}^m \ialphabetx{i}^{j'}$.
+    \item The output alphabet $\overline{\Sigma}_{\out_i},$ of the joint system  $\shield^i$ is given by $\overline{\Sigma}_{\out_i} = \bigotimes_{j=1}^m \oalphabetx{i}^j$.
+    \item The transition function $\overline{\delta}_i$ updates, for each vertiport controller $\shield_i^j \in \shield_i$, the $\states^j_i$ part of the state 
+    in accordance with the transition function $\delta^j_i$.
+%the projection $\symb(I_j)$ as input.
+\item The output function $\overline{\lambda}_i$ labels each state with the union of the outputs of all $\shield^i_j \in \shield^i$ according to $\lambda^j_i$.
+\end{itemize}
+
+%
+% While multiple vertiports may be able to read the same input variables to indicate
+% broadcast from the vertihub controller, the sets of outputs are pairwise disjoint. %: for $k \neq j$, we have $\out_k \cap \out_j = \emptyset$.
+% %Furthermore, vertiports cannot directly read each others outputs, that is, for all $k$ and $j$, we have $\out_k \cap \out_j = \emptyset$.
+% The output alphabet of the joint system  $\shield^i$ is given by $\oalphabetx{i}' = \bigotimes_{j=1}^m \oalphabetx{i}^j$, and the input alphabet is given by $\ialphabetx{i}'  = \bigotimes_{j=1}^m \ialphabetx{i}^{j'}$.
+% %
+% The joint behaviour of the composed vertiport system is a reactive system 
+% $\shield^i=(\states, q_{0}, \ialphabet,\oalphabet, \delta,\lambda)$ defined as follows: 
+
+
+
+
+
+
+Next, we define the composition of the joint vertiport controllers $\shield^i$ %\textcolor{magenta}{[note that in the composition definition below you use $S_i$ to denote the vertiport controller composition]} and the corresponding hub controller $\design_i$. 
+Formally, we compose the two systems in serial fashion in the following way: $\design_i \comp \shield_i := \mathcal V_i =
+(\hat{\states}_i, \hat{q}_{0_i}, \hat{\Sigma}_{\inp},\oalphabetx{i}, \hat{\delta}_i,
+\hat{\lambda}_i)$, with 
+\begin{itemize}
+    \item states $\hat{\states}_i = \states_i \times \overline{\states}_i$,
+    $\hat{q_{0}}_i = (q_{0_i},\overline{q}_{0_i})$,
+    \item input alphabet $\hat{\Sigma}_{\inp} = \ialphabetx{i} \times \overline{\Sigma}_{\out_i}$,
+    \item transition function $$\hat{\delta_i}((q_i,\overline{q}_i),\hat{\sigma}_\inp) = (\delta_i(q_i,\isymbx{i}),\overline{\delta}_i(\overline{q}_i,(\overline{\sigma}_{\out_i},\isymbx{i}))),$$
+    \item and output function $$\hat{\lambda}_i((q_i,\overline{q}_i),\hat{\sigma}_\inp) = \lambda_i(q_i,(\isymbx{i},\overline{\lambda}_{i}(\overline{q}_i,\overline{\sigma}_{i}))).$$ 
+\end{itemize}
+   
+    
+    
+   Note that, by construction, the output alphabet of the composition $\oalphabetx{i}$ is the same as that of the hub controller.
+   
+
+Finally, the \emph{global system} $ \mathcal V = \{ \mathcal V_1 \dots \mathcal V_k \}$ is the composition of all $V_i$ and the definition proceeds analogously to the composition of the vertiports. The architecture of the defined composition in an example environment with two hub controllers is illustrated in Figure \ref{fig:dist_shield}. We remark that the \emph{global composition} is of the form of a multi-agent reactive system as studied in \cite{multiagentshield}.
+
+In the next 2 subsections, we define the properties that we want the global system to satisfy and formally define the synthesis problem.
+In Section \ref{sec:distshield}, we present our synthesis procedure for the vertiport and hub controllers and prove the global system stemming from their composition will satisfy all required properties. 
+
+
+
+\subsection{Specifications}\label{sec:specs}
+Recall that each hub controller is required to satisfy a user provided specification. Formally, the specification for hub controller $\design_i$ must be of the form 
+
+\begin{equation}\label{eq:formalspechub}
+    \varphi_{\design_i} = \LTLglobally S_i \wedge \LTLglobally \LTLfinally P_i
+\end{equation}
+
+\noindent where $S_i, P_i \subseteq Q_i$. 
+
+Similarly, each vertiport controller must also satisfy its own user-provided specification, and is defined the same way. For vertiport controller $\shield^j_i$ we have $\varphi_{\shield^{j}_i} = \LTLglobally S_{i}^j \wedge \LTLglobally \LTLfinally P_{i}^j$ where $S_{i}^j, P_{i}^j \subseteq Q_i^j$. 
+
+For each region $V_i$, we denote the conjunction of all the vertiport specifications $\varphi_{\shield^{j}_i}$ for $j=1,\ldots,m$ with the corresponding vertihub specification $\varphi_{\design_i}$ as $\varphi_i := \varphi_{\design_i} \bigwedge \left( \varphi_{\shield^{1}_i} \wedge \ldots \wedge 
+\varphi_{\shield^{m}_i}\right)$. 
+
+\begin{eg}
+A simple example of a specification in the form of~\eqref{eq:formalspechub} can be $\LTLglobally \left(\text{fewer than N vehicles in region} \right) \wedge \LTLglobally\LTLfinally (\text{vehicle request is granted})$. Informally, such a specification requires that no more than $N$ vehicles be in the region at any given time and that always eventually any vehicle is allowed to pass-through or land in the region if they request it, i.e., they cannot be made to wait forever. 
+\end{eg}
+
+
+\subsection{Synthesis Problem}\label{sec_correctness}
+
+Now we define the basic  requirements that the overall composed system must satisfy: namely it should enforce correctness with respect to a given user specification.
+Informally, this translates to enforcing safety while guaranteeing progress. 
+
+% \paragraph{\textbf{No unnecessary interference}}
+% A shield is only allowed to interfere when the output of the reactive system  is not \emph{correct}.
+% %
+% Formally, given a safety specification $\spec$, a reactive system $\shield = (\states',q_{0}',\ialphabet'\times\oalphabet',\oalphabet,\delta',\lambda'$ \emph{does not interfere unnecessarily} if for any reactive system
+% $\design = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$ and any trace
+% $(\itrace\parallel\otrace)\in (\ialphabet \times \oalphabet)^\infty$
+% of $\design$ that is not wrong, we have that $\shield(\itrace \parallel  \otrace) = \otrace$.
+
+% \begin{definition}
+% A \emph{shield} for a given safety specification $\spec$ is a reactive system $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$
+% such that for any reactive system $\design = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$ it holds that $(\design \comp \shield) \models \spec$ and $\shield$  does not deviate from $\design$ unnecessarily.
+% \end{definition}
+
+% \begin{definition}
+% A set of localized \emph{shields} $\shield = [\shield_1 \cdots \shield_n]$ for a conjunction of specifications $\spec = \bigwedge_i^n \spec $ is a set of reactive systems such that for $\shield_i \in \shield$, where $\shield_i = (\states',q_{0}',\overline{\ialphabet}_i\times\oalphabetx{i},\oalphabetx{i},\delta',\lambda')$,
+% for any set of connected reactive systems $\design = [\design_1 \cdots \design_n]$ where $\design_i = (\states_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_i,\lambda_i)$ with connectivity graph $G_{\design}$, it holds that $\design_i \comp \shield_i \models \spec_i$ with no unnecessary deviation. Additionally, it must hold that the global composition is correct with respect to the conjunction of specifications. Formally, $(\design_1\comp \shield_1) \comp \cdots \comp (\design_n\comp \shield_n) \models \varphi_1 \wedge \cdots \wedge \varphi_n$.
+% \end{definition}
+
+% \subsection{Safety shield formulation}\label{sec:caseshield}
+
+% The goal is to ensure the successful transition of each UAV to its corresponding goal location or without the violation of any safety requirements. If a UAV needs to pass through an operator's region, the shield needs to assess if this is allowed and act accordingly. We require that shield not allow violation of safety specifications as well as guaranteeing that every UAV that wants to pass through its region is eventually allowed to do so. We give the shield the power to do the following:
+% \begin{itemize}
+%     \item Make UAVs wait/loiter before entering its region (for a prescribed maximum amount of time).
+%     \item Force UAVs to leave the region, but without causing the disruption of currently executing tasks. 
+% \end{itemize}
+% In order to give the required guarantees we will need to make assumptions on the behaviour of the shields of neighbouring regions. We cover this in more detail in Section \ref{sec:distshield}. 
+
+% \subsection{Safety specifications}
+% This overall system must abide by a set of \emph{global} safety specifications given in LTL by $\varphi_g$. We are interested in employing a \emph{separation of concerns} approach between the MDP and the shields. Hence, we assume that $\varphi_g$ can be divided into into a conjunction of two classes of specifications $\varphi_g = \varphi_r \wedge \varphi_f$. 
+
+% The shields handle \emph{region-specific} requirements $\varphi_r$. An example of such a specification can include not allowing more than a certain number of UAVs to operate within their region at any given time. This can vary from region to region and is thus under purview of the respective shield. Given $n$ regions (in Figure~\ref{fig:RegionsOutline} $n=6$), we represent $\varphi_r$ as a conjunction of region-specific specifications, i.e.  $\varphi_r = \bigwedge_{i=1}^n\varphi_i$. 
+
+% The second class of requirements, which we denote as $\varphi_f$ are \emph{route-based} requirements. An example of such a requirement may be not allowing too many UAVs to pass through the same region at the same time on their route.  Since these involve UAVs coordinating across multiple regions, the shield of each region cannot be responsible for the satisfaction of such specifications as each shield can only observe UAVs within its region. We will require the UAV routes be computed in a decentralized manner, and thus they will need to dynamically coordinate at run-time to avoid the violation of such specifications. 
+
+Given (1) environment structure with $k$ vertihubs, (2) $m$ corresponding vertiports for each hub, (3) hub connectivity graph $G_D$, and (4) GR(1) specifications $\varphi_{\design_1},\dots, \varphi_{\design_k}$ for each vertihub and vertiport specifications $\varphi_{\shield_i^j}$ for all $i = 1,\ldots,k$ and $j=1,\ldots,m$ synthesize a set of hub controllers $\design = [\design_1, \ldots, \design_k]$ and their corresponding vertiport controllers $\shield^i_j$ for all $i = 1,\dots, k$ and $j = 1,\dots, m$ such that the global composition of all controllers is \emph{winning} with respect to $\bigwedge_{i=1\dots k}\varphi_i$.
+Formally, synthesize hub and vertiport controllers such that:
+\begin{equation}\label{eq:problem}
+\left( \design_1 \comp \left( S_1^1 \comp \dots S_1^m \right) \right) \comp \dots \left( \design_k \comp \left( S_k^1 \comp \dots S_k^m \right) \right) \models \bigwedge_{i=1\dots k}\varphi_i
+\end{equation}
+
+
+
+
+
+% synthesize a set of localized shields $\shield = [\shield_1 \cdots \shield_n]$ for any set of reactive systems $\design = [\design_1 \cdots \design_n]$ with connectivity graph $G_{\design}$, such that each $\shield_i$ is (1) correct with respect to $\spec_i$, (2) can only correct the outputs of $\design_i$, (3) can only observe the outputs of sectors in $connect(\design_i)$, and (4) global composition of the shields and design is correct with respect to the conjunction of safety specifications. Informally (4) states that $\shield_i$ must not only be correct with respect to $\spec_i$, but also must not prevent all connected shields from satisfying their safety specifications.
+
+%\hasan{The problem statement hides the complex situation where $\spec_i$ depends on states/propositions from all regions, yet the shield can only limit actions from one region. Maybe add a remark here? NATASHA ADDS:  excellent point, as safety is an emergent system property, and thus depends on the total state.}
+
+In the next section, we present the decentralized contract-based synthesis framework to generate the controllers. 
+

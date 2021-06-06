@@ -1,0 +1,154 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{1.00000,0.00000,1.00000}%
+\definecolor{mycolor2}{rgb}{0.00000,1.00000,1.00000}%
+%
+
+\begin{tikzpicture}[scale=0.75]
+
+\begin{axis}[%
+width=4.46in,
+height=3.684in,
+% at={(1.251in,0.632in)},
+scale only axis,
+xmin=-0.05,
+xmax=1.2,
+tick align=outside,
+ymin=-0.05,
+ymax=1.2,
+zmin=-0.05,
+zmax=1.2,
+view={105}{35},
+axis line style={draw=none},
+ticks=none,
+axis x line*=bottom,
+axis y line*=left,
+axis z line*=left,
+% legend style={at={(1.03,1)}, anchor=north west, legend cell align=left, align=left, draw=white!15!black},
+line width = 1
+]
+
+\addplot3[area legend, line width=1.0pt, draw=black, fill=mycolor2, fill opacity=0.1]
+table[row sep=crcr] {%
+x	y	z\\
+0.999999999999999	4.44089209850063e-16	4.44089209850063e-16\\
+2.22044604925031e-16	1	3.33066907387547e-16\\
+4.9960036108132e-16	4.44089209850063e-16	0.999999999999999\\
+}--cycle;
+% \addlegendentry{data1}
+
+
+\addplot3[area legend, dotted, line width=1.0pt, draw=black, fill=green, fill opacity=0.25]
+table[row sep=crcr] {%
+x	y	z\\
+0.5	2.77555756156289e-17	0.5\\
+1	2.77555756156289e-17	5.55111512312578e-17\\
+0.6	0.4	5.55111512312578e-17\\
+0.31578947368421	0.368421052631579	0.315789473684211\\
+}--cycle;
+% \addlegendentry{data2}
+
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=green]
+table[row sep=crcr] {%
+x	y	z\\
+1	-3.05311331771918e-16	-3.05311331771918e-16\\
+0.807272727272727	0.192727272727273	-3.05311331771918e-16\\
+0.576	-2.77555756156289e-16	0.424\\
+}--cycle;
+% \addlegendentry{data3}
+
+
+\addplot3[area legend, dotted, line width=1.0pt, draw=black, fill=mycolor1, fill opacity=0.25]
+table[row sep=crcr] {%
+x	y	z\\
+0.6	0.4	-1.94289029309402e-16\\
+-1.94289029309402e-16	1	-1.94289029309402e-16\\
+-2.22044604925031e-16	0.5	0.5\\
+0.315789473684211	0.368421052631579	0.315789473684211\\
+}--cycle;
+% \addlegendentry{data4}
+
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=mycolor1]
+table[row sep=crcr] {%
+x	y	z\\
+-4.16333634234434e-16	1	-4.16333634234434e-16\\
+0.368888888888889	0.631111111111111	-4.30211422042248e-16\\
+-4.30211422042248e-16	0.723333333333333	0.276666666666667\\
+}--cycle;
+% \addlegendentry{data5}
+
+
+
+
+
+\addplot3[area legend, dashed, line width=1.0pt, draw=black, fill=mycolor2]
+table[row sep=crcr] {%
+x	y	z\\
+-6.93889390390723e-17	-8.32667268468867e-17	1\\
+0.374285714285715	-8.32667268468867e-17	0.625714285714285\\
+-8.32667268468867e-17	0.218333333333334	0.781666666666667\\
+}--cycle;
+% \addlegendentry{data7}
+
+\addplot3[only marks, mark=*, mark options={}, mark size=1.5811pt, color=blue, fill=blue] table[row sep=crcr]{%
+x	y	z\\
+0.7	0.1	0.2\\
+0.1	0.7	0.2\\
+0.2	0.1	0.7\\
+};
+% \addlegendentry{data8}
+
+\addplot3[only marks, mark=x, mark options={}, mark size=1.5811pt, color=red, fill=red] table[row sep=crcr]{%
+x	y	z\\
+0.6	0.3	0.1\\
+0.1	0.6	0.3\\
+0.05	0.05	0.9\\
+};
+
+
+\addplot3[-Straight Barb, color=black, point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append }]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	1.125	0	0\\
+};
+% \addlegendentry{data9}
+
+\addplot3[-Straight Barb, color=black, point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append}]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	0	1.125	0\\
+};
+% \addlegendentry{data10}
+
+\addplot3[-Straight Barb, color=black, point meta={sqrt((\thisrow{u})^2+(\thisrow{v})^2+(\thisrow{w})^2)}, point meta min=0, quiver={u=\thisrow{u}, v=\thisrow{v}, w=\thisrow{w}, every arrow/.append}]
+ table[row sep=crcr] {%
+x	y	z	u	v	w\\
+0	0	0	0	0	1.125\\
+};
+% \addlegendentry{data11}
+
+\end{axis}
+
+% \begin{axis}[%
+% width=10.989in,
+% height=5.747in,
+% at={(0in,0in)},
+% scale only axis,
+% xmin=0,
+% xmax=1,
+% ymin=0,
+% ymax=1,
+% axis line style={draw=none},
+% ticks=none,
+% axis x line*=bottom,
+% axis y line*=left,
+% %legend style={legend cell align=left, align=left, draw=white!15!black}
+% ]
+% \end{axis}
+\end{tikzpicture}%

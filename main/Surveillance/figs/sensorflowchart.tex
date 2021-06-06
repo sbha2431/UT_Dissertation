@@ -1,0 +1,52 @@
+\definecolor{bg}{HTML}{ddeedd}
+\definecolor{comp}{HTML}{c2d4dd}
+\definecolor{impl}{HTML}{b0aac0}
+\definecolor{ligb}{HTML}{5E7FC6}
+\definecolor{bodybl}{HTML}{85A1DC}
+\definecolor{headbl}{HTML}{264C9C}
+\definecolor{bgyel}{HTML}{FFDC6B}
+\definecolor{bodyyel}{HTML}{FFE58F}
+\definecolor{headyel}{HTML}{E9BB25}
+\definecolor{gr1}{HTML}{00FF00}
+\definecolor{or1}{HTML}{FFAA00}
+\definecolor{ye1}{HTML}{FFFF00}
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+minimum height=2em]
+\def\checkmark{\tikz\fill[scale=0.6](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+%
+\centering
+\begin{tikzpicture}[every node/.style={draw, text centered, shape=rectangle, rounded corners, text width=2.5cm, minimum height=0.8cm, inner sep=5pt}]
+%\tikzstyle{outer}= [draw, text centered, shape=rectangle, text width=2cm, minimum height=1cm]
+%\tikzstyle{inner}=[draw, text centered, shape=rectangle, rounded corners, text width=3.8cm, minimum height=1.1cm, inner sep=5pt]
+\tikzstyle{decision} = [diamond, draw, aspect=3 , inner sep=3pt]
+
+\node (uncertainty) {Sensor uncertainty};
+\node[below=0.6cm of uncertainty] (fov){- Field of view\\- Sensor range};
+\node[fit=(fov)(uncertainty),draw,dashed,minimum width=1.2cm,label={[above]\textbf{Sensor Parameters}}](senseparam){};
+\node [below=1.5cm of fov](static){Operating regions};
+\node[fit=(static),draw,dashed,minimum width=1.2cm,label={[above]\textbf{Static Sensors}}](staticsenseparam){};
+\node[right=1cm of fov,text width=1cm] (vis) {$vis$};
+\node[right=0.5cm of uncertainty,text width=2cm] (stateest) {Target state\\ estimation};
+\node[right=0.5cm of stateest,text width=1cm] (U) {$U$};
+\node[right=1.0cm of vis,text width=1cm] (sense) {$sense$};
+\node[right=1cm of static,text width=1cm] (M) {$\mathcal M$};
+\node[above right=0.5cm and 2cm of M,text width=1cm,very thick] (obs) {$obs$};
+
+ \path[->,draw,very thick] (senseparam) -| (stateest);
+ \path[->,draw,very thick] (stateest) -- (U);
+ \path[->,draw,very thick] (U) -- (sense);
+ \path[->,draw,very thick] (sense) |- (obs);
+ \path[->,draw,very thick] (M) |- (obs);
+
+  \path[->,draw,very thick] (fov) -- (vis);
+ \path[->,draw,very thick] (vis) -- (sense);
+ \path[->,draw,very thick] (static) -- (M);
+
+\end{tikzpicture}
