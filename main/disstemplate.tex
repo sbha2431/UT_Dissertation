@@ -21,6 +21,8 @@
 % need a capability in your dissertation, feel free to comment out   %
 % the package usage command.					     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{macros.tex}
+\usepackage{pgfplots} 
 
 \usepackage{amsmath,amsthm,amsfonts,amscd} 
 				% Some packages to write mathematics.
@@ -29,7 +31,7 @@
 \usepackage{makeidx}       	% Package to make an index.
 \usepackage{epsfig}         	% Allows inclusion of eps files.
 \usepackage{url}		% Allows good typesetting of web URLs.
-%\usepackage{draftcopy}		% Uncomment this line to have the
+\usepackage{draftcopy}		% Uncomment this line to have the
 				% word, "DRAFT," as a background
 				% "watermark" on all of the pages of
 				% of your draft versions. When ready
@@ -37,6 +39,45 @@
 				% it out with a percent sign to remove
 				% the word draft before you re-run
 				% Makediss for the last time.
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{ifthen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tikz stuff
+\usepackage{tikz}
+\usetikzlibrary{patterns,arrows,arrows.meta,calc,shapes,shadows,decorations.pathmorphing,decorations.pathreplacing,automata,shapes.multipart,positioning,shapes.geometric,fit,circuits,trees,shapes.gates.logic.US,fit}
+\tikzstyle{round} = [thick,draw=black,circle]
+
+\tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},
+	%default radius will be 1pt. 
+	cross/.default={4pt}}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+}
+
+\usetikzlibrary{intersections}
+\usepackage{tkz-euclide}
+\usetikzlibrary{backgrounds,scopes}
+% \usetkzobj{all}
+
+\tikzstyle{vert} = [thick,draw=blue,rectangle,fill=bodybl,rounded corners]
+\tikzstyle{hub} = [thick,draw=red,and gate US,fill=red!20!white]
+\tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},
+	%default radius will be 1pt. 
+	cross/.default={4pt}}
+
+\newcommand{\dashrule}[1][black]{%
+	\color{#1}\rule[\dimexpr.5ex-.2pt]{4pt}{.4pt}\xleaders\hbox{\rule{4pt}{0pt}\rule[\dimexpr.5ex-.2pt]{4pt}{.4pt}}\hfill\kern0pt%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \author{Craig William McCluskey}  	% Required
 
@@ -70,8 +111,7 @@
 % 
 %
 \supervisor
-	[Isaac Newton]
-	{Johannes Kepler}
+	{Ufuk Topcu}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -191,8 +231,9 @@
 
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{cor}[thm]{Corollary}
-\newtheorem{lem}[thm]{Lemma}
+\newtheorem{lemma}[thm]{Lemma}
 \newtheorem{prop}[thm]{Proposition}
+\newtheorem{eg}[thm]{Example}
 \newtheorem{ax}{Axiom}
 
 \theoremstyle{definition}
@@ -263,10 +304,10 @@
 % Dedication and/or epigraph are optional, but must occur here.      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\begin{dedication}
-\index{Dedication@\emph{Dedication}}%
-Dedicated to my wife Shirley.
-\end{dedication}
+%\begin{dedication}
+%\index{Dedication@\emph{Dedication}}%
+%Dedicated to my wife Shirley.
+%\end{dedication}
 
 
 \begin{acknowledgments}		% Optional
@@ -317,17 +358,24 @@ This document and its source file show to write a Doctoral Dissertation using
 % of the include statements (something I found helpful in my own
 % dissertation).
 %
+
 \include{chapter-introduction}
 
-\include{chapter-instructions}
+\include{Surveillance/main}
 
-\include{chapter-howtouse}
+\include{UAM-TCNS/main}
 
-\include{chapter-makingbib}
+\include{RuntimeInfo-ICRA/root}
 
-\include{chapter-tables+figs}
-
-\include{chapter-math}
+%\include{chapter-instructions}
+%
+%\include{chapter-howtouse}
+%
+%\include{chapter-makingbib}
+%
+%\include{chapter-tables+figs}
+%
+%\include{chapter-math}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
