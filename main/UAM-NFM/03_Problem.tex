@@ -1,0 +1,180 @@
+
+
+
+\subsection{Problem Formulation}
+
+
+
+
+%Note that when a vehicle makes a request $r$ from a hub controller it \emph{self-reports} the values for $t,c$. An adversarial (or selfish) agent can take advantage of such a framework. For the purposes of this paper we assume vehicles report these numbers faithfully. Alternatively, there are proposals for a centralized database that all hub controllers have access to in order to verify information from agents. \textbf{From talks with Skygrid, not sure if there is any citations for this}. 
+
+
+
+
+% \subsubsection{Transition system model for vertihub controller}
+% A vertihub controller is represented by a tuple $\left(\mathcal{O}^{\text{init}}_i,\mathcal T_i\right)$ where $\mathcal{O}^{\text{init}}_i$ is the request allocation for the tower $\mathcal T_i$ and $\mathcal{T}_i = \left(S_i, s_{\text{init}_i},R_i, \text{AP}_i,L_i,\mathcal W_i\right)$ is a weighted transition system where
+
+% \begin{itemize}
+%     \item $S_i$ is of the set of all currently unapproved requests. Formally, if there are currently $m$ unapproved requests, we write $S_i = \{O_{i,1} \dots O_{i,m}\}$
+%     % \nok{In the previous section (in the definition of requests), request is represented by $\mathcal{O}$. Probably easier to change the notation in the definition to $\mathcal{R}$.
+%     % Also, instead of using the tuple notation 
+%     % $S_i = \left(\mathcal{R}_{i,1} \dots \mathcal{R}_{i,m}\right)$,
+%     % we should use the set notation
+%     % $S_i = \left\{\mathcal{R}_{i,1} \dots \mathcal{R}_{i,m}\right\}$,
+%     % i.e., change $(\ldots)$ to $\{\ldots\}$}
+%     \item $s_{\text{init}_i}$ is the initial set of requests $\mathcal{O}^{\text{init}}_i$.
+%     \item $R_i$ is the transition function that governs how requests evolve. We have $\left(S^t_i,S^{t+1}_i \right) \in R_i$ if:
+%     \todo{I think all the $\mathcal{R}$ in the bullets below should be $\mathcal{O}$}
+%     \begin{itemize}
+%         \item all \emph{approved requests} at timestep $t$, denoted $O_{i,a}^t \subseteq S^t_i$,  are not present in $S^{t+1}_i$, i.e., if $O_{i,j} \in  O_{i,a}^t$ then $\mathcal{R}_{i,j} \notin S^{t+1}_i$, and
+%         \item all unapproved requests at timestep $t$, $S^{t}_i \setminus \mathcal{R}_{i,a}^t$ have their time remaining decremented, i.e., for all $\mathcal{R}_{i,j} = (D_{i,j},T_{i,j}.C_{i,j})$ and $\mathcal{R}_{i,j} \in S^{t}_i \setminus \mathcal{R}_{i,a}^t$, we will have $\mathcal{R}_{i,j} \in S^{t+1}_i$ and $\mathcal{R}_{i,j} = (D_{i,j},\max(T_{i,j}-1,0).C_{i,j})$
+%     \end{itemize}
+% \end{itemize}
+% Informally, $R_i$ removes a request from $S_i$ if it is approved, and decrements the remaining timer on the request if it is not. At every timestep, the decision problem for the controller is to choose a set $R_{i,a}^t \subseteq S^{t}_i$ of requests to approve. 
+
+% We note that the state space can also include additional features of interest, such as number of vehicles in the airspace, their landing/take-off statuses, and others. However, for notational simplicity we do not include these in the definition presented in this paper. In practice, these features alongside the relevant modifications to the transition function are straightforward to include. 
+
+% The aim of the transition system is to reach a \emph{goal state} denoted as $s_{\text{final}} \in S_i$. Since the hub controller needs to eventually grant all requests, $s_{\text{final}}$ corresponds to the state with no more pending requests. Formally, we have $s_{\text{final}} = \emptyset$.  
+
+
+
+
+
+\subsubsection{Global system}
+The global system is the composition of the vertihub controllers. Assume we have $N$ vertihub controllers $\mathcal{T}_1 \dots \mathcal{T}_N$. Recall that I defined a connectivity graph $G_{\mathcal{T}}$ as a directed graph with each vertex corresponding to a controller. Two controllers are \emph{connected} if they share an edge in the connectivity graph. Let $connect(\mathcal T_i)$ be the set of hub controllers $\mathcal{T}_j$ where $i \neq j$, that share an edge with $\mathcal{T}_i$. For example, in Figure~\ref{fig:RegionsOutline}, overlapping hub regions share an edge in the corresponding directed graph in Figure~\ref{fig:Environment_directed}, and therefore the corresponding controllers are connected. 
+
+Formally, the global system is a tuple $(\mathcal{O}^{\text{init}},\Phi, \mathcal{T})$ where $\mathcal{O}^{\text{init}} = \{O_1,\dots,O_M\}$ is the global set of requests across all vertihubs, $\Phi: \{\mathcal{T}_1, ..., \mathcal{T}_N\} \rightarrow 2^{|\mathcal{O^{\text{init}}}|}$ is the \emph{request allocation function} such that $\Phi(\mathcal{T}_i)$ is the request set allocated to hub $\mathcal{T}_i$, and $ \mathcal{T}= \left(S, s_{\text{init}},\Delta, \text{AP},L\right)$ is a networked composition of $N$ hub controllers $\mathcal{T}_1,\dots,\mathcal{T}_N$ such that:
+\begin{itemize}
+    \item $S = \left(S_1, S_2, \dots, S_N\right)$ where $S_i$ is the set of all currently unapproved requests assigned to hub $\mathcal{T}_i$.
+    Note, however, that due to possible reallocation of requests, it is not necessary that $S_i$ only contains the requests in $s_{\text{init}_i}$. Instead, it contains requests in $\bigcup_i s_{\text{init}_i}$ such that each request is assigned to at most one hub, i.e., $S_i \cap S_j = \emptyset$ for all $i, j$.
+    \item $s_{\text{init}} = \left(s_{\text{init}_1},s_{\text{init}_2},\dots,s_{\text{init}_N} \right)$
+    \item $\Delta \subseteq S \times S$ such that $\left(S^t, S^{t+1}\right) \in \Delta$ if for each unapproved request $O_i = (r, T, c) \in S^t_i$ at each hub $\mathcal{T}_i$,
+    \begin{itemize}
+    \item it remains unapproved with its time remaining decremented and either assigned to the same hub, i.e., $O_i = (r, T-1, c) \in S^{t+1}_i$, or a connected hub, i.e., $O_i = (r, T-1, c) \in S_j^{t+1}$ for some $\mathcal{T}_j \in connect(\mathcal{T}_i)$, or
+    \item it is approved by hub $\mathcal{T}_i$ or a connected hub $\mathcal{T}_j \in connect(\mathcal{T}_i)$, i.e., $O_i \in \mathcal{O}^t_{i,a} \cup \mathcal{O}^t_{j,a}$, in which case the request is not present in $\bigcup_k S_k^{t+1}$.
+    \end{itemize}
+    \item $ \text{AP} =  \text{AP}_1 \cup  \text{AP}_2 \cup \dots \cup  \text{AP}_N$
+    \item $L : S \to 2^{\text{AP}}$ such that $L(s_1, \ldots, s_N) = \bigcup_i L_i(s_i)$.
+\end{itemize}
+
+%\begin{itemize}
+%    \item $S = \left(S_1,S_2,\dots,S_N\right)$ where $S_i$ is the statespace of %the hub $\mathcal{T}_i$
+%    \item $s_{\text{init}} = %\left(s_{\text{init}_1},s_{\text{init}_2},\dots,s_{\text{init}_N} \right)$
+%    \item $R \subseteq S \times S$. We construct $R$ as follows
+%    \begin{itemize}
+%        \item  $R = \left(\tilde{R}_1, \tilde{R}_2,\dots,\tilde{R}_N\right) %\cup \left(\overline{R}_1, \overline{R}_2,\dots,\overline{R}_N\right)$ where %$R_i \subseteq S_i \times S_i $ and $\overline{R}_i = S_i \times S_j$ for all %$j \in connect(i)$.
+%    \end{itemize}
+%    \item $ \text{AP} =  \text{AP}_1 \cup  \text{AP}_2 \cup \dots \cup  %\text{AP}_N$
+%    \item $L = (L_1,L_2,\dots, L_N)$ with $L_i = S_i \rightarrow %2^{\text{AP}_i}$
+%\end{itemize}
+
+
+Put simply, we construct the transition function $\Delta$ as the composition of \emph{intra-hub} transitions and \emph{inter-hub} transitions. Since vehicles can only move between neighbouring hubs, \emph{inter-hub} transitions are limited to occurring only between those hubs that are connected in the graph $G_{\mathcal{T}}$.
+% Hubs have the ability to redirect air vehicles to neighbouring regions. In order to capture this ability, the global system cannot be a simple composition of the individual hub controllers. The state space of a hub controller can be affected by the actions of its neighbours. We capture this ability by modifying the transition function $R_i$ for each controller $\mathcal T_i$. We define a new transition function $\tilde{R}_i$ where given $S^t_i$, $S^{t+1}_i$ is constructed by applying the following steps:
+% \nok{We probably don't need this anymore. But please check that I don't miss anything in the definition of the transition system}
+% \begin{enumerate}
+%     \item $S^{t+1} =  S^{t}_i \setminus \mathcal{R}_{i,a}^t $
+%     \item $S^{t+i}_i = \left(S^{t+i}_i \setminus \{\bigcup_{j \in connect(\mathcal T_i)}\mathcal{R}^{j,t}_{i,b}\} \right)\bigcup_{j \in connect(\mathcal T_i)} \mathcal{R}^{j,t}_{j,b}$
+% \end{enumerate}
+% where $\mathcal{R}^{i,t}_{j,b}$ is the set of requests transferred from controller $\mathcal{T}_i$ to $\mathcal{T}_j$. Informally, the modified transition function allows for transition systems connected in $G_{\mathcal{T}}$ to transfer vehicles between each other. The price of decentralizing the system is the loss of the additional options captured in $\tilde{R}$.
+%\textcolor{blue}{finish ex}
+%\begin{example}\label{ex:reallocreq}
+%Consider request $S_1^{0} = \{O^{\mathcal{T}_1}_1 = \left(port\, A, 5, passenger \right),O^{\mathcal{T}_1}_2= \left(port\, A, 3, passenger \right)\}$ corresponding to a request by a \emph{passenger vehicle} trying to land at port A in \emph{at most} 5 time steps. 
+%\end{example}
+
+
+
+\subsubsection{Vertihub violation cost}
+Each vertihub $\mathcal{T}_i$ is given a prioritized safety specification $\mathcal{P}_i$ and request allocation $\Phi(\mathcal{T}_i) = s_{\text{init}_i}$. Given a request allocation function $\Phi$, the \emph{violation cost} of vertihub $\mathcal{T}_i$ executing a finite trace $\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}})$ 
+is denoted $\lambda_{\Phi(\mathcal{T}_i)}(\tau_i,\mathcal{P}_i)$. We denote the \emph{optimal} violation cost of $\mathcal{T}_i$ for a request allocation function $\Phi$ as $\lambda_{\Phi(\mathcal{T}_i)}^* = \min_{\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}})} \lambda_{\Phi(\mathcal{T}_i)}(\tau_i,\mathcal{P}_i)$. 
+%where $\tau_i^*$ is the \emph{minimally violating trace} for tower $\mathcal{T}_i$ corresponding to request allocation $\Phi(\mathcal{T}_i)$. 
+
+The cost of the global system $\mathcal{T}$ is dependent on the conjunction of the prioritized specifications $\mathcal{P} = \mathcal{P}_1 \wedge \mathcal{P}_2 \wedge \dots \wedge \mathcal{P}_N$, global requests $\mathcal{O}^{\text{init}}$, and request allocation function $\Phi$. Formally, we define
+\begin{equation}
+    \lambda_{\Phi} = \sum_{i=1}^N\lambda_{\Phi(\mathcal{T}_i)}^*.
+    \label{eq:global-cost}
+\end{equation}
+
+
+
+% \subsubsection{Optimal violation cost}
+% Given N vertihub controllers $\mathcal{T}_1,\mathcal{T}_2,\dots,\mathcal{T}_N$, and corresponding prioritized safety specifications $\mathcal{P}_1,\dots,\mathcal{P}_N$, and request allocations $\mathcal{O}^{\text{init}}_1,\dots,\mathcal{O}^{\text{init}}_N$ we define the \emph{locally optimal} total cost as $\lambda_{l}^* = \sum_{i=1}^N \lambda_{\mathcal{O}^{\text{init}}_i}^*(\tau_i,\mathcal{P}_i)$.
+
+
+% The \emph{globally optimal} total cost is defined with respect to the joint system $\mathcal{T}$, prioritized specification $\mathcal{P} = \mathcal{P}_1 \wedge \mathcal{P}_2 \wedge \dots \wedge \mathcal{P}_N$, global request allocation $\mathcal{O}^{\text{init}}$, and request allocation function $\Phi$. We define
+
+% \begin{equation}
+%     \lambda_{gl}^* = \lambda_{\mathcal{O}^{\text{init}}}(\tau^*,\mathcal{P})
+% \end{equation}
+% where 
+% where $\tau^* \in \text{Traces}(\mathcal{T},s_{final})$ is the globally minimal violating trace. Note that in general, $\lambda_{gl}^* \leq \lambda_{l}^*$. 
+
+% \textbf{Questions}:
+% \begin{itemize}
+%     \item Is it true that $\lambda_{gl}^* = \lambda_{l}^*$. If so, under what conditions?
+%     \item Does $\lambda_{gl}^* = \lambda_{l}^*$ imply that $\tau^* = \left(\tau_1,\dots,\tau_N \right)$?
+% \end{itemize}
+
+
+% \subsubsection{Optimal request allocation}
+% The optimal $\lambda^{\ast}$ as the optimal cost
+
+\subsubsection{Minimum-violation planning problem statement} 
+Given a set of $N$ hub controllers $\mathcal{T}_1 \dots \mathcal{T}_N$, a connectivity graph $G_{\mathcal{T}}$ and a prioritized safety specification for each controller $\mathcal{P}_1,\dots,\mathcal{P}_N$ with $\mathcal{P} = \mathcal{P}_1 \wedge \dots \wedge \mathcal{P}_N $, construct a request allocation function $\Phi$ and corresponding trace $\tau^* = \{\tau_1,\dots,\tau_N\}$ where  $\tau_i \in  \text{Traces}(\mathcal{T}_i,s_{\text{final}})$ that minimizes the lack of safety for the entire system. Formally,
+
+\begin{equation}
+    \tau^* = \argmin_{\tau \in \{\text{Traces}(\mathcal{T},s_{\text{final}})\}} \lambda(\tau, \mathcal{P}).
+\end{equation}
+
+
+\subsection{Solution Approach}
+
+Motivated by the cost structure in (\ref{eq:global-cost}), we decompose the traffic management problem into two subproblems:
+\begin{enumerate}
+	\item Compute an optimal request allocation $\Phi^*$ such that
+	\begin{equation*}
+		\sum_{i=1}^N \lambda_{\Phi^*(\mathcal{T}_i)}^* \leq \sum_{i=1}^N \lambda_{\Phi(\mathcal{T}_i)}^*,
+	\end{equation*}
+	for any request allocation $\Phi$. Informally, the optimal request allocation $\Phi^{*}$ will have a lower or equal cost compared with any other allocation. 
+	\item Given a request allocation $\Phi$, compute an optimal trace $\tau_i^*$ for each vertiport $\mathcal{T}_i$ such that
+	\begin{equation*}
+		\lambda_{\Phi(\mathcal{T}_i)}(\tau_i^*, \mathcal{P}_i) \leq \lambda_{\Phi(\mathcal{T}_i)}(\tau_i, \mathcal{P}_i),
+	\end{equation*}
+	for any trace $\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}_i})$.
+\end{enumerate}
+The second problem can be solved using minimum-violation planning as in~\cite{Tumova:2013:ACC,Tumova:2013:LCS}.
+To solve the first problem, we need to find the globally optimal request allocation for all the vertihubs. This is a combinatorially hard problem. To solve the problem in a distributed manner, we propose an auction-based algorithm. In each round, each vertihub identifies potential requests to be reallocated and offers each of these requests to other connected vertihubs.  The request with highest cost is then selected, and a connected vertihub accepts this request if it can accommodate the extra request with less cost than the original vertihub. Finally, the request will be reallocated to the vertihub that can accommodate the request with the lowest cost. This auction-based request allocation ensures that the overall cost decreases in each round and terminates when no more requests can be reallocated without extra cost.
+
+\subsubsection{Algorithm} 
+Given a request allocation $\Phi$, we define the cost of vertihub $\mathcal{T}_i$ accommodating a request $O$ as
+\begin{equation}
+	C_i^\Phi(O) = \min_{\tau_i} \lambda_{\mathcal{O}^i_O}(\tau_i, \mathcal{P}_i) - \min_{\tau_i} \lambda_{\mathcal{O}^i_{\not{O}}}(\tau_i, \mathcal{P}_i),
+\end{equation}
+where $\mathcal{O}^i_O = \Phi(\mathcal{T}_i) \cup \{O\}$ is the set of requests allocated to $\mathcal{T}_i$ together with the request $O$, and $\mathcal{O}^i_{\not{O}} = \Phi(\mathcal{T}_i) \setminus \{O\}$ is the set of requests allocated to $\mathcal{T}_i$ without the request $O$.
+
+The algorithm initializes $\Phi$ based on the desired location associated with each request. Then, it updates $\Phi$ iteratively as follows.
+\begin{enumerate}
+	\item Initialize the set $\mathbb{O}$ of potential requests to be reallocated in this iteration as the empty set.
+	\item Each vertihub $\mathcal{T}_i$ computes the cost $C_i^\Phi(O)$ for accommodating each request $O \in \Phi(\mathcal{T}_i)$. It then adds each request as well as its associated cost $(O, C_i^\Phi(O))$ to $\mathbb{O}$ for all requests $O$ with $C_i^\Phi(O) > 0$.
+	\item If $\mathbb{O}$ is empty, then the algorithm terminates and outputs $\Phi$. Otherwise, we let $O^*$ be the request with the highest cost in $\mathbb{O}$ and $C^*$ be its associated cost.
+	\item Each vertihub $\mathcal{T}_i$ computes the cost $C_i^\Phi(O^*)$ for accommodating $O^*$. Consider two possible cases.
+	\begin{itemize}
+		\item $C_i^\Phi(O^*) \geq C^*$ for all $\mathcal{T}_i$, i.e., no other vertihub can better accommodate this request. Then, the request $O^*$ is removed from $\mathbb{O}$ and the algorithm goes back to step (c) to attempt reallocating the next worst request.
+		\item $C_i^\Phi(O^*) < C^*$ for some $\mathcal{T}_i$. Then, $\Phi$ is updated so that the request $O^*$ is allocated to $\mathcal{T}_{i^*}$ that minimizes the cost of accommodating $O^*$, i.e., $C_{i^*}^\Phi(O^*) \leq C_i^\Phi(O^*)$ for all $\mathcal{T}_i$. This iteration finishes and the algorithm starts the new iteration with step (a). In the case where there are multiple vertihubs with equal lowest cost $C^{\ast}$, a tie breaker heuristic, e.g., based on tower id and priority, can be used.
+	\end{itemize}
+\end{enumerate}
+
+As the number of requests is finite, the cost is non-negative and strictly decreases in every iteration except the last iteration.  Thus, the algorithm is guaranteed to terminate and output a request allocation that is at least as good as the initial allocation.  This is formally stated as follows.
+
+\begin{prop}
+	Let $\Phi^{init}$ be the initial request allocation. Then, the algorithm terminates with request allocation $\Phi$ such that $\lambda_{\Phi} \leq \lambda_{\Phi^{init}}$.
+	
+\end{prop}
+
+Note that for ease of presentation the algorithm assumes the vertihub network is fully connected. In implementation, it is straightforward to modify the algorithm to directly incorporate the network constraints. 
+
+%\paragraph*{The assignment problem formulation} \suda{Not sure how we use this? Maybe in the solution section?}
+
+
+
+

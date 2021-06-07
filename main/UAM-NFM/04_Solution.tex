@@ -1,0 +1,45 @@
+\subsection{Solution Approach}
+
+Motivated by the cost structure in (\ref{eq:global-cost}), we decompose the traffic management problem into two subproblems:
+\begin{enumerate}
+    \item Compute an optimal request allocation $\Phi^*$ such that
+    \begin{equation*}
+        \sum_{i=1}^N \lambda_{\Phi^*(\mathcal{T}_i)}^* \leq \sum_{i=1}^N \lambda_{\Phi(\mathcal{T}_i)}^*,
+    \end{equation*}
+    for any request allocation $\Phi$. Informally, the optimal request allocation $\Phi^{*}$ will have a lower or equal cost compared with any other allocation. 
+    \item Given a request allocation $\Phi$, compute an optimal trace $\tau_i^*$ for each vertiport $\mathcal{T}_i$ such that
+    \begin{equation*}
+        \lambda_{\Phi(\mathcal{T}_i)}(\tau_i^*, \mathcal{P}_i) \leq \lambda_{\Phi(\mathcal{T}_i)}(\tau_i, \mathcal{P}_i),
+    \end{equation*}
+    for any trace $\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}_i})$.
+\end{enumerate}
+The second problem can be solved using minimum-violation planning as in~\cite{Tumova:2013:ACC,Tumova:2013:LCS}.
+To solve the first problem, we need to find the globally optimal request allocation for all the vertihubs. This is a combinatorially hard problem. To solve the problem in a distributed manner, we propose an auction-based algorithm. In each round, each vertihub identifies potential requests to be reallocated and offers each of these requests to other connected vertihubs.  The request with highest cost is then selected, and a connected vertihub accepts this request if it can accommodate the extra request with less cost than the original vertihub. Finally, the request will be reallocated to the vertihub that can accommodate the request with the lowest cost. This auction-based request allocation ensures that the overall cost decreases in each round and terminates when no more requests can be reallocated without extra cost.
+
+\subsubsection{Algorithm} 
+Given a request allocation $\Phi$, we define the cost of vertihub $\mathcal{T}_i$ accommodating a request $O$ as
+\begin{equation}
+    C_i^\Phi(O) = \min_{\tau_i} \lambda_{\mathcal{O}^i_O}(\tau_i, \mathcal{P}_i) - \min_{\tau_i} \lambda_{\mathcal{O}^i_{\not{O}}}(\tau_i, \mathcal{P}_i),
+\end{equation}
+where $\mathcal{O}^i_O = \Phi(\mathcal{T}_i) \cup \{O\}$ is the set of requests allocated to $\mathcal{T}_i$ together with the request $O$, and $\mathcal{O}^i_{\not{O}} = \Phi(\mathcal{T}_i) \setminus \{O\}$ is the set of requests allocated to $\mathcal{T}_i$ without the request $O$.
+
+The algorithm initializes $\Phi$ based on the desired location associated with each request. Then, it updates $\Phi$ iteratively as follows.
+\begin{enumerate}
+    \item Initialize the set $\mathbb{O}$ of potential requests to be reallocated in this iteration as the empty set.
+    \item Each vertihub $\mathcal{T}_i$ computes the cost $C_i^\Phi(O)$ for accommodating each request $O \in \Phi(\mathcal{T}_i)$. It then adds each request as well as its associated cost $(O, C_i^\Phi(O))$ to $\mathbb{O}$ for all requests $O$ with $C_i^\Phi(O) > 0$.
+    \item If $\mathbb{O}$ is empty, then the algorithm terminates and outputs $\Phi$. Otherwise, we let $O^*$ be the request with the highest cost in $\mathbb{O}$ and $C^*$ be its associated cost.
+    \item Each vertihub $\mathcal{T}_i$ computes the cost $C_i^\Phi(O^*)$ for accommodating $O^*$. Consider two possible cases.
+    \begin{itemize}
+        \item $C_i^\Phi(O^*) \geq C^*$ for all $\mathcal{T}_i$, i.e., no other vertihub can better accommodate this request. Then, the request $O^*$ is removed from $\mathbb{O}$ and the algorithm goes back to step (c) to attempt reallocating the next worst request.
+        \item $C_i^\Phi(O^*) < C^*$ for some $\mathcal{T}_i$. Then, $\Phi$ is updated so that the request $O^*$ is allocated to $\mathcal{T}_{i^*}$ that minimizes the cost of accommodating $O^*$, i.e., $C_{i^*}^\Phi(O^*) \leq C_i^\Phi(O^*)$ for all $\mathcal{T}_i$. This iteration finishes and the algorithm starts the new iteration with step (a). In the case where there are multiple vertihubs with equal lowest cost $C^{\ast}$, a tie breaker heuristic, e.g., based on tower id and priority, can be used.
+    \end{itemize}
+\end{enumerate}
+
+As the number of requests is finite, the cost is non-negative and strictly decreases in every iteration except the last iteration.  Thus, the algorithm is guaranteed to terminate and output a request allocation that is at least as good as the initial allocation.  This is formally stated as follows.
+
+\begin{prop}
+Let $\Phi^{init}$ be the initial request allocation. Then, the algorithm terminates with request allocation $\Phi$ such that $\lambda_{\Phi} \leq \lambda_{\Phi^{init}}$.
+
+\end{prop}
+
+Note that for ease of presentation the algorithm assumes the vertihub network is fully connected. In implementation, it is straightforward to modify the algorithm to directly incorporate the network constraints. 
