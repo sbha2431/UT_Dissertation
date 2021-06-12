@@ -23,7 +23,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{macros.tex}
 \usepackage{pgfplots} 
-
+\pgfplotsset{compat=1.17}
 \usepackage{amsmath,amsthm,amsfonts,amscd} 
 				% Some packages to write mathematics.
 \usepackage{eucal} 	 	% Euler fonts
@@ -79,12 +79,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\author{Craig William McCluskey}  	% Required
+\author{Sudarshanan Bharadwaj}  	% Required
 
 \address{9905 Chukar Circle\\ Austin, Texas 78758}  % Required
 
-\title{Writing a Doctoral Dissertation with \LaTeX{} at
-		the University of Texas at Austin}
+\title{Assured Decision-Making for Autonomous Systems}
                                                     % Required
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -126,14 +125,14 @@
 %
 %
 \committeemembers
-	[Erwin Schr\"odinger]
-	[Albert Einstein]
-	[Charles Townes]
-	{Arthur Schawlow}
+	[John-Paul Clarke]
+	[Natasha Neogi]
+	[Peter Stone] 
+	{Takashi Tanaka}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\previousdegrees{B.S.}
+\previousdegrees{}
      % The abbreviated form of your previous degree(s).
      % E.g., \previousdegrees{B.S., MBA}.
      %
@@ -361,21 +360,20 @@ This document and its source file show to write a Doctoral Dissertation using
 
 \include{chapter-introduction}
 
+\part{Design-Time Synthesis}
 \include{Surveillance/main}
-
-\include{UAM-TCNS/main}
-
 \include{RuntimeInfo-ICRA/root}
 
-%\include{chapter-instructions}
-%
-%\include{chapter-howtouse}
-%
-%\include{chapter-makingbib}
-%
-%\include{chapter-tables+figs}
-%
-%\include{chapter-math}
+\part{Multi-Agent Runtime Enforcement}
+
+\include{MultiShield/main}
+\include{OnlineShield/main}
+
+\part{Urban Air Mobility}
+\include{UAM-TCNS/main}
+\include{UAM-NFM/main}
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -385,14 +383,14 @@ This document and its source file show to write a Doctoral Dissertation using
 % If you have only one appendix, use the command \appendix instead
 % of \appendices.
 %
-\appendices
-\index{Appendices@\emph{Appendices}}%
-
-\include{chapter-appendix1}
-
-\include{chapter-appendix2}
-
-\include{chapter-appendix3}
+%\appendices
+%\index{Appendices@\emph{Appendices}}%
+%
+%\include{chapter-appendix1}
+%
+%\include{chapter-appendix2}
+%
+%\include{chapter-appendix3}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -404,7 +402,7 @@ This document and its source file show to write a Doctoral Dissertation using
 %	to generate the index (if used) MUST be moved to before      %
 %	this section.						     %
 %								     %
-\nocite{*}      % This command causes all items in the 		     %
+%\nocite{*}      % This command causes all items in the 		     %
                 % bibliographic database to be added to 	     %
                 % the bibliography, even if they are not 	     %
                 % explicitly cited in the text. 		     %
@@ -424,7 +422,7 @@ This document and its source file show to write a Doctoral Dissertation using
 %	to generate the index (if used) MUST be moved to before      %
 %	the bibliography section.				     %
 %								     %
-\printindex%    % Include the index here. Comment out this line      %
+%\printindex%    % Include the index here. Comment out this line      %
 %		% with a percent sign if you do not want an index.   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -433,24 +431,25 @@ This document and its source file show to write a Doctoral Dissertation using
 % Vita page.							     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{vita}
-Craig William McCluskey
-was born in Minneapolis, Minnesota on 20 May 1950, the son of
-Dr. William R. McCluskey and Lucilla W. McCluskey.  He received the Bachelor
-of Science degree in Engineering from the California Institute of Technology
-and was commissioned an Officer in the United States Air Force in 1971.
-He entered active duty in October, 1971, and was stationed in Denver, Colorado,
-Colorado Springs, Colorado, Panama City, Florida, and Sacramento, California.
-He separated from the USAF in 1975 and worked as an engineer for several small
-electronics companies in California before moving to Colorado Springs, Colorado
-to work for Hewlett-Packard in 1979. He left Hewlett-Packard in 1989 and joined
-a small company based in Herndon, Virginia, working out of his house as a
-``remote'' engineer designing parts of the Alexis satellite for Los Alamos
-National Laboratories. Laid off when his portion of the satellite was
-completed, he applied to the University of Texas at Austin for enrollment
-in their physics program. He was accepted and started graduate studies in
-August, 1991.
-
-\end{vita}
-
+%\begin{vita}
+%Craig William McCluskey
+%was born in Minneapolis, Minnesota on 20 May 1950, the son of
+%Dr. William R. McCluskey and Lucilla W. McCluskey.  He received the Bachelor
+%of Science degree in Engineering from the California Institute of Technology
+%and was commissioned an Officer in the United States Air Force in 1971.
+%He entered active duty in October, 1971, and was stationed in Denver, Colorado,
+%Colorado Springs, Colorado, Panama City, Florida, and Sacramento, California.
+%He separated from the USAF in 1975 and worked as an engineer for several small
+%electronics companies in California before moving to Colorado Springs, Colorado
+%to work for Hewlett-Packard in 1979. He left Hewlett-Packard in 1989 and joined
+%a small company based in Herndon, Virginia, working out of his house as a
+%``remote'' engineer designing parts of the Alexis satellite for Los Alamos
+%National Laboratories. Laid off when his portion of the satellite was
+%completed, he applied to the University of Texas at Austin for enrollment
+%in their physics program. He was accepted and started graduate studies in
+%August, 1991.
+%
+%\end{vita}
 \end{document}
+
+

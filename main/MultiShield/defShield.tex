@@ -1,0 +1,191 @@
+\section{Shields  for Multi-Agent Systems}
+\label{def_shields}
+
+In this section, we first describe how to attach a  shield to a multi-agent system. Then, we define shields formally, and discuss different interference requirements on shields for multi-agent systems.
+
+\subsection{Attaching the Shield}
+
+A shield $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$ is a reactive system that is attached to a multi-agent system
+$\design=(\{ \proc_1,\ldots,\proc_n \},\ialphabet,  \oalphabet)$.
+Since $\shield$ has to enforce a \emph{global} specification that can refer to all inputs and outputs of $\design$, $\shield$ is attached to the whole multi-agent system $\design$: the shield $\shield$ monitors the outputs of all the agents and corrects them if necessary. Thus, $\shield$ is attached to $\design$ using serial composition, by feeding  all inputs and outputs of the multi-agent system to the shield, which, in response produces a possibly corrected output for the system.
+Formally, given a multi-agent reactive system $\design = (\{ \proc_1,\ldots,\proc_n \}, \ialphabet,  \oalphabet)$, with $\proc_i = (\states_i, q_{0,i},\ialphabeti,\oalphabeti,\delta_i,\lambda_i)$, the \emph{serial composition} of $\design$ and $\shield$ is a reactive system $\design \comp \shield=
+(\hat{\states}, \hat{q_{0}}, \ialphabet,\oalphabet, \hat{\delta},
+\hat{\lambda})$, with 
+   states $\hat{\states} = \bigotimes_i \states_i \times \states$,
+    $\hat{q_{0}} = (q_{0,1},\ldots,q_{0,n},q_{0})$,
+   transition function $\hat{\delta}((q_1,\ldots,q_n,q),\isymb) = (\delta_1(q_1,{\isymb}_1),\ldots,\delta_n(q_n,{\isymb}_n), \delta(q,(\isymb,\osymb))$, where $\osymb$ is the output of all agents $\osymb = (\lambda_1(q_1,{\isymb}_1),\ldots,\lambda_n(q_n,{\isymb}_n))$, and output function
+   $\hat{\lambda}((q_1,\ldots,q_n,q),\isymb) = \lambda(q,(\isymb,\osymb))$.
+
+
+
+\subsection{Shield Definition}\label{sec_correctness}
+
+Now we define the basic  requirements that a shield must satisfy: namely it should enforce correctness without deviating from the system's output unnecessarily.
+
+\subsubsection{Correctness} We say that a reactive system $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$   \emph{ensures correctness}  with respect to a safety specification $\spec$ if for any multi-agent system
+$\design=( \{\proc_1,\ldots,\proc_n\},\ialphabet,  \oalphabet)$ it holds that $(\design \comp  \shield) \models \spec$.
+
+\subsubsection{No unnecessary interference}
+A shield is only allowed to interfere when the output of the multi-agent system  is \emph{wrong}.
+%
+Formally, given a safety specification $\spec$, a reactive system $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$ \emph{does not interfere unnecessarily} if for any multi-agent system $\design=( \{\proc_1,\ldots,\proc_n\},\ialphabet,  \oalphabet)$ and any trace
+$(\itrace\parallel\otrace)\in (\ialphabet \times \oalphabet)^\infty$
+of $\design$ that is not wrong, we have that $\shield(\itrace \parallel  \otrace) = \otrace$.
+
+\begin{defn}
+A \emph{shield} for a given safety specification $\spec$ is a reactive system $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$
+such that  for any multi-agent system $\design=( \{\proc_1,\ldots,\proc_n\},\ialphabet,  \oalphabet)$ it holds that $(\design \comp \shield) \models \spec$ and $\shield$  does not deviate from $\design$ unnecessarily.
+\end{defn}
+
+\subsection{Interference Costs and Shield Optimality}
+\label{sec_interf}
+
+In Section~\ref{sec_correctness} we defined the qualitative requirements that a shield must meet. In many applications, there are additional quantitative properties a shield should optimize, expressing \emph{in what way} it should interfere with the system.
+Now  we define several different interference cost functions and  optimization objective.
+
+\subsubsection{Interference cost functions}
+
+We formalize quantitative requirements on shields by introducing the notion of an \emph{interference cost function}, which quantifies the deviation of the shield's output from the system's output.
+
+\begin{defn}
+An \emph{interference cost function} $c: \oalphabet \times \oalphabet \to \nats $ assigns a cost $c(\osymb, \osymb')$
+to each pair of system output $\osymb \in \oalphabet$ and shield output $\osymb' \in \oalphabet$,
+such that
+\[c(\osymb,\osymb') = \begin{cases}
+0 & \text{if } \osymb = \osymb'\\
+f(\osymb,\osymb') > 0 & \text{if } \osymb \neq \osymb',\\
+\end{cases}\]
+where $f$ is a function chosen by the system designer.
+\end{defn}
+The higher the cost, the more undesirable is the corresponding way of interference by the shield.
+Thus, the designer can assign different costs to interference with different agents,
+expressing preference of one over another.
+We propose two concrete cost functions.
+
+The \emph{boolean cost function} $c_\bools : \oalphabet \times \oalphabet \to \{0,1\}$ considers the multi-agent system as a monolithic system:
+\[c_\bools(\osymb,\osymb') = \begin{cases}
+0 & \text{if } \osymb = \osymb'\\
+1 & \text{if } \osymb \neq \osymb'.\\
+\end{cases}\]
+Thus, the cost  for any interference is $1$, no matter with how many or with which agents the shield interferes.
+
+The \emph{counting cost function}  $c_{\#} : \oalphabet \times \oalphabet \to \nats$, on the other hand, takes into account the number of agents whose output is modified:
+\[c_{\#}(\osymb,\osymb') = |\{p \in \Proc \mid \osymb(\out_p) \neq \osymb'(\out_p)\}|.\]
+Intuitively, the smaller the number of agents whose output is altered by the shield, the better.
+%
+%Following, we extend the notion of cost functions to finite and infinite pairs of output sequences.
+\begin{defn}Let $c : \oalphabet \times \oalphabet \to \nats$ be a cost function.
+We define the \emph{accumulated interference cost function} $c_{\mathsf{acc}}: \oalphabet^\infty \times \oalphabet^\infty \to \nats$ based on the given cost function $c$ by $$c_{\mathsf{acc}}(\otrace,\otrace')=\sum_{i=0}^{|\otrace|}c(\otrace[i],\otrace'[i]).$$
+
+\iffalse MEAN-PAYOFF
+and the \emph{limit-average cost function}  $c_{\mathsf{mp}}(\trace): \oalphabet^\omega \times \oalphabet^\omega \to \nats$ 
+$$c_{\mathsf{mp}}(\otrace,\otrace')=\lim\sup_{m\to\infty} \frac{1}{m+1} \cdot \sum_{i=0}^m c(\otrace[i],\otrace'[i]).$$
+\fi
+\end{defn}
+
+\subsubsection{Shield optimization objective}
+
+
+\iffalse MEAN-PAYOFF
+In this work we consider two different cost-optimization objectives for infinite traces: (1) minimizing the cost per deviation period
+and (2) minimizing the limit-average interference cost.
+\fi
+In this work we consider the cost-optimization objective for infinite traces that requires minimizing the cost per deviation period.
+
+\iffalse MEAN-PAYOFF
+\paragraph*{Minimizing the cost per deviation period}
+\fi
+In this objective, the task of the shield is to minimize the worst-case accumulated cost for ending the deviation period. To formalize this, we first define the set of maximal deviation periods resulting from the execution of a shield $\shield$ under  all possible behaviours of multi-agent system and the environment.
+
+\begin{defn}
+Let $\shield$ be a shield for a safety specification $\varphi$, and let $\trace \in \alphabet^*$ be a finite trace.
+We define $\DevSet (\trace, \shield)$ to be the set of all deviation periods that extend the trace $(\trace\parallel\shield(\trace))$, and result from outputs of $\shield$.
+Formally, if $(\otrace\parallel\otrace') \in (\oalphabet\times\oalphabet)^\infty$, then
+$(\otrace\parallel\otrace')  \in \DevSet (\trace, \shield)$ iff it satisfies the following conditions:
+\begin{itemize}
+\item $(\otrace\parallel\otrace')$ is a deviation period, and
+\item there exists $\itrace \in \ialphabet^\infty$ such that
+$\otrace'  = \shield(\itrace\parallel\otrace)$ and the trace
+$(\trace\parallel\shield(\trace))$ is a prefix of $(\itrace\parallel\otrace\parallel\otrace')$.
+\end{itemize}
+\end{defn}
+
+The set $\DevSet (\trace, \shield)$ consists of all finite or infinite deviation periods resulting from possible future behaviours of the multi-agent system and the environment. Our goal is to synthesize a shield with minimal worst-case accumulated cost over the traces in the corresponding $\DevSet$- sets, as formalized in the next definition.
+
+\begin{defn}\label{def:locally-optimal}
+Let $c : \oalphabet \times \oalphabet \to \nats$ be a cost function. A shield $\shield$ is \emph{locally optimal} w.r.t. $c$, if for every shield $\shield'$ and every trace $\trace=(\itrace\parallel\otrace)\in \alphabet^*$ it holds that
+$$\sup_{(\otrace\parallel\otrace')\in\DevSet(\trace,\shield)} c_{\mathsf{acc}}(\otrace,\otrace') \leq \sup_{(\otrace\parallel\otrace')\in\DevSet(\trace,\shield')} c_{\mathsf{acc}}(\otrace,\otrace').$$
+\end{defn}
+With this objective, a shield plans optimally in the short term, without considering the possibility of further wrong outputs once the deviation period ends. Therefore, this optimality criterion is useful when wrong outputs of the system are expected to be rare.
+%For a single deviation period of length $k$, the accumulated cost
+%$c_{\mathsf{acc}}(\otrace,\otrace')$ is bounded from above by $k$ for $c_\bools$, and by $|\Proc| \cdot k$ for $c_{\#}$.
+
+\iftrue MEAN-PAYOFF
+\paragraph*{Minimizing the limit-average interference cost}
+The second objective which we consider requires the shield to optimize along an infinite horizon.
+
+\begin{defn}\label{def:mp-optimal}
+Given a cost function $c : \oalphabet \times \oalphabet \to \nats$, we define the \emph{limit-average cost of a shield} $\shield$ as$$c_{\mathsf{mp}}(\shield) = \sup_{(\itrace || \otrace\parallel\otrace') \in \lang( \shield)}c_{\mathsf{mp}}(\otrace,\otrace').$$
+\end{defn}
+\begin{defn}
+A shield $\shield$ is \emph{$c_{\mathsf{mp}}$-optimal} for a given interference cost function $c$, if for any shield $\shield'$, it holds that
+$c_{\mathsf{mp}}(\shield) \leq c_{\mathsf{mp}}(\shield').$
+\end{defn}
+\fi
+
+
+\subsection{Assumptions on the Occurrences of Faults}\label{sec_assumptions}
+
+A shield has to enforce the global safety specification for any possible  implementation of the multi-agent system.
+However, often we have some knowledge about the the system which
+can be used to make assumptions about its worst-case behavior and synthesize
+cost-optimal shields under these assumptions.
+
+Pervious work on shield synthesis~\cite{KonighoferABHKT17,BloemKKW15} assumed that the system $\design$ is correct,
+but that through external faults an arbitrary number of correct outputs are replaced by wrong ones. To make use of this optimistic assumption, Bloem et al.~\cite{BloemKKW15}
+used a subset construction:  when $\design$ emits a wrong output, the shield begins to track all possible correct behaviours of $\design$ under the current input, with the rationale that $\design$ meant to give a correct output, but which one is unknown.
+%With further observations the shield gradually refines its knowledge about the current state of the design.
+
+In this paper, we take a new view, in which the system is supposed to have a real safety bug, manifested by the interaction between the agents. This case is especially important in the multi-agent  setting.
+When developing multi-agent systems, the individual agents are often implemented separately, with individual goals in mind, and then combined to obtain the final system. Since each agent has to satisfy its own objective, the design of a single agent often neglects some global safety requirements.
+However, it is often realistic to assume that the length of all sequences of wrong outputs is bounded. This assumption can be made e.g., if the agents  interact only rarely, and when they do,  they interact only for a bounded period of time.\looseness=-1
+
+We define an assumption $\assump\subseteq (\alphabet \times \oalphabet \times \oalphabet)^\infty$ on the occurrences of system faults
+to be a set of \emph{allowed finite traces}, represented as a finite automaton.
+%An LTL formula $\varphi_a$ with $\lang(\varphi_a) = \assump$ can be used to formulate such an assumption.
+
+In particular, we define $\assump(b)$ to be the set of traces in which the length of each sequence of wrong outputs does not exceed a given bound $b$.
+\begin{defn}
+Let  $b\in\nats$. The set $\assump(b)\subseteq (\alphabet \times \oalphabet \times \oalphabet)^\infty$ consists of all traces $\trace$ for which all sub-traces $\trace' = \trace[i,j]$ it holds that if $|\trace'| > b$, then there exists an index $k$ with $i \leq k \leq j$, such that $k \not \in \widx(\trace)$.
+\end{defn}
+
+We incorporate assumptions on the system in the definition of cost-optimal shields.
+We modify Definition~\ref{def:locally-optimal} (locally-optimal shields) by restricting the sets of deviation periods to those corresponding to traces in $\assump \subseteq (\alphabet \times \oalphabet \times \oalphabet)^\infty$. More precisely, in the supremum  for $\shield$ we replace $\DevSet(\trace,\shield)$ by $\DevSet(\trace,\shield) \cap \{(\otrace\parallel\otrace')\mid \exists\; \itrace: (\itrace\parallel\otrace\parallel\otrace')\in \assump\}$ and analogously for $\shield'$. 
+\iftrue MEAN-PAYOFF
+Definition~\ref{def:mp-optimal} is adapted analogously.
+\fi
+
+\subsection{Fair Shielding}
+Now we define one more constraint on the shield's interference: we require that a shield is \emph{fair} with respect to the different agents.
+The definition of fair shields uses the notion of \emph{minimal correcting sets}:
+a minimal correcting set for a wrong trace is the minimal set of agents such that modifying some of the outputs of these agents results in correct output.
+
+Let $\trace  = (\itrace\parallel\otrace) \cdot (\isymb,\osymb)\in (\ialphabet \times \oalphabet)^*$ be a wrong trace. A set $\Pi \subseteq \Proc$ of agents is a \emph{minimal correcting set} for $\trace$ if and only if the following conditions are satisfied:
+\begin{itemize}
+\item there exists $\osymb' \in \oalphabet$ such that  $\Diff(\osymb,\osymb') = \Pi$ and the trace $(\itrace\parallel\otrace) \cdot (\isymb,\osymb')$ is not wrong,
+\item for all $\osymb' \in\oalphabet$ such that $\Diff(\osymb,\osymb') \subsetneq \Pi$, it holds that the trace $(\itrace\parallel\otrace) \cdot (\isymb,\osymb')$ is wrong.
+\end{itemize}
+$\Correct(\trace)$ is the set of all minimal correcting sets for $\trace$.
+
+In order to be fair, a shield should guarantee that  each agent is treated fairly when choosing agents whose outputs should be modified. More precisely, it should not choose the same agent  all the time when it is possible to alternatively choose a different agent.
+
+First, given a trace $\trace = (\itrace \parallel \otrace \parallel \otrace') \in (\ialphabet \times \oalphabet \times \oalphabet)^\infty$ and an agent $p$, we define $\alterns(\trace,p)$ to be the set of positions in $\trace$ where there exist both a minimal correcting set containing $p$ and a minimal correcting set that does not contain $p$. Formally, $i \in \alterns(\trace,p)$ if and only if $i \in \widx(\trace)$ and there exist two minimally correcting sets $\Pi ,\overline\Pi\in \Correct((\itrace[0,i-1] \parallel \otrace'[0,i-1])\cdot(\itrace[i],\otrace[i]))$ at position $i$ such that $p \in \Pi$ and $p \not \in \overline\Pi$. Now, using the sets $\alterns(\trace,p)$ we formally define fair shields as follows.
+
+\begin{defn}\label{defn:fair-shield}
+A shield $\shield$ is \emph{fair} if for every agent $p \in \Proc$ and trace $\trace = (\itrace \parallel \otrace \parallel \otrace') \in \lang(\shield)$ it holds that, if the set $\alterns(\trace,p)$ is infinite, then there exist infinitely many indices $i \in \alterns(\trace,p)$ in which $p \not \in \Diff(\otrace[i],\otrace'[i])$ (i.e., the output of $p$ is not altered by $\shield$ in step $i$).\looseness=-1
+\end{defn}
+
+
+
+
+

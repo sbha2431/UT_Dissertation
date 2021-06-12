@@ -1,4 +1,4 @@
-\subsubsection{\textbf{Basic notation}}
+\subsubsection{Basic notation}
 %
 We consider reactive systems with a finite set $\inp$ of Boolean \emph{inputs}, controlled by the \emph{E}nvironment, and a finite set $\out$ of Boolean \emph{ outputs}, controlled by the \emph{A}gent. Together, they define the system's input alphabet $\ialphabet=2^\inp$ and the output alphabet $\oalphabet=2^\out$. We define $\alphabet=\ialphabet \times \oalphabet$. 
 
@@ -16,7 +16,7 @@ is a complete transition function, that maps each state, input (environment acti
 
   
 
-\subsubsection{\textbf{Winning conditions}} 
+\subsubsection{Winning conditions}
 %
 The \emph{winning condition} for the agent in a game $\game$ is given as a set of plays $\varphi \subseteq \plays(\game)$ that specifies the set of plays that result in the agent winning the game. We consider games in which the agent has a \emph{Generalized Reactivity 1} (GR(1)) winning condition, which are common in a variety of practical applications. In the following, we make use of the linear temporal logic (LTL) operators \emph{always} $\LTLglobally$ and \emph{eventually} $\LTLfinally$. For full details on LTL syntax and semantics, we refer the reader to~\cite{MCBook}.
 
@@ -25,7 +25,7 @@ $$\varphi =  \left(\LTLglobally\, S_\inp \wedge \bigwedge_{i=1}^{m}  \LTLgloball
 \left(\LTLglobally\, S_\out \wedge \bigwedge_{i=1}^{n} \LTLglobally\,\LTLfinally\,F_{i}\right).$$
 
 
-\subsubsection{\textbf{Strategies}}
+\subsubsection{Strategies}
 %
 A \emph{strategy for the agent} is a function $\rho_\out:
 \prefs(\game) \times \ialphabet \rightarrow

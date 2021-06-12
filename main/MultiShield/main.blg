@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: plain.bst
+Database file #1: main.bib
+Warning--to sort, need author or key in Netflix
+Warning--to sort, need editor, organization, or key in PitermanP06
+Warning--empty author in Netflix
+Warning--empty journal in Netflix
+Warning--empty year in Netflix
+Warning--empty publisher in FrancalanzaPS18
+You've used 29 entries,
+            2118 wiz_defined-function locations,
+            688 strings with 9389 characters,
+and the built_in function-call counts, 10859 in all, are:
+= -- 1109
+> -- 451
+< -- 14
++ -- 178
+- -- 147
+* -- 743
+:= -- 1675
+add.period$ -- 93
+call.type$ -- 29
+change.case$ -- 155
+chr.to.int$ -- 0
+cite$ -- 35
+duplicate$ -- 447
+empty$ -- 893
+format.name$ -- 147
+if$ -- 2372
+int.to.chr$ -- 0
+int.to.str$ -- 29
+missing$ -- 23
+newline$ -- 142
+num.names$ -- 58
+pop$ -- 192
+preamble$ -- 1
+purify$ -- 130
+quote$ -- 0
+skip$ -- 332
+stack$ -- 0
+substring$ -- 731
+swap$ -- 145
+text.length$ -- 14
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 113
+warning$ -- 6
+while$ -- 109
+width$ -- 31
+write$ -- 315
+(There were 6 warnings)

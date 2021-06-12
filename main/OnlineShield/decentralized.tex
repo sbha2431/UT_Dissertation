@@ -1,0 +1,256 @@
+\section{Online Enforcers}
+\label{sec:formulation}
+
+\subsubsection*{Environment and Agents}
+We model the region of operation of the agents as a deterministic environment $(G,\Elabel)$ with a consistent node labeling $\Vlabel$. The set of all agents is $\Agents$, and it is the same as the set of all node labels. At time $t \in \mathcal{T}$, an agent $u$ is said to be at location $v$ if $u \in \Vlabel(v,t)$. We note that a location $v$ can have more than one label, i.e., more than one agent can be at the same location at a given time. The set $\Sigma$ of edge labels of $G$ is the set of actions available to the agents.
+An agent can move from a vertex $v$ to a vertex $v'$ in one time unit through an action $s \in \Sigma$, if and only if there is an edge with the corresponding edge label $s$ between $v$ and $v'$. 
+ If $(v,w)$ is a trajectory, and agent $u$ follows the trajectory starting at time $t$, then at time $t+i$, where $i$ is an integer such that $i \leq |w|$, the state of the agent $u$ is $\hat{\delta}(v,w[0:i])$. Furthermore, $\Vlabel(v,t) = \{u\}$ and $\Vlabel(\hat{\delta}(v,w[0:i]),t+i) = \emptyset$. 
+For any trajectory $(v,w)$, we drop the initial vertex when it is clear.
+At time $t+i$,  $\Vlabel(v,t) = \emptyset$ and $\Vlabel(\hat{\delta}(v,w[0:i]),t+i) = \{u\}$.  
+Boolean $goal_{u,t}$ is true when agent $u$ reaches its final state at time $t$, which is referred to as the agent having \emph{completed the goal}.
+Formally,
+\begin{equation}
+    goal_{u,t} = \begin{cases}
+\top \text{ if } u \text{ has reached its final state} \\ \text{\qquad following the trajectory } (v,w),
+\\
+\bot \text{ otherwise.}
+\end{cases}
+\end{equation}
+Associated with any agent is a unique priority from $[1,|\Agents|]$, defined as $priority: \Agents \times \Time \to [1,|\Agents|]$, such that $priority(u_1,t) = priority(u_2,t)$ implies $u_1 = u_2$. At any time $t$, the priorities of the agents induce a total order $\prec_t$ among them. 
+For agents $u_1$ and $u_2$ in $\Agents$, $u_1 \prec_t u_2$ if and only if $priority(u_1,t) < priority(u_2,t)$.
+
+\subsubsection*{Communication}
+The agents in the system can communicate when they are close to each other. Moreover, two agents $u_i$ and $u_j$ can also communicate if there is a sequence of agents $c_1\dots c_k$ such that $c_1$ is $u_i$, and $c_k$ is $u_j$ and there is a path of length less than or equal to $d$ between agents $c_{i}$ and $c_{i+1}$. Here $d$ is a positive integer referred to as the \emph{communication constant}. 
+%At any time, there can be at most $|\Agents|$ such groups. 
+At any time $t$, $\Agents_{u_i}(t)$ denotes the communication group of agent $u_i$. The agents in the same communication group know the partial trajectories of the other agents in the group upto length $\ell$. Formally, every agent $u$ knows the partial trajectory $(v_{u'},w_{u'})[0:\ell]$ of every other agent $u'$ in its communication group, where $(v_{u'},w_{u'})$ is the trajectory for agent $u'$. Henceforth, $\ell$ is referred to as the \emph{look-ahead}.
+
+\subsubsection*{Safety Functions}
+A \emph{safety} property $\Safety$ is a function $\Safety: 2^P \to \Bool$ from the vertex labeling to Booleans, where $P~=~V \times 2^\Agents$.
+As the vertex labels themselves depend on time, we extend the notion of safety to safety at time $t$. If the vertex labeling at time $t$ is safe, then $\Safety(t) = \top$.
+
+Next we extend the notion of safety to trajectories. For every agent $u$, denote its trajectory by $(v_u,w_u)$ . The system is \emph{safe on the trajectories}, if the system is safe at all times. Formally, $\Safety(\Agents) = \top$ if for all $t \in [0,m]$, $\Safety(t) = \top$, where $m = \max \{|w_u|:u \in \Agents \}$.
+
+Recall the agents in the system have only limited communication. Therefore, we are interested in a subclass of safety functions that can be enforced across the system by enforcing them locally in every communication group. 
+Suppose $\Safety_i$ is a safety property such that $\Safety_i(t) = \top$ if and only if the agents in the communication group $\Agents_i$ are safe.
+%For every communication group} $\Agents_i$, $\Safety_i$ be a safety property that the agents in group $\Agents_i$ are safe. 
+Then, the property $\Safety(t)$ defined as 
+\begin{equation} 
+\Safety(t) \defeq \bigwedge_{i \in 1..|\Agents|} \Safety_i(t) 
+\end{equation} 
+\noindent is a \emph{local} safety property.
+%A safety property $\Safety$ is a \emph{local safety property} if  $$\Safety(t) = \top \Leftrightarrow  \forall i \in [1,|\Agents|] ~\Safety_i(t) = \top.$$ 
+Observe that the safety function defined in Scenario~3 is a local safety property.
+
+\subsubsection*{Enforcers}
+Informally, the purpose of an enforcer is to take a (possibly incorrect) trajectory produced by a running system and to transform it into a trajectory that is safe with respect to a local safety function $\Safety$ that we want to enforce. Abstractly, an enforcer can be seen as a function that transforms trajectories. 
+
+Denote by $S[u,t]$ the enforcer acting on agent $u$ at time $t$. $S[u,t]$ is a pair of \emph{partial} functions $\langle S_1[u,t],S_2[u,t] \rangle$. $S_1[u,t]$ accepts a finite trajectory for each agent in the system and returns a modified trajectory for agent $u$. $S_2[u,t]$ accepts a vector of current priorities and a vector of Booleans $goal_{u,t}$ for the agents in the system. It returns a vector of priorities with only the priority of its corresponding agent $u$ possibly changed. Formally, the enforcer on agent $u$ at time $t$ is a pair of partial functions $\langle S_1[u,t],S_2[u,t] \rangle$ such that
+\begin{align}
+    &S_1[u,t] : \Lang_1 ^{|\Agents|} \to \Lang_1^{|\Agents|} \text { and } \\
+    &S_2[u,t] : [1,|\Agents|]^{|\Agents|} \times \mathbb{B}^{|\Agents|} \to [1,|\Agents|]^{|\Agents|} \times \mathbb{B}^{|\Agents|}, 
+\end{align}
+\noindent where $\Lang_1 = [1,|\Agents|] \times V \times \Actions^*$. The above definition of a enforcer is quite general as both the input trajectory and the modified trajectory can be of arbitrary length. Next, we introduce $(\ell,\ell')$-enforcers. For every agent in the system, these enforcers accept trajectories of length at most $\ell$ and return a new trajectory of length at most $\ell' \geq \ell$.  
+Formally, an $(\ell,\ell')$-enforcer 
+%\footnote{In the rest of this paper, we refer to $(\ell,\ell')$-enforcers as just enforcers.} 
+on agent $u$ at time $t$ is a pair of partial functions $\langle S_1[u,t],S_2[u,t] \rangle$ such that 
+\begin{align}
+    &S_1[u,t] : \Lang_I ^{|\Agents|} \to \Lang_O ^{|\Agents|} \text{ and } \\ 
+    &S_2[u,t] : [1,|\Agents|]^{|\Agents|} \times \mathbb{B}^{|\Agents|} \to [1,|\Agents|]^{|\Agents|} \times \mathbb{B}^{|\Agents|}, 
+\end{align}
+\noindent where $\Lang_I = [1,|\Agents|] \times V \times \Actions^{\leq \ell}$ and $\Lang_O = [1,|\Agents|] \times V \times \Actions^{\leq \ell'}.$
+
+\subsubsection*{Composition of enforcers}
+
+When multiple agents act in the same system, their trajectories and their priorities are modified only by their respective enforcers. However, the individual enforcers act together to make the system safe. The joint behavior of enforcers are captured by functional composition.  We first define \emph{composition of enforcers} for two agents $u_1$ and $u_2$ at time $t$. If $u_1 \prec_t u_2$ then
+
+\begin{align}
+    &\quad~S[u_1,t] \circ S[u_2,t] \nonumber \\ 
+    &= S[u_2,t] \circ S[u_1,t] \\
+    &=\langle S_1[u_2,t] \circ S_1[u_1,t], S_2[u_2,t] \circ S_2[u_1,t]\rangle. %\nonumber
+\end{align}
+
+%$$S(u_1,t) \circ S(u_2,t) = S(u_2,t) \circ S(u_1,t) =  \langle S_1(u_2,t) \circ S_1(u_1,t), S_2(u_2,t) \circ S_2(u_1,t)\rangle.$$
+This composition can be extended to an arbitrary number of enforcers by composing their constituent functions in the order~$\prec_t$.
+
+\begin{figure*}[tbh]
+\centering
+\definecolor{green1}{rgb}{0,0.6,0}
+\subfloat[Unsafe behavior]{\input{OnlineShield/figs/f1_eg1_b.tex}}
+\subfloat[Communication groups]{\input{OnlineShield/figs/f1_eg1_a.tex}}
+\subfloat[Safe behavior]{\input{OnlineShield/figs/f1_eg1_c.tex}}
+\caption{(a) In Scenario~1, there are two agents (blue and green). Their intended trajectories are marked by solid lines. At time $t=2$ the blue and green agents occupy the same cell, hence $\Safety(2) = \bot$. However, the system is still safe at times $t=0$ and $t=1$.
+(b) In Scenario~2, the communication constant $d$ is $2$. The agents in the same group have been encircled. The black and purple agents are in a group and blue, green and the red agents are in a different group. (c)  In Scenario~4, the modified trajectory for the blue agent as a consequence of the enforcer $S[blue,0]$ on the blue agent at $t=0$ is shown.}
+\label{fig:eg7}
+\end{figure*}
+
+\subsubsection*{Properties of enforcers}
+We define the desired properties for a set of enforcers. 
+%Let the set $\{p_{u}~|~u \in \Agents\}$ be the trajectories of the agents at time $t$. 
+For any agent $u$ in $\Agents$, let $S[u,t]$ be the enforcer acting on agent $u$ at time $t$, $p_u$ its original trajectory at time $t$ and $p'_u$ its modified trajectory at time $t$.  
+%\Dj{Let} $S(u_1,t),\dots,S(u_n,t)$ be the enforcers on the agents $u_1\ldots u_n$, respectively \Dj{and} $ \{p'_{u_1},p'_{u_2},\dots,p'_{u_n}\}$ be \Dj{their} modified trajectories as a consequence of the enforcers. 
+
+\begin{defn}[Correctness]
+\label{defn:correct}
+The enforcers $\{S[u,t]~|~u \in \Agents \}$ are \emph{correct} if the modified trajectories $\{p'_{u}~|~ u \in \Agents\}$  are safe and the final states are unchanged.
+\end{defn}
+
+\begin{defn}[Minimal deviation]
+\label{defn:minimal}
+An enforcer $S[u,t]$ is said to \emph{cause minimum deviation} if for all $a \in \Agents_u(t)$, $\Safety_a(t) = \top$, then $p'_u = p_u$.
+\end{defn}
+
+\begin{defn}[Boundedness]
+\label{defn:bounded}
+The enforcers $\{S[u,t]~|~u \in \Agents\}$ are \emph{bounded}, if there exists $\ell$ and  $\ell'$ in $\mathbb{N}$ such that all the enforcers are $(\ell,\ell'$)-enforcers. 
+\end{defn}
+
+\begin{defn}[Completeness]
+\label{defn:complete}
+If there exists a centralized shield~\cite{bloem2014sat} that is correct, then the decentralized enforcers are correct.
+\end{defn}
+
+ 
+We later prove that boundedness and correctness ensure that all agents progress in finite time, while still guaranteeing the safety of the system. We now state the problem studied in this paper.
+
+
+Given a set $\Agents = \{u_1,\dots,u_n\}$ of agents and a set $\{(v_u,w_u)~|~u \in \Agents \text{ and } |w_u| \leq \ell \}$ of their trajectories, 
+construct a set $\{S[u,t]~|~u \in \Agents \text{ and } t \in \Time\}$ of enforcers such that these enforcers are correct, cause minimum deviation, complete and bounded. 
+
+
+In the following scenarios, we explain the concepts discussed in this section.
+
+\begin{eg}
+In Figure \ref{fig:eg7}a, blue and green agents operate in a grid world. The vertices of the underlying labeled graph $G$ are the cells in the grid. There is an edge from a vertex to another, if they are adjacent in the grid (no diagonal edges).
+The set $\Actions \defeq \{l,r,t,d\}$ of edge labels is the set of actions corresponding to moving left, right, top and down, respectively. The set $\Agents = \{blue,green\}$ of vertex labels corresponds to the set of agents operating in the system. $\Vlabel((2,4),0) = \{green\}$ and $\Vlabel((4,2),0) = \{blue\}$, that is, blue agent is at $(4,2)$ and green agent is at $(2,4)$. The trajectory of the blue agent is $((4,2),lll)$ and that of the green agent is $((2,4),ddd)$. At time $t = 1$, the labeling function is $\Vlabel((3,2),1) = \{green\}$, $\Vlabel((2,3),1) = \{blue\}$, $\Vlabel((2,4),1) = \emptyset$, $\Vlabel((4,2),1) = \emptyset$.  The blue and the green agents have reached their goals at $t=3$. Therefore, $goal_{blue,3} = \top$ and $goal_{blue,2} = goal_{blue,1} = \bot$. The final state of the blue agent is $(1,2)$ and the green agent is $(2,1)$. That is, 
+
+\begin{small}
+\begin{align*}
+    blue \dhxrightarrow[(4,2)]{lll}(1,2)~\text{and}~
+    green \dhxrightarrow[(2,4)]{ddd}(2,1).
+\end{align*}
+\end{small}
+\end{eg}
+
+ 
+
+\begin{eg}
+In Figure~\ref{fig:eg7}b, the trajectories of 5 agents are shown. The communication constant $d = 2$ and $\ell = 3$. 
+At time $0$, the $\Agents_{blue}(0)=\Agents_{green}(0)=\Agents_{red}(0)= \{blue,green,red\}$ and $\Agents_{purple}(0) = \Agents_{black}(0) = \{purple,black\}$. All agents in the first group know that the trajectory of the red agent is $((2,5),ddd)$, the blue agent is $((2,7),tt)$ and the green agent is $((4,7),lll)$. In the second group, all agents know that the trajectory of the purple agent is $((6,3),ll)$ and the black agent is $((6,1),rr)$. 
+\end{eg}
+
+
+\begin{eg}
+\label{eg:safe}
+Consider a safety function $\Safety:  \Time \to \Bool$ defined as
+\begin{align}
+\Safety(t) = 
+     \begin{cases}
+       \top & \text{if for any } v \in V~ |\Vlabel(v,t)|=1 \\
+       &\quad \text{and } \Vlabel(u,t) = \Vlabel(v,t) \text{ implies } u = v, \\
+       \bot & \text{otherwise.} \\
+    \end{cases}
+\end{align}
+\noindent Simply if $X$ is the vertex labeling at some time, $X$ is \emph{safe} if there is only one agent at any location at any given time and any agent can be present at only one location at any time (consistent label). 
+In the grid world in Figure \ref{fig:eg7}c, the system is safe at all times. In the grid world in Figure \ref{fig:eg7}b, the system is unsafe at time $t = 2$ as the blue and the green agents occupy the same location.
+\label{eg:safety_fn}
+\end{eg}
+%\vspace{-5mm}
+
+
+\begin{eg}
+Consider safety as described in Scenario~3. Then, in Figure \ref{fig:eg7}c, the system is safe on trajectories $ltlld$ and $ddd$ for the blue and green agents respectively. However, in Figure \ref{fig:eg7}b, the system is not safe as it is unsafe at $t=2$. We say that the blue and green agents violate safety.
+\end{eg}
+
+
+
+\begin{eg}
+In Figure \ref{fig:eg7}b, the blue and green agents occupy the same location at time $t=2$. However, in Figure \ref{fig:eg7}c, the blue agent's trajectory has been modified by the enforcer onboard. As a result they never occupy the same position at the same time. Priority of the blue agent is 1 and the priority of the green agent is 2. $S_1[blue,0]\big((blue,1,lll)(green,2,ddd)\big) = (blue,1,ltlld)(green,2,ddd)$.
+\end{eg}
+
+
+
+\begin{figure}[htb!]
+\definecolor{green1}{rgb}{0,0.6,0}
+\centering
+\subfloat[Before modification]{
+\begin{tikzpicture}[line join=round,x=1cm,y=1cm]
+\begin{axis}[
+scale=0.6,
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=0,
+xmax=6,
+ymin=0,
+ymax=6,
+xtick={0,1,...,5,6},
+ytick={0,1,...,6},
+]
+\draw [dashed,->,line width=0.6pt] (3,4) -- (3,0.5);
+\draw [->,line width=0.6pt] (1,2) -- (5.5,2);
+\path[draw,dotted,<-,line width=0.9pt] (1,1.8) -- (2,1.8) -- (3,1.8) -- (4,1.8) -- (5,1.8);
+\begin{scriptsize}
+\draw [fill=red] (3,4) \Square{1.3pt};
+\draw [fill=green1] (1,2) \Square{1.3pt};
+\draw [fill=blue] (5,1.8) \Square{1.3pt};
+
+\draw [fill=green1] (3,2) \Square{1.2pt};
+\draw [fill=blue] (3,1.8) \Square{1.2pt};
+\draw [fill=red] (3,2.2) \Square{1.3pt};
+
+\draw[color=red] (3,4.5) node {t=0};
+
+\draw[color=red] (2.3,2.5) node {t=2};
+
+
+\draw[color=blue] (2.4,1.5) node {t=2};
+\draw[color=blue] (5,1.5) node {t=0};
+
+\draw[color=green1] (0.5,2.4) node {t=0};
+\draw[color=green1] (3.7,2.5) node {t=2};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}}
+\subfloat[After modification]{
+\begin{tikzpicture}[line join=round,x=1cm,y=1cm]
+\begin{axis}[
+scale=0.6,
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=0,
+xmax=6,
+ymin=0,
+ymax=6,
+xtick={-1,0,...,30},
+ytick={-1,0,...,18},
+]
+
+\draw [->,dashed,line width=0.6pt] (3,4) -- (3,0.5);
+\path[draw,dotted,->,line width=0.9pt] (5,1.8) -- (4.2,1.8)-- (4.2,1)-- (3.8,1) -- (3.8,1.8)--(1,1.8);
+\path[draw,->,line width=0.6pt] (1,2)--(2,2)--(2,3)--(3,3)--(4,3)--(4,2)--(5,2)--(5.5,2);
+
+\begin{scriptsize}
+\draw [fill=red] (3,4) \Square{1.3pt};
+\draw [fill=green1] (1,2) \Square{1.3pt};
+\draw [fill=blue] (5,1.8) \Square{1.3pt};
+
+\draw[color=red] (3,4.5) node {t=0};
+\draw[color=blue] (5,1.5) node {t=0};
+\draw[color=green1] (0.5,2.4) node {t=0};
+
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}}
+\caption{In Scenario~6, the system is safe after the modification of the trajectories by the enforcers. (a) The blue, green and red agents violate safety at time 2 in (3,2). (b) The trajectories of the blue and green agents have been modified by the respective enforcers. However, the red agent does not deviate.}
+\label{fig:eg4}
+\end{figure}
+
+\begin{eg}
+In Figure \ref{fig:eg4}a, at $t=0$, blue agent has priority~1, green agent has priority~2 and red agent priority~3. The communication constant $d = 2$. All the three agents occupy the same location (3,2) at time 2. The enforcer on the blue agent modifies its trajectory first and this modification is relayed to the green and the red agents. The enforcer on the green agent then modifies its trajectory. There is no change in the trajectory of the red agent as now there is no safety violation. The modified trajectories are shown in Figure \ref{fig:eg4}b.
+\end{eg}
+
+
+

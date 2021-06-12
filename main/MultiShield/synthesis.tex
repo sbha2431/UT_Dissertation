@@ -1,0 +1,133 @@
+\section{Synthesis of Shields for Multi-Agent Systems}
+\label{sec_synth}
+
+In this section, we study the synthesis of
+shields for multi-agent systems with respect to the interference requirements defined in Section~\ref{def_shields}.
+First, we discuss how the knowledge that all sequences of wrong outputs are bounded can be incorporated
+in the synthesis approach. 
+%Then, we propose synthesis approaches to construct \emph{locally-optimal} shields and \emph{$c_{\mathsf{mp}}$-optimal} shields, respectively. For the construction of \emph{locally-optimal} shields, the assumption on the occurrences of system faults is a prerequisite. Finally, we discuss synthesis of \emph{fair} shields.
+%
+Then, we propose a synthesis approach to construct \emph{locally-optimal} shields. 
+The synthesis procedure consists of the following three steps:
+\begin{itemize}
+  \item[1)] We construct a safety game $\mathcal G^s$ and compute its permissive winning strategy $\rho^s$, such that any shield $\shield$ that implements $\rho^s$ ensures \emph{correctness} ($\design \comp \shield \models \varphi$) and $\shield$
+      \emph{does not interfere with $\design$ unnecessarily}. This construction is similar to the one  in~\cite{KonighoferABHKT17}.
+  \item[2)] We augment the game graph with the assumptions on the occurrence of system errors.
+  \item[3)] We compute deterministic strategy that implements $\rho^s$ and 
+  satisfies the  interference constraints.
+\end{itemize}
+%The first step is common for all algorithms. The other steps depend on the interference requirements.
+\iffalse MEAN-PAYOFF
+The synthesis algorithms for \emph{$c_{\mathsf{mp}}$-optimal} shields and  \emph{fair} shields are presented in Appendix~\ref{appx:synthesis-mp} and Appendix~\ref{appx:synthesis-fair}. The first step is common for all algorithms, and the other two depend on the interference requirements.
+\fi
+We also present a synthesis algorithm for \emph{fair} shields. The first step above is common for both algorithms, the other two depend on the interference requirements.\looseness=-1
+
+\subsection{Constructing and Solving the Safety Game}
+
+Let $\varphi$ be a safety specification represented as a safety automaton $\varphi = (Q, q_0, \alphabet, \delta, F)$.
+Let $W \subseteq F$ be the winning region of $\varphi$ when considered as a safety game.
+
+We construct a safety game $\mathcal G^s$ such that its most permissive strategy subsumes all possible shields that are correct w.r.t.\ $\varphi$ and that do not interfere unnecessarily.
+%
+The state space of $\mathcal G^s$ is constructed by augmenting the states $Q$ of $\varphi$ with two Boolean variables:
+(1) the variable $u$ is a flag that indicates wrong outputs by the system, and (2) the variable $t$ tracks deviations between the outputs of the system and the shield.
+
+We construct a safety game $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s, F^s)$ such that
+$G^s = \{(g,u,t) \mid g \in Q, u, t \in \{\top,\bot\}\}$ is the state space,
+$g_0^s = (g_0,\bot,\bot)$ is the initial state,
+$\delta^s$ is the next-state function, and $F^s$ is the set of safe states, such that
+$\delta^s((g,u,t),(\isymb,\osymb),\osymb')=(\delta(g,\isymb,\osymb'),u',t')$
+with
+\begin{itemize}
+\item[(1)] $u' = \top$ if $\delta(g,\isymb,\osymb) \not \in W$, and $u' = \bot$ otherwise,
+\item[(2)] $t' = \top$ if $\osymb\neq \osymb'$, and $t' = \bot$ otherwise;
+\end{itemize}
+and $F^s=\{(g,u,t)\in G^s \mid (g\in W) \wedge (u=\bot \rightarrow t=\bot)\}$.
+We use standard algorithms for safety games (e.g.~\cite{Mazala01})
+to compute the winning region $W^s$ and the most permissive winning strategy $\rho^s: G \times \ialphabet \rightarrow 2^{\oalphabet}$ of $\mathcal G^s$.
+\looseness=-1
+
+\subsection{Synthesis with Assumptions on the Occurrences of Faults}
+
+Our goal is to synthesize cost-optimal shields under the assumption that the length of sequences of wrong outputs is bounded by some
+constant $b$. Therefore, we construct a new game graph, that incorporates this knowledge and that can be used to synthesize
+cost-optimal shields in the next subsections.
+%
+We start from the safety game $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s,F^s)$ with winning region $W^s$ and permissive winning strategy $\rho^s$, and a bound $b\in\nats$ on the maximal length of sequences of wrong outputs.
+%
+We construct a new game $\mathcal G^{a} = (G^{a}, g_0^{a},\alphabet,\oalphabet,\delta^{a},\Acc^{a})$
+where $G^{a} = W^s \times \{0,\ldots,b+1\}$ is the set of states,
+$g_0^{a} = (g_0^s,0)$ is the initial state,
+$\delta^{a}$ is the next-state function, such that
+%
+$\delta^{a}((g^s,v),\symb,\osymb')=( \delta^s(g^s, \symb,\osymb')\cap\rho^s(g^s, \symb),v')$ such that
+\begin{itemize}
+\item if $v \leq b$ and $u'=\top$, then $v' = v+1$,
+\item if $v \leq b$ and $u'=\bot$, then $v' = 0$, and
+\item if $v = b +1$, then $v' = b+1$; 
+\end{itemize}
+and $\Acc^{a}$ is such that  $\Acc^{a}(\overline{\pi})=\top$ iff\looseness=-1
+\begin{itemize}
+\item $\exists i \geq 0 \scope g_i^{a}= (g^s_i,v_i)$ with $v_i = b+1$, or
+\item there are inf. many $g_i^{a}= (g_i,u_i, t_i, v_i)$ with $t_i = \bot$.
+\end{itemize}
+
+Intuitively, the counter $v$ tracks the length of the current sequence of wrong outputs by the system, and is reset to $0$ when the output of the system is correct. If $v$ exceeds the bound $b$, it remains $b+1$ forever.
+Using this counter $v$, we encode the assumption on the system. Thus, the set $\Acc^a$ of wining plays in $\mathcal G^a$ consists of all infinite plays that violate the assumption plus the infinite plays that visit infinitely often a state in which the output of the shield does not deviate from the system's output. Hence, $\Acc^a$ is a GR(1)  condition.
+
+\subsection{Synthesis of Locally-Optimal Shields}\label{sec:shieldsynth-local}
+
+Next, we propose a procedure to synthesize shields that minimize the cost per deviation period assuming  that
+all sequences of wrong outputs are bounded.
+
+We start with the augmented game graph $\mathcal G^{a} = (G^{a}, g_0^{a},\alphabet,\oalphabet,\delta^{a},\Acc^{a})$ and  construct a new game $\mathcal G^{opt} = (G^{a}, g_0^{a},\alphabet,\oalphabet,\delta^{a},\Acc^{a},\Val^{opt})$
+with value function $\Val^{opt}(\overline{\pi})$ which is an \emph{accumulated cost objective} using $c$ as edge labeling: $cost^{opt}(g^{a},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$.
+
+Using the  procedure described in~\cite{jing2013}, we synthesize shields, that are winning according to $\Acc^{a}$
+(i.e., either the assumption on the system that any sequence of wrong outputs has a length of at most $b$ is violated,
+or infinitely often the shield does not interfere)
+and optimize $\Val^{opt}$ (i.e., the worst-case accumulated cost for reaching the end of the deviation per deviation period).
+
+\iffalse
+\subsection{Synthesis of $c_{\mathsf{mp}}$-Optimal Shields}
+We now turn to the synthesis of shields with limit-average objectives. As the limit-average is defined over infinite horizon, the assumption that wrong outputs are bounded, or even finite, is not crucial.
+
+First, we discuss the synthesis procedure for $c_{\mathsf{mp}}$-optimal shields \emph{without} assumptions on the system.
+We start with $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s,F^s)$, $W^s$, $\rho^s$, and the cost function $c$.
+The new game graph $\mathcal G^{opt}$ is constructed by  restricting the
+transition relation $\delta^{opt}$ with respect to $\rho^s$.
+Formally, we construct a game $\mathcal G^{opt} = (G^s, g_0^s,\alphabet,\oalphabet,\delta^{opt}, \Val^{opt})$ with
+the transition relation $\delta^{opt} = \delta^s \cap \rho^s$
+and the value function
+$\Val^{opt}(\overline{\pi})$ is a \emph{mean payoff objective} using $c$ as edge labeling function:
+$cost^{opt}(g^{s},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$.
+We use standard algorithms~\cite{ZwickP96} to compute an optimal strategy in the mean-payoff game $G^{opt}$ which corresponds to a shield with minimal limit-average interference cost.
+
+We can also devise a synthesis procedure for $c_{\mathsf{mp}}$-optimal shields \emph{with} assumptions on the occurrences of system faults. In this case, we build the new game graph $\mathcal G^{opt}$ by adding a mean-payoff objective $\Val^{opt}(\overline{\pi})$ to the game graph $\mathcal G^{a}$. The objective is defined via the edge labeling function $cost^{opt}$, where $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$ if $g^{opt}$ has value of the counter less than or equal to $b$, and $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = 0$ otherwise. Thus, plays violating the assumption  have limit-average cost $0$, while all other plays have non-negative cost. Hence, plays violating the assumption cannot increase the cost of a strategy, meaning that an optimal shield can again be computed by solving a mean-payoff game.
+\fi
+
+\subsection{Synthesis of Fair Shields}
+We now turn to the synthesis of fair shields. For this, we augment the states of $\mathcal G^s$  with Boolean variables that track information about the minimal correcting sets for each transition.  We use these flags to encode the fairness requirements for the  agents.
+
+Let $\Correct(g,\isymb,\osymb,W)$ be the set of all minimal sets of agents such that correcting the output of these agents results in a successor state of $g$ that is in $W$.
+Formally, for $\Pi \subseteq \Proc$ it holds that $\Pi \in \Correct(g,\isymb,\osymb,W)$ iff (1) there exists $\osymb'$ such that $\delta(g,\isymb,\osymb') \in W$ and $\Diff(\osymb,\osymb') = \Pi$, and (2) $\Pi$ is minimal
+(i.e., for all $\osymb' \in\oalphabet$ with $\Diff(\osymb,\osymb') \subsetneq \Pi$ it holds that $\delta(g,\isymb,\osymb') \not\in W$).
+
+Given  $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s,F^s)$ with $W^s$ and $\rho^s$,
+we construct a game $\mathcal G^{f} = (G^f, g_0^f,\alphabet,\oalphabet,\delta^{f}, \Acc^{f})$ with
+set of states $G^f = W^s \times \{\bot,\top\}^n\times \{\bot,\top\}^n$, where $n = |\Proc|$ is the number of agents.
+The initial state is $g_0^f = (g_0^s,\bot^n,\bot^n)$, and
+the transition relation $\delta^{f}$ is such that
+%
+$\delta^{a}((g,u,t,m_1,\ldots,m_n,c_1,\ldots,c_n),\symb,\osymb')=(\delta^s((g,u,t), \symb,\osymb')\cap\rho^s((g,u,t), \symb),m_1',\ldots,m_n',c_1',\ldots,c_n')$ where for each agent $p \in \Proc$ it holds that
+\begin{itemize}
+\item $m_p'= \top$ iff there exist minimal correcting sets $\Pi,\overline \Pi\in \Correct(g,\isymb,\osymb,W)$  with $p \in \Pi$ and $p \not \in \overline \Pi$, 
+\item $c_p' = \top$ iff $p\in \Diff(\osymb, \osymb')$.
+\end{itemize}
+Intuitively, for each agent $p \in \Proc$, the  flag $m_p$ is set to $\top$ whenever the set of  minimally correcting sets at that step contains a  minimally correcting set which does not contain $p$, and one that does. The flag $c_p$ is set to $\top$ whenever the output of $p$ is corrected by the shield.
+
+The acceptance condition $\Acc^{f}$ encodes the fairness requirement on the shield for agent $p$ using the variables $m_p$ and $c_p$. It states  for each agent $p\in \Proc$ that if a play contains infinitely many occurrences of states in which $m_p = \top$, then it should contain infinitely many occurrences of states in which  $c_p  = \bot$ and $m_p=\top$. 
+
+Thus, $\Acc^{f}$ is a Streett acceptance condition, and a fair shield can be synthesized by solving a 
+Streett game using well-known methods~\cite{PitermanP06}.
+

@@ -1,0 +1,30 @@
+
+
+ \subsection{Gridworld}
+ \label{GridworldAppendix}
+ \subsubsection{Charging station specifications}  \label{Gridworldchargingappendix}
+
+
+  The safety specification is of the form $\spec = \spec_{collision} \wedge \spec_{charge}$, where $\spec_{collision}$ requires collision avoidance and no simultaneous charging, and $\spec_{charge}$ describes when and how the agents should use the charging station.
+  The formula $\spec_{charge}$ is of the form $\spec_{charge,1} \wedge \spec_{charge,2}$.
+
+  \begin{align}\label{eqn:safety2}
+  \spec_{charge,i} &= &\LTLglobally\Big(charging_i \rightarrow \lnot \LTLnext charging_j				\Big) \nonumber \\
+  \spec_{collision} &=&\LTLglobally \lnot \Big(position_i = position_j				\Big)
+  \end{align}
+  for each $i \in \{1,2\}$ and $i \neq j$. The formula $\spec_{charge,i}$ requires that the other agent cannot enter the charging area the time step after agent $i$ has left it. The integer variable $position_i$ is the position of agent $i$ in the grid. The formula $\spec_{collision}$ requires that the agents do not occupy the same position.
+
+ 
+
+\subsection{UAVs}
+ \label{UAVpriorityappendix}
+The safety specification $\spec_{dist}$ captures the requirement that the controllers should not choose trajectories that bring them within distance less than a given threshold $r$. The output of each UAV is chosen from the set $T = \{1,2,\ldots,17\}$ where each integer corresponds to a particular trajectory choice. Let the function $dist: T \times T \to \nats$  map each pair of trajectories $traj_i,traj_j \in T$ to the closest distance between them. We then define a Boolean function of the outputs chosen by two agents $i$ and $j$ given the threshold $r$:
+  \[d_r(traj_i,traj_j) = \begin{cases}
+  0 & \text{if } dist(traj_i,traj_j) \leq r\\
+  1 & \text{if }  dist(traj_i,traj_j) > r.\\
+  \end{cases}\]
+
+We define the safety specification as
+  \begin{align}
+  \spec_{dist}&= \LTLglobally \LTLand_{i\neq j}\Big(d_r(traj_i,traj_j)= 1\Big).
+  \end{align}

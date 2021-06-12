@@ -1,0 +1,30 @@
+\BOOKMARK [1][-]{section.1}{Motivation and challenges}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 2
+\BOOKMARK [1][-]{section.3}{Case Study}{}% 3
+\BOOKMARK [1][-]{section.4}{Preliminaries}{}% 4
+\BOOKMARK [2][-]{subsubsection.4.0.1}{Basic notations}{section.4}% 5
+\BOOKMARK [3][-]{subsubsection.4.0.2}{Reactive systems}{subsubsection.4.0.1}% 6
+\BOOKMARK [3][-]{subsubsection.4.0.3}{Multi-agent reactive systems}{subsubsection.4.0.1}% 7
+\BOOKMARK [3][-]{subsubsection.4.0.4}{Specifications}{subsubsection.4.0.1}% 8
+\BOOKMARK [3][-]{subsubsection.4.0.5}{Games}{subsubsection.4.0.1}% 9
+\BOOKMARK [3][-]{subsubsection.4.0.6}{Properties of traces}{subsubsection.4.0.1}% 10
+\BOOKMARK [1][-]{section.5}{Shields for Multi-Agent Systems}{}% 11
+\BOOKMARK [2][-]{subsection.5.1}{Attaching the Shield}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.2}{Shield Definition}{section.5}% 13
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Correctness}{subsection.5.2}% 14
+\BOOKMARK [3][-]{subsubsection.5.2.2}{No unnecessary interference}{subsection.5.2}% 15
+\BOOKMARK [2][-]{subsection.5.3}{Interference Costs and Shield Optimality}{section.5}% 16
+\BOOKMARK [3][-]{subsubsection.5.3.1}{Interference cost functions}{subsection.5.3}% 17
+\BOOKMARK [3][-]{subsubsection.5.3.2}{Shield optimization objective}{subsection.5.3}% 18
+\BOOKMARK [2][-]{subsection.5.4}{Assumptions on the Occurrences of Faults}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.5}{Fair Shielding}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{Synthesis of Shields for Multi-Agent Systems}{}% 21
+\BOOKMARK [2][-]{subsection.6.1}{Constructing and Solving the Safety Game}{section.6}% 22
+\BOOKMARK [2][-]{subsection.6.2}{Synthesis with Assumptions on the Occurrences of Faults}{section.6}% 23
+\BOOKMARK [2][-]{subsection.6.3}{Synthesis of Locally-Optimal Shields}{section.6}% 24
+\BOOKMARK [2][-]{subsection.6.4}{Synthesis of Fair Shields}{section.6}% 25
+\BOOKMARK [1][-]{section.7}{Experimental Evaluation}{}% 26
+\BOOKMARK [2][-]{subsection.7.1}{Gridworld}{section.7}% 27
+\BOOKMARK [2][-]{subsection.7.2}{UAV Mission Planning}{section.7}% 28
+\BOOKMARK [1][-]{section.8}{Conclusion}{}% 29
+\BOOKMARK [1][-]{section*.4}{References}{}% 30

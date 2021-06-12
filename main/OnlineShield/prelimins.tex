@@ -1,0 +1,34 @@
+\section{Preliminaries}
+
+Following the notations in \cite{Falcone2011,Pinisetty2016runtime,falconeruntime1}, $\Bool = \{\top,\bot\}$ is the domain of Booleans. \noindent A finite (infinite) word over a set $\Sigma$ of elements is a finite (infinite) sequence $w=a_0a_2 \dots a_n$ of elements of $\Sigma$. The length of $w$ is $|w|$. $\epsilon_\Sigma$ denotes the empty word over $\Sigma$ or $\epsilon$ when the context is clear. 
+$w[p:q]$ denotes the sub-word $a_pa_{p+1}\dots a_q$.
+The concatenation of two words $w$ and $w'$ is denoted $w \cdot w'$. A word $w'$ is a prefix of a word $w$, denoted $w' \leq w$, whenever there exists a word $w''$ such that $w=w' \cdot w''$, and $w' < w$ if additionally $w'\neq w$. $w$ is said to be an extension of $w'$.  
+The sets of all words and all non-empty words are denoted by $\Sigma^*$ and $\Sigma^+$, respectively. $\Sigma^{\leq k}$ denotes all words of length at most $k$. $2^A$ denotes the power set of the set $A$. 
+A language or a property over $\Sigma$ is any subset $L$ of $\Sigma^*$. If $a,b \in \mathbb{N}_{\geq 0}$ and $a < b$, then $[a,b]$ denotes the set $\{a,a+1,a+2,\dots,b-1,b\}$.
+
+%\Dj{The notations used in this paper follow the standard convention in runtime enforcement and formal methods \cite{Pinisetty2016runtime,falconeruntime1}.}
+%$L$ is \emph{prefix-closed} if all prefixes of all words from $L$ are also in $L: L=\{w~|~\exists w'\in L :w \leq w'\}$. 
+%Similarly, a language $L$ over $\Sigma$ is \emph{extension-closed} if all extensions of all words from $L$ are in $L: L= \{w~|~\exists w' \in L: w'\leq w\}$. $w = w_0w_1\ldots$ be a possibly infinite word.  By $w[i:\ell]$, where $i,\ell \in \mathbb{N}$, we denote the sub-string $w_iw_{i+1}\ldots w_{i+\ell}$.
+
+Let $G=(V, E)$ be a directed graph where $V$ is a finite set of nodes, and $E$ is a finite set of edges. The \emph{distance} $d(u,v)$ between two vertices $u$ and $v$ is defined as the length of a shortest directed path from $u$ to $v$. 
+Let $\Agents$ denote a set of node labels and $\Actions$ denote a set of edge labels. %\Dj{The set $\Agents$ of node labels corresponds to a set of agents and the set of edge labels corresponds to the set of actions that the agents can perform.}
+$\mathbb{T}=\{0,1, 2, \dots \infty \}$ is a discrete set of time indices.
+A graph with node labels and edge labels is called a \textit{labeled graph} \cite{west_introduction_2000}. 
+An \emph{edge labeling} is a function $\Elabel:E \times \Time \to \Actions$.
+A  \emph{node labeling} is a function $\Vlabel: V \times \Time \to 2^\Agents$. %\Dj{Each node may have more than one label, this corresponds to the scenario when more than one agent occupies the same location.} 
+A node labeling $\Vlabel$ is consistent at time $t$ if $\Vlabel$ partitions $V$, i.e., if for any $u$ and $v$, $\Vlabel(v,t) \cap \Vlabel(u,t) \neq \emptyset$ implies $u = v$. 
+
+An \emph{environment} is a tuple $(G,\Elabel)$ where $G$ is a labeled graph and $\Elabel$ is an edge-labeling. $\Elabel(e,t)$ is the label of edge $e$ at time $t$. The environment is said to be \emph{static} if the associated edge labeling is time-invariant. 
+%Unless explicitly specified we assume that the environment is static. 
+For a static environment $(G,\Elabel)$, $\delta: V \times \Actions \to 2^V$ is called the \emph{transition function}. $\delta$ is \emph{deterministic}, if for any $v,v_1,v_2 \in V$ and $s \in \Actions$, $v_1,v_2 \in \delta(v,s)$ implies $v_1 = v_2$. 
+The extended transition function $\hat{\delta}: V \times \Actions^* \to 2^V$ is defined recursively as $\hat{\delta}(v,\epsilon) = v$ and $\hat{\delta}(v,w\cdot a) = \delta(\hat{\delta}(v,w),a)$. A static environment is deterministic, if the associated transition function $\delta$ is deterministic.
+A word $w = w_0w_1w_2\dots$ is said to \emph{induce a path} in a graph $G$ starting at vertex $v_0$ if there exists a sequence of vertices $v_1v_2v_3\dots$ such that $v_i \in \delta(v_{i-1},w_{i-1})$. In a static deterministic environment, the \emph{final state} induced by a finite word $w = w_0w_1\dots w_n$ starting at $v$ is the node $\hat{\delta}(v,w)$.
+
+A \emph{trajectory} $p$ in a static environment $(G,\Elabel)$ is a pair $(v,w)$ where $w \in \Actions^*$ is a finite word such that $w$ induces a path in $G$ starting at vertex $v$. The final state of a trajectory $p~=~(v,w)$ is the final state induced by $w$ on $v$ and is given by $\hat{\delta}(v,w)$.  The concatenation of a trajectory $p$ and a word $w'$ is $p\cdot w' = (v,w\cdot w')$.  For trajectory $p$, we denote its \emph{sub-trajectory} $(v,w[i:\ell])$ by $p[i:\ell]$. 
+A \emph{joint trajectory} is a finite set of trajectories. 
+ %If the label of $v$ is $\{1\}$, then label of $v$ following $w$ is $\emptyset$ and the label of the vertex $\hat{\delta}(v,w)$ is $\{1\}$.
+
+For any vertex label $u$, $p=(v,w)$ is a trajectory for $u$ at time $t$ if $u \in \Vlabel(v,t)$ and $w$ induces a path from $v$. Define the final state of $u$ through $p$ as the final state of $(v,w)$. The final state of $u$ through trajectory $p = (v,w)$ is ($\hat{\delta}(v,w)$) and is denoted $u \dhxrightarrow[v]{w} \hat{\delta}(v,w)$.
+Let $\Vlabel(v,t) = \{u\} \cup X$, $(v,w)$ be a trajectory and $\Vlabel(\hat{\delta}(v,w),t) = Y$. If agent $u$ follows trajectory $(v,w)$, then at time $t+|w|$ the vertex label of $v$ is $X$ and the vertex label of $\hat{\delta}(v,w)$ is $Y \cup \{u\}$.  
+ 
+Given  an $n$-tuple of  symbols $e =  (e_1,\dots,e_n)$,  for $i \in [1,n],\prod_i e$ is the projection of $e$ on its $i$-th element denoted $(\prod_i e \defeq e_i)$. $\Replace_i(e,x)$ replaces the i$^{th}$ element of $e$ with $x$, i.e., $\Replace_i(e,x) = (e_1,\dots,e_{i-1},x,e_{i+1},\dots,e_n)$.

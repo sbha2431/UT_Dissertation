@@ -31,28 +31,29 @@ Figure~\ref{fig:case1} shows a gridworld divided into 7 abstraction partitions. 
 
 
 \begin{figure}
-\begin{minipage}{5.0cm}
+\begin{minipage}{1\columnwidth}
 	\centering
 		\subfloat[$t_1$ \label{fig:case1t2}]{
-		\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t2.png}\hspace{.5cm}
+		\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t2.png}
 	}
 	\subfloat[$t_3$ \label{fig:case1t3}]{
-		\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t3.png}\hspace{.5cm}
+		\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t3.png}
 	}
 	\subfloat[$t_4$ \label{fig:case1t4}]{
-	\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t4.png}\hspace{.5cm}
+	\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t4.png}
 }
 \end{minipage}
-\begin{minipage}{5.0cm}
+
+\begin{minipage}{1\columnwidth}
 	\centering
 	\subfloat[$t_5$  \label{fig:case1t5}]{
-		\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t5.png}\hspace{.5cm}
+		\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t5.png}
 	}
 	\subfloat[$t_6$ \label{fig:case1t6}]{
-		\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t6.png}\hspace{.5cm}
+		\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t6.png}
 	}
 	\subfloat[$t_7$ \label{fig:case1t7}]{
-		\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t7.png}\hspace{.5cm}
+		\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t7.png}
 	}
 	
 \end{minipage}
@@ -68,16 +69,16 @@ Figure \ref{fig:case1exp} shows how the belief of the agent (shown in grey) can 
 
 \begin{figure}
 
-	\begin{minipage}{5.0cm}
+	\begin{minipage}{1\columnwidth}
 		\centering
 		\subfloat[$t_5$ \label{fig:search1}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/search_t2.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/search_t2.png}
 		}
 		\subfloat[$t_7$ \label{fig:search2}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/search_t3.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/search_t3.png}
 		}
 		\subfloat[$t_9$ \label{fig:search3}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/search_t4.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/search_t4.png}
 		}
 	\end{minipage}
 	\caption{The agent has to search for the target in order to lower its belief below the surveillance liveness specification.
@@ -89,28 +90,28 @@ Figure \ref{fig:case1exp} shows how the belief of the agent (shown in grey) can 
 In this example, an abstraction partition of size 7 was enough to guarantee the satisfaction of the surveillance specification.  For the purpose of comparison, we also solve the game with  an abstraction partition of size 12  to illustrate the change in belief growth. Figure \ref{fig:case1fineexp} shows the belief states growing much more slowly as the abstract belief states are smaller, and thus they more closely  approximate the true belief.
 \begin{figure}
 
-	\begin{minipage}{5.0cm}
+	\begin{minipage}{1.0\columnwidth}
 		\centering
 		\subfloat[$t_1$ \label{fig:casefine1t2}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t1.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t1.png}
 		}
 		\subfloat[$t_3$ \label{fig:case1finet3}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_fine_t11.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_fine_t11.png}
 		}
 		\subfloat[$t_4$ \label{fig:case1finet4}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_fine_t2.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_fine_t2.png}
 		}
 	\end{minipage}
-	\begin{minipage}{5.0cm}
+	\begin{minipage}{1\columnwidth}
 		\centering
 		\subfloat[$t_5$  \label{fig:case1finet5}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_fine_t3.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_fine_t3.png}
 		}
 		\subfloat[$t_6$ \label{fig:case1finet6}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_fine_t4.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_fine_t4.png}
 		}
 		\subfloat[$t_7$ \label{fig:case1finet7}]{
-			\includegraphics[width=0.47\linewidth]{Surveillance/figs/Liveness_t5.png}\hspace{.5cm}
+			\includegraphics[width=0.32\columnwidth]{Surveillance/figs/Liveness_t5.png}
 		}
 		
 	\end{minipage}
@@ -125,17 +126,17 @@ In this example, an abstraction partition of size 7 was enough to guarantee the 
 
 The additional abstraction partitions result in a much larger game as the state space grows exponentially in the size of the abstraction partition. We compared the sizes of two abstract games for the 15x10 gridworld shown in Figure \ref{fig:casestudies1}, and the time it takes to synthesize a surveillance strategy in each of them. For an abstraction partition of size 7 the abstract game has 41700 states, and the synthesis time is 237s. In comparison, for an abstraction partition of size 13 the size of the abstract game is 636900 and the synthesis time is 810s. In contrast, the concrete belief-set game will have in the order of $2^{150}$ states, which is a state-space size that state-of-the-art synthesis tools cannot handle. 
 
-%Table \ref{tab:exp1} compares the sizes of the corresponding abstract games, and the time it takes to synthesize a surveillance controller in each case.
+Table \ref{tab:exp1} compares the sizes of the corresponding abstract games, and the time it takes to synthesize a surveillance controller in each case.
 
 
-%\begin{table}[h!]
-%	\centering
-%	\begin{tabular}{c|c|c}
-%	Size of abstraction partition & Size of abstract game & Synthesis time \\ \hline \hline
-%		7 & 41700 & 237s \\ 
-%		12 & 636900 & 810s \\ 
-%	\end{tabular}\caption{Comparison of synthesis times for coarse and fine abstractions on a 15x10 gridworld shown in Figure \ref{fig:casestudies}} \label{tab:exp1}
-%\end{table}
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c|c|c}
+	Size of abstraction partition & Size of abstract game & Synthesis time \\ \hline \hline
+		7 & 41700 & 237s \\ 
+		12 & 636900 & 810s \\ 
+	\end{tabular}\caption{Comparison of synthesis times for coarse and fine abstractions on a 10x15 gridworld shown in Figure \ref{fig:case1exp}} \label{tab:exp1}
+\end{table}
 
 
 
@@ -146,7 +147,7 @@ We now present an experiment to demonstrate the working of abstraction refinemen
 
 \begin{figure}
 \subfloat[User-provided initial abstraction. \label{fig:case1_autopart_before}]{\input{Surveillance/figs/abstraction-refinement-before.tex}}
-%\hfill
+\hfill
 \subfloat[Refined abstraction.\label{fig:refined-abstraction}]{
 \input{Surveillance/figs/abstraction-refinement.tex}
 }

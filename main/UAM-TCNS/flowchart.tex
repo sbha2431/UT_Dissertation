@@ -30,9 +30,9 @@ minimum height=2em]
 
 \node[fill=gr1!20!white] (launch){Launch};
 \node[below=0.5cm of launch,fill=gr1!20!white] (move) {Flight};
-\node[fill=blue!10!white,decision,below=0.5cm of move] (range) {Within range?};
-\node[below=0.5cm of range,fill=or1!20!white] (loiter) {Loiter};
-\node[fill=blue!10!white,decision,below=0.5cm of loiter] (assign) {Assigned?};
+\node[fill=blue!10!white,decision,below=0.75cm of move] (range) {Within range?};
+\node[below=0.75cm of range,fill=or1!20!white] (loiter) {Loiter};
+\node[fill=blue!10!white,decision,below=0.75cm of loiter] (assign) {Assigned?};
 \node[below=0.5cm of assign,fill=ye1!20!white] (approach) {Approach};
 \node[right=0.5cm of approach,fill=red!20!white,text width=1.5cm,inner sep=1pt] (land) {Land};
 
@@ -40,8 +40,8 @@ minimum height=2em]
 \path [line,-latex',very thick] (move.south) -- (range.north);
 \path [line,-latex', very thick] (range.south) --node[draw=none,right=-1.2cm]{Yes} (loiter.north);
 \path [line,-latex', very thick] (range.east) -- node[draw=none,above=1pt] {No} ++(1.0,0)   |- (move.east);
-\path [line,-latex', very thick] (loiter.south) --node[draw=none,left=-1cm]{Request} (assign.north);
-\path [line,-latex', very thick] (assign.south) --node[draw=none,right=-1.2cm]{Land} (approach.north);
+\path [line,-latex', very thick] (loiter.south) --node[draw=none,left=-0.75cm]{Request} (assign.north);
+\path [line,-latex', very thick] (assign.south) --node[draw=none,right=-1cm]{Land} (approach.north);
 \path [line,-latex', very thick] (assign.east)  -- node[draw=none,above=1pt] {No} ++(1.0,0) |- (loiter.east);
 \path [line,-latex', very thick] (assign.west)  -- node[draw=none,below=1pt] {Pass-through} ++(-1.0,0) |- (move.west);
 \path [line,-latex', very thick] (approach.east) -- (land.west);

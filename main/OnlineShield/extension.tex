@@ -1,0 +1,51 @@
+\section{Extension to Trajectories of Arbitrary Length}
+
+Previously, we assumed that the length of any trajectory is bound by some constant $\ell$. %If this $\ell$ is large, then the resultant graph constructed by the pathfinder also becomes large.
+In this section, we define the problem for trajectories of arbitrary length and propose a solution. We show how to use the ordering mechanism to ensure that the enforcers can ensure safe behavior even when the trajectories are of arbitrary length. Formally, the problem is stated as: \\
+
+
+Given a set $\Agents = \{u_1,\dots,u_n\}$ of agents and a set $\{(v_u,w_u)~|~u \in \Agents \}$ of their trajectories, 
+construct a set $\{S[u,t]~|~u \in \Agents \text{ and } t \in \Time\}$ of enforcers such that these enforcers are correct, cause minimum deviation and bounded. 
+
+
+Luckily, we do not have to change the entire synthesis procedure to solve this problem. We artificially restrict the input to the enforcers. Let $w_u(0)$ be the trajectory (possibly infinite) for agent $u$ and $v_u$ be the start state of the agent. 
+We divide $w_u$ into blocks of length $\ell$, $w_u(0) =w_u[0:\ell-1]\cdot w_u[\ell:2\ell-1]\dots.$ The enforcer $S[u,0]$ uses $w_u(0)$ as its trajectory, once it reaches the final state $\hat{\delta}(v_u,w_u(0))$, it uses \begin{small}$\big( (\hat{\delta}(v_u,w_u(0)),  w_u[\ell:2\ell-1] \big)$ \end{small} as the new trajectory for the enforcer synthesis. Algorithm \ref{Trajectory_update} describes this procedure.
+
+%This procedure is presented in Algorithm \ref{Trajectory_update}.
+
+In the algorithm, whenever the agent reaches its final state, its trajectory is updated with the next $\ell$ moves and its flags are also suitably reset. The correctness of this procedure is a direct consequence of the main theorem.
+
+
+\begin{algorithm}
+\KwResult{Trajectory of length at most length $\ell+k$}
+$i=0$\;
+Initialize $w_u$ and $v_u$\;
+$v_u^f = \hat{\delta}(v_u,w_u(0)[0:\ell])$\;
+$w_u(0) = w_u[0:\ell]$\;
+\While{True}{
+Update Communication Groups \;
+Increment Time \;
+\If{$goal_{u,t} = \top$}{
+$i++$\;
+$v' = v_u^f$\;
+$w_u(t) = w_u[i\ell:(i+1)\ell]$\;
+$v_u^f = \hat{\delta}(v_u,w_u[i\ell:(i+1)\ell-1])$\;
+$v_u = v'$\;
+}
+\ForAll{$v$ in $\Agents_u$}{
+\If{($u$, $v$ violate safety) $\land (v =_{t} u)$}
+{
+    \If{$v \prec_{0} u$}{Call the pathfinder on $u$ and find a new path \;} 
+}
+\ElseIf{($u$, $v$ violate safety) $\land (v \prec_{t} u)$}
+{
+    Call the pathfinder on $u$ and find a new path \;
+    $B_u = \emptyset$ \;
+}
+}
+t++ \;
+}
+\caption{Enforcer on agent $u$.}
+\label{Trajectory_update}
+\end{algorithm}
+

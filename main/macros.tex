@@ -15,10 +15,9 @@
 \usetikzlibrary{decorations.fractals}
 \usetikzlibrary{decorations.markings}
 
-\newcommand{\Rayna}[1]{{\textcolor{magenta}{ \textbf{Rayna:} #1 $\spadesuit$ }}}
-\newcommand{\Suda}[1]{{\textcolor{blue}{ \textbf{Suda:} #1 $\spadesuit$ }}}
-\newcommand{\Ufuk}[1]{{\textcolor{red}{ \textbf{Ufuk:} #1 $\spadesuit$ }}}
-\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 \newcommand{\comment}[1]{}
 
 \newtheorem{example}{Example}
@@ -42,7 +41,7 @@
 
 \newcommand{\states}{S}
 \newcommand{\trans}{T}
-%\newcommand{\part}{\mathcal{Q}}
+\newcommand{\partition}{\mathcal{Q}}
 \newcommand{\inabs}{\mathit{in}}
 
 \newcommand{\post}{\mathit{succ}_t}

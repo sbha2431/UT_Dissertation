@@ -1,0 +1,18 @@
+\begin{comment}
+\begin{algorithm}[h!]
+\KwResult{Trajectory of length at most length $\ell+k$}
+\ForAll{$v$ in $\Agents_u$}{
+\If{($u$, $v$ violate safety) $\land$ ($c_v^u = c_u^v = 0$)}
+{
+    \If{$u \prec_{0} v$}{Call the path finder on $u$ and find a new path} 
+}
+\ElseIf{($u$, $v$ violate safety) $\land ~(c_u^v = 1 \land c_v^u = 0)$}
+{
+    Update $w'_u$ (the path returned by the path finder)\;
+    $B_u = \emptyset$ \;
+}}
+
+\caption{Calls to the pathfinder on $u$}
+\label{Trajectory_update}
+\end{algorithm}
+\end{comment}

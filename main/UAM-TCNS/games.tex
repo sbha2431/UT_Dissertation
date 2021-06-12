@@ -1,9 +1,9 @@
 %\subsection{Overview}\label{sec:problemoverview}
  Consider an environment consisting of an operating space and a network formed from a series of $k$ UAM vertiport hubs labeled $V_1,\cdots,V_k$. A UAM vertiport hub (henceforth referred to as a vertihub) consists of a grouping of multiple vertiports, each of which may have multiple takeoff/landing pads. A vertihub is responsible for managing requests by UAM vehicles (henceforth referred to as vehicles) to either \emph{land at} or \emph{take off from} a desired vertiport in its region or \emph{pass through} to a neighboring region. Each vertiport inside a vertihub is in charge of taking off and landing vehicles at its landing pads. An example of such an environment is illustrated in Figure~\ref{fig:RegionsOutline}. Note that vertihub control regions need not be circular. 
-\begin{example}
+\begin{eg}
 The vertihub controller for region $V_6$ in Figure~\ref{fig:RegionsOutline} controls the operational area defined by $V_6 - (V_6 \cap V_5)$. The area of overlap $H_{56} = V_5 \cap V_6$ is the region where the handoff takes place, wherein the vertihub controller of the region the vehicle is about to enter takes responsibility for the vehicle.
 Hence, $V_6$ can force vehicles incoming from $V_5$ to loiter in the handoff region $H_{56}$ until it is safe to allow them to enter.
-\end{example}
+\end{eg}
 
 The number of vehicles allowed inside each vertihub is upper bounded both by the separation standards between the vehicles as well as with the complexity of the airspace (e.g., intersection with general aviation traffic etc.).
 Vertihubs cannot accept vehicles (i.e., accept a handoff) if the additional vehicle exceeds the maximum operational capacity or induces a conflict. Furthermore, vertiports cannot allow vehicles to take-off if it will violate the maximum operational capacity of the vertihub, and must force incoming vehicles to loiter if all of their pads are occupied. In order to avoid violating airspace requirements and to avoid build up of loitering vehicles (which can delay vehicles desiring to pass through or create safety issues), a vertiport must coordinate with its corresponding vertihub. We model the vertihub controller and vertiport controllers as \emph{reactive systems}.
@@ -35,7 +35,7 @@ $\mathcal{\design}$ is denoted $\lang(\mathcal{\design}) = \{\itrace \parallel \
 
 \begin{figure}[h!]
 	\centering
-\input{regionspace}
+\input{UAM-TCNS/regionspace}
 \caption{
 (a) Green circles correspond to the region of a vertihub. UAM vehicles (blue and black) move between origin-destination vertiports in the environment.
 (b)

@@ -1,0 +1,43 @@
+\iffalse MEAN-PAYOFF
+\subsection{Synthesis of $c_{\mathsf{mp}}$-Optimal Shields}\label{appx:synthesis-mp}
+We now turn to the synthesis of shields with limit-average objectives. As the limit-average is defined over infinite horizon, the assumption that wrong outputs are bounded, or even finite, is not crucial.
+
+First, we discuss the synthesis procedure for $c_{\mathsf{mp}}$-optimal shields \emph{without} assumptions on the system.
+We start with $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s,F^s)$, $\Win^s$, $\rho^s$, and the cost function $c$.
+The new game graph $\mathcal G^{opt}$ is constructed by  restricting the
+transition relation $\delta^{opt}$ with respect to $\rho^s$.
+Formally, we construct a game $\mathcal G^{opt} = (G^s, g_0^s,\alphabet,\oalphabet,\delta^{opt}, \Val^{opt})$ with
+the transition relation $\delta^{opt} = \delta^s \cap \rho^s$
+and the value function
+$\Val^{opt}(\overline{\pi})$ is a \emph{mean payoff objective} using $c$ as edge labeling function:
+$cost^{opt}(g^{s},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$.
+We use standard algorithms~\cite{ZwickP96} to compute an optimal strategy in the mean-payoff game $G^{opt}$ which corresponds to a shield with minimal limit-average interference cost.
+
+We can also devise a synthesis procedure for $c_{\mathsf{mp}}$-optimal shields \emph{with} assumptions on the occurrences of system faults. In this case, we build the new game graph $\mathcal G^{opt}$ by adding a mean-payoff objective $\Val^{opt}(\overline{\pi})$ to the game graph $\mathcal G^{a}$. The objective is defined via the edge labeling function $cost^{opt}$, where $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$ if $g^{opt}$ has value of the counter less than or equal to $b$, and $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = 0$ otherwise. Thus, plays violating the assumption  have limit-average cost $0$, while all other plays have non-negative cost. Hence, plays violating the assumption cannot increase the cost of a strategy, meaning that an optimal shield can again be computed by solving a mean-payoff game.
+\fi
+
+\subsection{Synthesis of Fair Shields}\label{appx:synthesis-fair}
+Finally, we describe a procedure to synthesize fair shields. For this, we augment the states of $\mathcal G^s$  with Boolean variables that track information about the minimal correcting sets for each transition.  We use these flags to encode the fairness requirements for the  agents.
+
+Let $\Correct(g,\isymb,\osymb,W)$ be the set of all minimal sets of agents such that correcting the output of these agents results in a successor state of $g$ that is in $W$.
+Formally, for $\Pi \subseteq \Proc$ it holds that $\Pi \in \Correct(g,\isymb,\osymb,W)$ iff (1) there exists $\osymb'$ such that $\delta(g,\isymb,\osymb') \in W$ and $\Diff(\osymb,\osymb') = \Pi$, and (2) $\Pi$ is minimal
+(i.e., for all $\osymb' \in\oalphabet$ with $\Diff(\osymb,\osymb') \subsetneq \Pi$ it holds that $\delta(g,\isymb,\osymb') \not\in W$).
+
+Given  $\mathcal G^s = (G^s, g_0^s,\alphabet,\oalphabet,\delta^s,F^s)$ with $\Win^s$ and $\rho^s$,
+we construct a game $\mathcal G^{f} = (G^f, g_0^f,\alphabet,\oalphabet,\delta^{f}, \Acc^{f})$ with
+set of states $G^f = \Win^s \times \{\bot,\top\}^n\times \{\bot,\top\}^n$, where $n = |\Proc|$ is the number of agents.
+The initial state is $g_0^f = (g_0^s,\bot^n,\bot^n)$, and
+the transition relation $\delta^{f}$ is such that
+%
+$\delta^{a}((g,u,t,m_1,\ldots,m_n,c_1,\ldots,c_n),\symb,\osymb')=(\delta^s((g,u,t), \symb,\osymb')\cap\rho^s((g,u,t), \symb),m_1',\ldots,m_n',c_1',\ldots,c_n')$ where for each agent $p \in \Proc$ it holds that
+\begin{itemize}
+\item $m_p'= \top$ iff there exist minimal correcting sets $\Pi,\overline \Pi\in \Correct(g,\isymb,\osymb,W)$ with$p \in \Pi$ and $p \not \in \overline \Pi$, and
+\item $c_p' = \top$ iff $p\in \Diff(\osymb, \osymb')$.
+\end{itemize}
+Intuitively, for each agent $p \in \Proc$, the  flag $m_p$ is set to $\top$ whenever the set of  minimally correcting sets at that step contains a  minimally correcting set which does not contain $p$, and one that does. The flag $c_p$ is set to $\top$ whenever the output of $p$ is corrected by the shield.
+
+The acceptance condition $\Acc^{f}$ encodes the fairness requirement on the shield for agent $p$ using the variables $m_p$ and $c_p$. It states  for each agent $p\in \Proc$ that if a play contains infinitely many occurrences of states in which $m_p = \top$, then it should contain infinitely many occurrences of states in which  $c_p  = \bot$ and $m_p=\top$. 
+
+Thus, $\Acc^{f}$ is a Streett acceptance condition, and a fair shield can be synthesized by solving a 
+Streett game using well-known methods~\cite{PitermanP06}.
+

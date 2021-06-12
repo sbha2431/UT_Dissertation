@@ -1,0 +1,38 @@
+
+
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+\newcommand{\Agents}{\mathcal{U}}
+\newcommand{\Time}{\mathbb{T}}
+\newcommand{\Actions}{\Sigma} 
+\newcommand{\Elabel}{\mathcal{Y}}
+\newcommand{\Vlabel}{\mathcal{X}}
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\Safety}{\varphi}
+\newcommand{\Lang}{\mathcal{L}}
+\newcommand{\Power}{\mathcal{P}}
+\newcommand{\Replace}{\mathcal{R}}
+\newcommand\dhrightarrow{%
+  \mathrel{\ooalign{$\rightarrow$\cr%
+  $\mkern3.5mu\rightarrow$}}
+}
+\newcommand\dhxrightarrow[2][]{%
+  \mathrel{\ooalign{$\xrightarrow[#1\mkern4mu]{#2\mkern4mu}$\cr%
+  \hidewidth$\rightarrow\mkern4mu$}}
+}
+
+\newcommand{\Dj}[1]{\textcolor{blue}{#1}}
+\newcommand{\suda}[1]{\textcolor{red}{#1}}
+
+\newcommand\Square[1]{+(-#1,-#1) rectangle +(#1,#1)}
+
+\chapter{Decentralized runtime enforcement for multi-agent systems at runtime}
+
+\input{OnlineShield/intro.tex}
+\input{OnlineShield/prelimins.tex}
+\input{OnlineShield/decentralized.tex}
+\input{OnlineShield/synthesis1.tex}
+\input{OnlineShield/synthesis2.tex}
+\input{OnlineShield/correctness.tex}
+\input{OnlineShield/extension.tex}
+\input{OnlineShield/expts.tex}
+\input{OnlineShield/conclusion.tex}

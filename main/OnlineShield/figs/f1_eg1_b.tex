@@ -1,0 +1,45 @@
+\begin{tikzpicture}[line join=round,x=1cm,y=1cm]
+\begin{axis}[
+scale=0.6,
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=0,
+xmax=5,
+ymin=0,
+ymax=5,
+xtick={-3,-2,...,35},
+ytick={-7,-6,...,17},]
+
+\draw [->,line width=0.6pt] (2,4) -- (2,1);
+\draw [dashed,->,line width=0.6pt] (4,2) -- (1,2);
+
+\begin{scriptsize}
+
+\draw [fill=green1] (2,4) circle (1.3pt);
+\draw[color=green1] (1.5,4.3) node {t=0};
+
+%\draw [fill=green1] (2,3) circle (1.3pt);
+%\draw[color=green1] (1.5,3.3) node {t=1};
+
+\draw [fill=green1] (1.8,2.2) circle (1.3pt);
+\draw[color=green1] (1.5,2.5) node {t=2};
+
+%\draw [fill=green1] (2,1) circle (1.3pt);
+%\draw[color=green1] (1.5,0.8) node {t=3};
+
+\draw [fill=blue] (4,2) \Square{1.3pt};
+\draw[color=blue] (4,2.5) node {t=0};
+
+%\draw [fill=blue] (3,2) \Square{1.3pt};
+%\draw[color=blue] (3,2.5) node {t=1};
+
+\draw [fill=blue] (2,2) \Square{1.3pt};
+\draw[color=blue] (2.5,1.6) node {t=2};
+
+%\draw [fill=blue] (1,2) \Square{1.3pt};
+%\draw[color=blue] (1,1.6) node {t=3};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}

@@ -1,6 +1,6 @@
 In this section, we demonstrate the effectiveness of the proposed framework to a case study for an urban security application with high-fidelity simulated sensors and robots. 
-%Physical security applications typically require the housing and protection of sensitive materials or locations. Often, such environments are large and it is difficult to have complete surveillance coverage at all times using only static sensors. In such situations, deploying an autonomous mobile agent with sensing capabilities can greatly reduce coverage requirements from static sensors. When utilizing autonomous agents it is necessary to provide quantitative guarantees on their belief of the location of an intruding target in order to direct security measures accurately. The method proposed in this paper generates strategies for fully autonomous surveillance with quantitative guarantees on the size of the belief of the target's location and hence is a natural fit for security applications. 
-We provide the code for the implementation on Github\footnote{Github: \url{https://github.com/u-t-autonomous/Surveillance}} and the videos for all simulations at the corresponding Github page \footnote{Github page: \url{https://u-t-autonomous.github.io/Surveillance-Synthesis/}}.
+Physical security applications typically require the housing and protection of sensitive materials or locations. Often, such environments are large and it is difficult to have complete surveillance coverage at all times using only static sensors. In such situations, deploying an autonomous mobile agent with sensing capabilities can greatly reduce coverage requirements from static sensors. When utilizing autonomous agents it is necessary to provide quantitative guarantees on their belief of the location of an intruding target in order to direct security measures accurately. The method proposed in this paper generates strategies for fully autonomous surveillance with quantitative guarantees on the size of the belief of the target's location and hence is a natural fit for security applications. 
+We provide the code for the implementation on Github\footnote{Github: \url{https://github.com/u-t-autonomous/Surveillance}} and the videos for all simulations and further case studies at the corresponding Github page \footnote{Github page: \url{https://u-t-autonomous.github.io/Surveillance-Synthesis/}}.
 %We will use the case study to demonstrate the versatility and applicability of our surveillance strategy and belief abstraction methods across multiple high-fidelity simulation environments.
 
 % \subsection{Combating poaching}
@@ -26,9 +26,9 @@ We provide the code for the implementation on Github\footnote{Github: \url{https
 %     \label{fig:GazArena}
 % \end{figure}
 
-%andia National Labs considers examples where there is a compound that has a sensitive area that must be protected and is surrounded by land that contains wild life. Sometimes when an intruder is detected, the security system cannot determine if the threat is real or if there is simply an animal wandering around. A security officer must then go out and find the intruder to determine the state of the threat. In order to reduce wasted time, actively tracking that threat to provide the security personnel with a small region to search instead of a last known location saves resources. 
+In collaboration with Sandia National Labs we considered a case where there is a compound that has a sensitive area that must be protected and is surrounded by land that contains wild life. Sometimes when an intruder is detected, the security system cannot determine if the threat is real or if there is simply an animal wandering around. A security officer must then go out and find the intruder to determine the state of the threat. In order to reduce wasted time, actively tracking that threat to provide the security personnel with a small region to search instead of a last known location saves resources. 
 
-%and of security around a sensitive compound where tracking potential intruders is required for security personnel to make contact with and determine if the threat is real or false.
+
 
 
 
@@ -57,7 +57,11 @@ We contrast the surveillance needs and the qualitatively different resulting beh
 
 \subfloat[Enclosed compound modelled in Gazebo \label{fig:GazArena}]{
 \includegraphics[width = 0.9\linewidth]{Surveillance/figs/GazArena.png}}
+\caption{Case study for a security application. The vehicles are simulated in either Gazebo environment shown in \ref{fig:GazArena} or a UE4 environment shown in \ref{fig:GazArena}.}
+\end{figure}
 
+\begin{figure}
+	\centering
 \subfloat[Iris quadcopter used for autonomous surveillance \label{fig:sandiauav}]{
 \includegraphics[width = 0.43\linewidth]{Surveillance/figs/quad.jpg}
 } \hspace{0.05\linewidth}
@@ -65,6 +69,6 @@ We contrast the surveillance needs and the qualitatively different resulting beh
 \includegraphics[width = 0.43\linewidth]{Surveillance/figs/Rugged-All-Terrain.png}
 }
 
-\caption{Case study for a security application. The vehicles are simulated in either Gazebo environment shown in \ref{fig:GazArena} or a UE4 environment shown in \ref{fig:GazArena}. A user can act as an `intruder' by controlling a target \ref{fig:stanleyrobot}. The UAV in \ref{fig:sandiauav} must autonomously react to guarantee the surveillance mission is satisfied. }
+\caption{Robot platforms used in the case study. A user can act as an `intruder' by controlling a target \ref{fig:stanleyrobot}. The UAV in \ref{fig:sandiauav} must autonomously react to guarantee the surveillance mission is satisfied. }
 \label{fig:SandiaCaseSTudy}
 \end{figure}

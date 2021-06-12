@@ -25,22 +25,22 @@ tree $\counterex_\belief$ in $(G_\belief,\LTLglobally p_k)$, that differs from $
 
 \begin{figure}
 \subfloat[Abstract counterexample tree\label{fig:simple-safety-counterex-abstr}]{
-\input{figs/simple-safety-counterex-abstr.tex}\hspace{.5cm}
+\input{Surveillance/figs/simple-safety-counterex-abstr.tex}\hspace{.5cm}
 }
 \hfill
 \subfloat[Concrete counterexample tree\label{fig:simple-safety-counterex-concr}]{
-\input{figs/simple-safety-counterex-concr.tex}\hspace{.5cm}
+\input{Surveillance/figs/simple-safety-counterex-concr.tex}\hspace{.5cm}
 }
 \caption{Abstract and corresponding concrete counterexample trees for the surveillance game discussed in Example~\ref{ex:simple-safety-counterex}.}
 \label{fig:simple-safety-counterex}
 
 \end{figure}
 
-\begin{example}\label{ex:simple-safety-counterex}
-Figure~\ref{fig:simple-safety-counterex-abstr} shows an abstract counterexample tree $\counterex_\abstr$ for the game $(\alpha_\part(G),\LTLglobally p_1)$, where $G$ is the surveillance game structure from Example~\ref{ex:simple-surveillance-game} and $\part$ is the abstraction partition from Example~\ref{ex:simple-abstr-game}, shown in Figure~\ref{fig:simple-abstr-game-partition}. The counterexample corresponds to the choice of the target to move to one of the locations $17$ or $23$, which, for every possible move of the agent, results in an abstract state with abstract belief $A_t = \{Q_4,Q_5\}$ violating $p_1$.
+\begin{eg}\label{ex:simple-safety-counterex}
+Figure~\ref{fig:simple-safety-counterex-abstr} shows an abstract counterexample tree $\counterex_\abstr$ for the game $(\alpha_\partition(G),\LTLglobally p_1)$, where $G$ is the surveillance game structure from Example~\ref{ex:simple-surveillance-game} and $\partition$ is the abstraction partition from Example~\ref{ex:simple-abstr-game}, shown in Figure~\ref{fig:simple-abstr-game-partition}. The counterexample corresponds to the choice of the target to move to one of the locations $17$ or $23$, which, for every possible move of the agent, results in an abstract state with abstract belief $A_t = \{Q_4,Q_5\}$ violating $p_1$.
 A concrete counterexample tree $\counterex_\belief$ that demonstrates that $\counterex_\abstr$ is concretizable, since $\{17,23\} \subseteq \gamma(\{Q_4,Q_5\})$, is shown Figure~\ref{fig:simple-safety-counterex-concr}.
 \qed
-\end{example}
+\end{eg}
 
 \bigskip
 
@@ -56,4 +56,4 @@ For each counterexample $\counterex_\abstr$ in $(G_\abstr,\LTLglobally p_k)$ we 
 
 Thus, in order to check whether an abstract counterexample $\counterex_\abstr$ is concretizable, we need to check if the set $\trees(\counterex_\abstr)$ contains a tree for which \emph{all of its leaf nodes} are labelled with states $(l_a, B_t)$ such that $(l_a,B_t) \not \models p_k$.
 
-\emph{Remark:} In games with perfect sensing and no static sensors, each set $\trees(\counterex_\abstr)$ contains a single tree since for each state $(l_a,B_t)$ in $G_\belief$ all except for at most one of the successor states are labelled with singleton belief states that are captured precisely by the abstraction. Thus, an abstract counterexample has at most one potential concretization.
+\paragraph{Remark} In games with perfect sensing and no static sensors, each set $\trees(\counterex_\abstr)$ contains a single tree since for each state $(l_a,B_t)$ in $G_\belief$ all except for at most one of the successor states are labelled with singleton belief states that are captured precisely by the abstraction. Thus, an abstract counterexample has at most one potential concretization.

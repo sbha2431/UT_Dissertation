@@ -1,0 +1,280 @@
+\subsubsection*{Ordering Mechanism}
+The priorities of the agents cannot remain static with time. Otherwise, some agent might be forced to change its trajectory infinitely often. 
+%The $S_2$ component maintains the order among agents dynamically.
+In the sequel, we present the ordering mechanism. 
+
+\paragraph*{Overview of Ordering Mechanism for Two Agents}
+
+\noindent Consider a system with two agents $a$ and $b$ that have communicated, i.e., observed each other's trajectories. Agent $a$ maintains a flag $c_a^b$ and agent $b$ maintains a flag $c^a_b$. If agent $a$ has reached its final state after communicating with agent $b$, then the flag $c^b_a$ is set to 1. 
+Suppose agent $b$ is yet to reach its final state and there is a safety violation after $a$ has completed its goal, then in order to ensure freedom from locks, agent $a$ is forced to modify its trajectory. When agent $b$ reaches its final state, both agents have uniformly completed their goals and the flags are reset to $0$. The above procedure is equivalent to the standard binary semaphores algorithm to achieve process synchronization ~\cite{silberschatz2018operating}. 
+
+\begin{eg}
+In Figure \ref{fig:eg6}, the agents are following the modified trajectories in Figure \ref{fig:eg7}c. The priority of the agent changes once the agent reaches its final state. More precisely, the agent gets the lowest priority once it reaches its final state. 
+\begin{figure}[htb!]
+\centering
+\definecolor{green1}{rgb}{0,0.6,0}
+\subfloat[blue $\prec_o$ green]{
+\begin{tikzpicture}[line join=round,x=1cm,y=1cm]
+\begin{axis}[
+scale=0.5,
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=0,
+xmax=5,
+ymin=0,
+ymax=5,
+xtick={-3,-2,...,35},
+ytick={-7,-6,...,17},]
+\draw [line width=0.5pt] (4,2)-- (3,2);
+\draw [line width=0.5pt] (3,2)-- (3,3);
+\draw [line width=0.5pt] (3,3)-- (2,3);
+\draw [line width=0.5pt] (2,3)-- (1,3);
+\draw [line width=0.5pt,->] (1,3) -- (1,2);
+\draw [->,line width=0.5pt,dashed] (2,4) -- (2,1);
+\begin{scriptsize}
+\draw [fill=green1] (2,4) circle (1pt);
+\draw[color=green1] (2,4.5) node {t=0};
+
+\draw [fill=green1] (1.8,3.2) circle (1pt);
+\draw[color=green1] (1,3.6) node {t=1};
+
+\draw [fill=green1] (2,2) circle (1pt);
+%\draw[color=green1] (2,1.5) node {t=2};
+
+\draw [fill=green1] (2,1) circle (1pt);
+\draw[color=green1] (2,0.5) node {t=3};
+
+\draw [fill=blue] (4,2) \Square{1pt};
+\draw[color=blue] (4.5,2.5) node {t=0};
+
+\draw [fill=blue] (3,2) \Square{1pt};
+%\draw[color=blue] (3.5,1.5) node {t=1};
+
+\draw [fill=blue] (3,3) \Square{1pt};
+%\draw[color=blue] (3,3.5) node {t=2};
+
+\draw [fill=blue] (2,3) \Square{1pt};
+\draw[color=blue] (2.7,3.5) node {t=3};
+
+\draw [fill=blue] (1,3) \Square{1pt};
+%\draw[color=blue] (0.6,3.3) node {t=4};
+
+\draw [fill=blue] (1,2) \Square{1pt};
+\draw[color=blue] (0.55,1.7) node {t=5};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}}
+\subfloat[green $\prec_3$ blue]{
+\begin{tikzpicture}[line join=round,x=1cm,y=1cm]
+\definecolor{green1}{rgb}{0,0.6,0}
+\begin{axis}[
+scale=0.5,
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=0,
+xmax=5,
+ymin=0,
+ymax=5,
+xtick={-1,0,...,25},
+ytick={-1,0,...,14},]
+\draw [line width=0.6pt] (2,3) -- (1,3);
+\draw [->,line width=0.6pt] (1,3) -- (1,2);
+\begin{scriptsize}
+\draw [fill=green1] (2,1) circle (1pt);
+\draw[color=green1] (2.5,0.5) node {t=3};
+
+\draw [fill=blue] (1,3) \Square{1pt};
+
+\draw[color=blue] (2,3.5) node {t=3};
+\draw [fill=blue] (2,3) \Square{1pt};
+
+\draw [fill=blue] (1,2) \Square{1pt};
+\draw[color=blue] (1,1.7) node {t=5};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}}
+\caption{ In Scenario~9, the blue and green agents are following their modified trajectories from Scenario~3. Initially, the blue agent has a lower priority; hence, it is forced to modify its path. When the green agent reaches its final state at $t=3$, the green agent is assigned a lower priority. The blue agent's priority is higher than the green agent's. Again at $t=5$, the priorities change since the blue agent has reached its final state.}
+\label{fig:eg6}
+\end{figure}
+\end{eg}
+
+\paragraph*{Extension to Arbitrary Number of Agents}
+
+We extend the procedure outlined above to multiple agents. Each pair of agents $u_i$ and $u_j$ maintain two Booleans between them (each of them is analogous to a binary semaphore) that are used to measure relative progress. 
+%\Dj{That is,} each agent maintains a vector of \Dj{Booleans} corresponding to all the other agents in the system. 
+%\Dj{Every agent} also maintains a set for \Dj{keeping a record} of all the other agents that is has communicated with so far.
+Formally, $\overline{C_u} = (c_u^1,c_u^2,\ldots ,c_u^{|\Agents|})$ is a vector of Boolean flags for maintaining progress of $u$ with respect to the other agents and $B_u$ is a set maintained by $u$ for tracking the agents it has communicated with during the current final state.
+Initially, $B_u = \emptyset$ and $\overline{C_u} = \overline{0}$. The flag $c_u^v$ on agent $u$ records the progress of $u$ with respect to $v$. If $c^v_u$ is 1, agent $u$ has recorded that it has \emph{finished a goal} ($goal_{u,t} = \top$) after communicating with $v$ $(v \in B_u)$. Whenever the corresponding progress measures $c_u^v$ and $c_v^u$ are equal and the agents are in the same communication group, the Boolean flags are reset to $0$. The exact algorithm is presented in Figure \ref{fig:flow}b.
+
+Let $c^v_u(t)$ denote the value of the flag $c^v_u$ at time $t$.
+We use $a \prec^t b$ to denote that $c_a^b(t) =1,~c_b^a(t)=0$ and $a=^tb$ to denote $c_a^b(t) = c_b^a(t)$. Observe that for any pair of agents $a$ and $b$ either $a =^t b$ or $a \prec^t b$ or $b \prec^t a$. %\Dj{Moreover,} $\prec^t$ as defined is a \emph{partial}-order.
+
+%\begin{remark}
+%If none of the agents have completed any goal, then $a =^t b =^t c$. \end{remark}
+
+\begin{prop}
+%Let $a, b, c$ be agents. 
+If $a \prec^t b$ and $b \prec^t c$, then no agent $d$ exists such that $c \prec^t d$ and $d \prec^t a$.
+\end{prop}
+\begin{proof}[proof by contradiction]
+For any agent $u$, let $comp(u)$ denote the earliest time $t'$ such that $goal_{u,t'} = \top$.
+If $a \prec^t b$, then $c^b_a = 1$ and $c_b^a = 0$, i.e., agent $a$ has reached its final state, but agent $b$ has not.  Similarly, $b \prec^t c$ implies that agent $b$ has reached its final state, but agent $c$ has not. Therefore, 
+
+\begin{equation}
+\label{eq:1}
+comp(a) < comp(b) < comp(c).
+\end{equation}
+%$comp(a) < comp(b) < comp(c)$.
+%\Dj{We denote the order of completion between agents $a, b$ and $c$ as} $c \cdots b \cdots a$. %Thus, $a \prec^t b$ and $b \prec^t c$ implies $a \prec^t c$.
+Now, suppose there exists an agent $d$ such that $c \prec^t d$ and $d \prec^t a$, then by the same argument, the order of last completed goals among $a,c$ and $d$ is 
+\begin{equation}
+\label{eq:2}
+    comp(c) < comp(d) < comp(a).
+\end{equation}
+%$comp(a) < comp(d) < comp(c)$. 
+(\ref{eq:1}) contradicts (\ref{eq:2}). Therefore, there cannot exist agent $d$ such that $c \prec^t d$ and $d \prec^t a$. %\qed 
+\end{proof}
+
+\begin{cor}
+$\prec^t$ is a partial-order.
+\end{cor}
+
+\begin{prop}
+There exists a total order $\prec_t$ that respects $\prec^t$.
+\end{prop}
+\begin{proof}
+Define $\prec_t$ as 
+\begin{align}
+    a \prec_t b &\text{ if }
+                    i)~a \prec^t b \text{ or }
+                    ii)~a =^t b \text{ and } a \prec_0 b, \\
+    b \prec_t a &\text{ otherwise,}      \nonumber          
+\end{align}
+\noindent where $a$ and $b$ are some agents.
+$\prec_t$ as defined is a total order. %completing the proof. 
+%\qed
+\end{proof}
+
+\noindent Henceforth, we use $\prec_{0}$ to generate $\prec_t$ that respects $\prec^t$. %$\prec^t$ as defined is transitive, i.e., $a \prec^t b$ and $b \prec^t c$, then $a \prec^t c$.
+%This is shown in Algorithm in Figure \ref{fig:flow} (right).
+
+\begin{figure*}[!htb]
+\centering
+%\begin{subfigure}[t]{0.5\textwidth}
+\tikzstyle{line} = [draw]
+\subfloat[]{
+\begin{tikzpicture}[%
+    >=stealth,
+    node distance=1cm and 3cm,
+    on grid,
+    auto,
+    >=stealth,
+]
+\node (safe) {$\forall v \in B_u: \mathbf{\phi (u,v,t)}$?};
+\node[below=of safe] (no) {$\mathbf{v \prec_t u}$?};
+\node[right = of safe] (yes) {\textbf{Path}};
+\node[below = of no] (pathfinder) {\textbf{Call Pathfinder}};
+\path [line,->] (safe) -- node [anchor = west] {$\bot$} (no);
+\path [line,->] (safe) -- node [anchor = north] {$\top,~w_u$} (yes);
+\path [line,->] (no) -- node [anchor = east] {$\top$} (pathfinder);
+\path [line,->] (no) -| node [anchor = south east] {$\bot,~w_u$} (yes);
+\path [line,->] (pathfinder) -| node [anchor = south east] {$w_u'$} (yes);
+\node[above = of safe] (jt) {\textbf{Joint Trajectory}};
+\node[fit= (jt) (safe) (no) (yes) (pathfinder), draw, inner sep=5.3mm] (total) {};
+\node[fit= (safe) (no) (yes) (pathfinder), draw, inner sep=0.1mm] (decision) {};
+\node[above = of safe] (for) {};
+\path [line,dashed, ->] (yes) |- node [anchor = north east]{$w_u'$} (jt);
+\path [line, dashed, ->] (jt) -- node {$W$} (safe);
+\end{tikzpicture}} 
+%\end{subfigure}
+%\begin{subfigure}[t]{0.3\textwidth}
+%\tikzstyle{line} = [draw]
+\subfloat[]{
+\begin{tikzpicture}[%
+    >=stealth,
+    node distance=1cm and 2.5cm,
+    on grid,
+    auto,
+    >=stealth
+]
+\node (goal) {$\mathbf{goal_{u,t}}$?};
+\node [right = of goal] (increase_progress)  {$\forall v \in B_u$:$\mathbf{c_u^v = 1}$};
+\node [below = of goal] (resetb) {$\mathbf{B_u = \emptyset}$};
+\node [below = of resetb] (add) {$\forall v \in \mathcal{U}_u$: $\mathbf{B_u = B_u \cup \{v\} }$};
+\node [below = of add] (can) {$\mathbf{c_v^u = c_u^v = 1} \land \mathbf{v \in range(u)}$?};
+\node [below = of can] (rc) {$\mathbf{c_v^u = c_u^v = 0}$};
+\node[fit=(goal) (increase_progress) (resetb) (add) (can) (rc), draw, inner sep=0.1mm] (decision) {};
+\path [line, ->] (goal) -- node [anchor = north] {$\top$} (increase_progress);
+\path [line, ->] (goal) -- node [anchor =  east] {$\bot$} (resetb);
+\path [line, ->] (resetb) -- (add);
+\path [line, ->] (add) -- (can);
+\path [line, ->] (can) -- node [anchor = east] {$\top$} (rc);
+\end{tikzpicture}}
+%\end{subfigure}
+\caption{(a) Algorithm for the enforcer $S(u,t)$ to decide if the pathfinder should be called at time $t$. (b) Algorithm to maintain the priorities.}
+\label{fig:flow}
+\end{figure*}
+
+\subsubsection*{Decentralized Enforcement}
+
+So far, we have described the components of the enforcers onboard an agent. In traditional shield synthesis, $S_1$ is a function that is fully constructed and used as the shield \cite{BloemKKW15}. In contrast, here $S_1$ is a partial function that is constructed when required.  Figure~\ref{fig:flow}a presents the algorithm to determine the calls to the pathfinder and Figure~\ref{fig:flow}b presents the ordering mechanism to update the priorities by modifying the corresponding flags. Scenario~10 demonstrates the use of the flags to ensure a total order among the agents.
+
+For some agent $u_i$, if $w'_{u_i}$ is the path returned by the pathfinder, then $$S_1[u,t](O,V,W)=(O,V,\Replace_i(W,(v_{u_i},w'_{u_i}))).$$ That is, the path for the agent $u_i$ has been replaced with $w'_{u_i}$, with the paths of the other agents unaffected and their priorities unchanged.
+If the pathfinder is never called, then the path does not get modified, i.e., $S_1[u_i,t](O,V,W) = (O,V,W)$.
+
+The following lemma is a direct consequence of the construction of the pathfinder graph $G_{u}^t$ and a path between $v_{init}$ and $F$. 
+\begin{lemma}
+For all $t' \in [t,t+\ell]$ and $u \in \Agents$, if agent $u$ moves along the trajectory returned by $S_1[u,t']$, then $\Safety(t') = \top$.
+\label{lemma:correct}
+\end{lemma}
+ 
+\noindent Next, we prove that the agent with the highest priority is able to progress without any deviation.
+\begin{lemma}
+If agent $u$ has the highest priority according to $\prec_t$ then it will reach its final state without any modifications. Moreover, if a $\ell$--stabilizing centralized shield can ensure safety, then the enforcers also can ensure safety.
+%in at most $\ell+k$ steps. 
+\label{lemma:hp_lt}
+\end{lemma}
+\begin{proof}
+If $u$ has the highest priority by $\prec_t$, then for all $v \in \Agents$, it is either the case that $c_u^v=0$ and $c_v^u=1$ (or) $c_u^v = c_v^u$ and $v <_{0} u$.
+In either case, $v$ finds a new path if a safety violation is detected. Since a centralized shield can ensure safety, it implies that there is at least one safe position for $v$ in the occupancy graph $O^t_v$. By Assumption~1, $G$ is 2-edge connected. Therefore, there is a safe vertex such that the path length is at most $\ell$. By the pathfinder algorithm, the trajectory of $v$ is modified. Similarly, all other agents modify their trajectories in the case of a safety violation. 
+%Therefore, by assumption 1, agent $u$ can reach its goal in $2\ell + k$ steps. %\qed
+\end{proof}
+
+\begin{cor}
+In the worst case, the distance between $u$ and its final state maybe $|\Agents|(\ell)$.
+\label{lmt}
+\end{cor}
+We now prove that the other agents are also guaranteed to make progress. The following theorem bounds the maximum deviation from the original trajectory.
+
+\begin{lemma}
+Enforcer on agent $u$ may cause a deviation from the intended trajectory for at most $|\Agents|^2(\ell)$ steps before the final state is reached. 
+\label{lemma:main}
+\end{lemma}
+\begin{proof}
+%Consider the case where agents $a$ and $b$ have a safety violation and agent $a$ consequently deviates from its trajectory. In the future, if $a$ and $b$ have a safety violation, then agent $b$ deviates before agent $a$.
+%We consider the case when $u$ is the lowest priority agent and it has to use the occupancy graph to find a path to ensure safety until gets the highest priority. In the worst case when $u$ obtains the highest priority, the distance between $u$ and its final state may be $|\Agents|(\ell)$. Now by lemma \ref{lemma:hp_lt}, it can proceed without any modifications. T
+In the worst case, any agent $u$ may be forced to use the occupancy graph during every call to the pathfinder, before agent $u$ has the highest priority according to $\prec_t$. In worst case, agent $u$ might be the lowest priority vertex to start with. Hence, agent $u$ may require $|\Agents|-1(|\Agents|\ell)$ steps to get the highest priority. At this stage by Corollary \ref{lmt}, agent $u$ requires $|\Agents|(\ell)$ steps to reach its goal. 
+ %\qed
+\end{proof}
+
+The next theorem establishes that the enforcers we synthesize satisfy the properties stated in Problem 1.
+
+\begin{thm}
+The set $\{S[u,t]|u \in \Agents \}$ of enforcers are i) correct, ii) deviate minimally, iii) bounded, and iv) complete.
+\end{thm}
+\begin{proof}
+As a consequence of Lemma \ref{lemma:main}, the maximum number of steps that any agent needs to reach its final state is bounded by $(|\Agents|^2\ell)$. Therefore, the synthesized enforcers are all $(\ell,|\Agents|^2\ell)$--enforcers and by Definition~\ref{defn:bounded} are \emph{bounded}. In the algorithm in Figure~\ref{fig:flow}a, if no safety violation is detected then the pathfinder is never called by the enforcer. Therefore, by  Definition~\ref{defn:minimal} the enforcers also \emph{deviate minimally}. By Definition~\ref{defn:complete} (completeness), we only require that if a centralized shield can ensure safety, then the enforcers can ensure safety.  Lemma \ref{lemma:hp_lt} ensures the enforcer can ensure safety, if a $\ell$--stabilizing centralized shield can ensure safety, i.e., it is \emph{complete}. Lastly, Lemma \ref{lemma:correct} establishes that the enforcers are \emph{correct}.
+%in the interval $[t,t+\ell]$. 
+%\qed
+\end{proof}
+
+
+
+
+
+
+
