@@ -130,7 +130,7 @@ The target set $F$ is $\{(v^f_{u} ,t') | t+ d(v_u,v_u^f) \leq t' \leq t + d(v_u,
 \end{eg}
 
 \subsubsection*{Occupancy Graph}
-The occupancy graph $O^t_u$ is similar to the pathfinder graph, however none of the edges are removed from the occupied states. The occupied states are labeled with the corresponding agents. Formally, the occupancy graph $O^t_{u} = (V', E')$ where $V'=V\times[t,t+d(v_u,v_u^f)+k] \setminus \{(v,t')|~v~\text{ is occupied by highest priority agent at } t'\}$. There is an edge with label $e$ between $(v,t)$ and $(v',t' +1)$, if in $G$ there is an edge $(v,v')$ with label $e$. If $u' \in \Vlabel(v,t)$ and $priority(u) \geq priority(u')$, then $u' \in \Vlabel((v,t))$.  
+The occupancy graph $O^t_u$ is similar to the pathfinder graph, however none of the edges are removed from the occupied states. The occupied states are labeled with the corresponding agents. Formally, the occupancy graph $O^t_{u} = (V', E')$ where $V'=V\times[t,t+d(v_u,v_u^f)+k] \setminus \{(v,t')|~v~$ is occupied by highest priority agent at $ t'\}$. There is an edge with label $e$ between $(v,t)$ and $(v',t' +1)$, if in $G$ there is an edge $(v,v')$ with label $e$. If $u' \in \Vlabel(v,t)$ and $priority(u) \geq priority(u')$, then $u' \in \Vlabel((v,t))$.  
 
 \subsubsection*{General Pathfinder Graph}
 

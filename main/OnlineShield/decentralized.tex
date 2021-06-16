@@ -78,7 +78,7 @@ This composition can be extended to an arbitrary number of enforcers by composin
 \subfloat[Unsafe behavior]{\input{OnlineShield/figs/f1_eg1_b.tex}}
 \subfloat[Communication groups]{\input{OnlineShield/figs/f1_eg1_a.tex}}
 \subfloat[Safe behavior]{\input{OnlineShield/figs/f1_eg1_c.tex}}
-\caption{(a) In Scenario~1, there are two agents (blue and green). Their intended trajectories are marked by solid lines. At time $t=2$ the blue and green agents occupy the same cell, hence $\Safety(2) = \bot$. However, the system is still safe at times $t=0$ and $t=1$.
+\caption[Examples of unsafe behavior, real-time  communication groups, and resulting safe behavior.]{(a) In Scenario~1, there are two agents (blue and green). Their intended trajectories are marked by solid lines. At time $t=2$ the blue and green agents occupy the same cell, hence $\Safety(2) = \bot$. However, the system is still safe at times $t=0$ and $t=1$.
 (b) In Scenario~2, the communication constant $d$ is $2$. The agents in the same group have been encircled. The black and purple agents are in a group and blue, green and the red agents are in a different group. (c)  In Scenario~4, the modified trajectory for the blue agent as a consequence of the enforcer $S[blue,0]$ on the blue agent at $t=0$ is shown.}
 \label{fig:eg7}
 \end{figure*}
@@ -244,7 +244,7 @@ ytick={-1,0,...,18},
 \end{scriptsize}
 \end{axis}
 \end{tikzpicture}}
-\caption{In Scenario~6, the system is safe after the modification of the trajectories by the enforcers. (a) The blue, green and red agents violate safety at time 2 in (3,2). (b) The trajectories of the blue and green agents have been modified by the respective enforcers. However, the red agent does not deviate.}
+\caption[Online trajectory modifications to guarantee safety.]{In Scenario~6, the system is safe after the modification of the trajectories by the enforcers. (a) The blue, green and red agents violate safety at time 2 in (3,2). (b) The trajectories of the blue and green agents have been modified by the respective enforcers. However, the red agent does not deviate.}
 \label{fig:eg4}
 \end{figure}
 

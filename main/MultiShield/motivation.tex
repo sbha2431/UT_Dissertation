@@ -1,5 +1,3 @@
-\section{Motivation and challenges}
-
 The use of multi-agent systems such as teams of unmanned aerial vehicles (UAVs) has been predicted to grow significantly in many areas of our life. The military has highlighted the need for coordinating teams of UAVs for use in surveillance and reconnaissance operations in urban environments~\cite{semsch2009autonomous,samad2007network}. In the private sector, drones are being used in applications from package delivery to inventory management in warehouses~\cite{ong2007multi}. \looseness=-1
 
 Since multi-agent systems exhibit complex interactions with their environment and between the individual agents, they are often difficult to understand, and are notoriously hard to design correctly~\cite{Netflix}. Individual agents have to not only fulfill their \emph{local objectives} and meet their \emph{local requirements}, but also abide by system-wide or \emph{global safety requirements} such as avoiding collision with other agents.  Distributed reactive synthesis is able to automatically transform a given correcness specification and a given architecture describing the individual agents' interaction into a correct-by-construction implementation. Unfortunately, except for a few restricted classes of architectures, the distributed synthesis problem is undecidable. Even the decidable versions of the problem lack practical solutions due to their nonelementary complexity~\cite{Schewe08}.  
@@ -13,7 +11,7 @@ satisfies a given specification.  An extension of this idea is to perform \emph{
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{MultiShield/figs/attach_shield}
+\includegraphics[width=0.75\textwidth]{MultiShield/figs/attach_shield}
 \caption{Attaching a safety shield.}
 \label{fig:attach_shield}
 \vspace{-.3cm}

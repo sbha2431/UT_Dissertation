@@ -14,12 +14,12 @@ In the first set of experiments, we consider a gridworld with two agents that ca
   \spec_{charge,i} &= &\LTLglobally\Big(charging_i \rightarrow \lnot \LTLnext charging_j				\Big) \nonumber \\
   \spec_{collision} &=&\LTLglobally \lnot \Big(position_i = position_j				\Big)
   \end{align}
-  for $i,j \in \{1,2\}$ and $i \neq j$. The formula $\spec_{charge,i}$ requires that one agent cannot enter the charging area right  after the other one has left. The integer variable $position_i$ is the position of agent $i$ in the grid. $\spec_{collision}$ requires that the agents do not occupy the same position.\looseness=-1
+  for $i,j \in \{1,2\}$ and $i \neq j$. The formula $\spec_{charge,i}$ requires that one agent cannot enter the charging area right  after the other one has left. The integer variable $position_i$ is the position of agent $i$ in the grid. $\spec_{collision}$ requires that the agents do not occupy the same position.
 
 We synthesized locally-optimal shields using an interference cost function $c$ that assigns higher costs for any interferences with
 the first agent than for interferences with the second one. We consider different values for the bound $b$ on the length of sequences of wrong outputs. A larger bound $b$ results in more robust shields, but also in larger state-spaces of the game, due to the size of the counter that augments the state space.
 
-We report the results in Table~\ref{tab:exp1} under case (1).
+We report the results in Table~\ref{tab:exp1shield} under case (1).
 The first column gives the bound $b$, the second and the third column state the number of input and output bits of $\varphi$.
 The fourth column states the total number of variables of the constructed game (including the variables that augment the state space)
 and the fifth column gives the number of reachable states in the game. In the last two columns, we report
@@ -28,8 +28,8 @@ the synthesis time (in seconds) to construct the permissive strategy and the loc
 
 \begin{table}[]
 \centering
-\caption{Results}\label{tab:exp1}
-\begin{tabular}{c|lllllll}
+\caption{Synthesis time for gridworld experiments}\label{tab:exp1shield}
+\begin{tabular}{c|lllllll} \toprule
 \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Case \\ \end{tabular}} & $b$ & \begin{tabular}[c]{@{}l@{}}Inp \\ vars \end{tabular} & \begin{tabular}[c]{@{}l@{}}Out\\  vars \end{tabular} & \begin{tabular}[c]{@{}l@{}}Game\\ vars \end{tabular} & \begin{tabular}[c]{@{}l@{}}Game\\ states\end{tabular} &
 \begin{tabular}[c]{@{}l@{}}time\\ perm \end{tabular} & \begin{tabular}[c]{@{}l@{}}time\\ cost-opt \end{tabular}\\ \hline
 
@@ -38,9 +38,10 @@ the synthesis time (in seconds) to construct the permissive strategy and the loc
                                                                           & 5   & 16                                                           & 6                                                             & 30                                                                & 3456                                                  & 245 & 830                                                          \\
 
 \multirow{2}{*}{\textbf{(2)}}                                             & 2   & 24                                                           & 12                                                            & 68                                                                & 41544                                                 & 3545 & 3019                                                          \\
-                                                                          & 5   & 24                                                           & 12                                                            & 70                                                                & $7.5\times 10^5$                                     & 3545 & 9822                                                          
+                                                                          & 5   & 24                                                           & 12                                                            & 70                                                                & $7.5\times 10^5$                                     & 3545 & 9822                                                          \\
+                                                                          \bottomrule
 \end{tabular}
-\vspace{-0.3cm}
+
 \end{table}
  An example for the interference of the shield with the agents during an execution is shown in Figure \ref{fig:casestudies}
 \begin{figure}[h]
