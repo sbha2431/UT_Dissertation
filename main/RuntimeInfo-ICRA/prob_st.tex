@@ -43,12 +43,9 @@ where $T_i$ is the time taken to reach room $i$ under the robot strategy $\rho_\
 % \end{example}
 
 
-% Information is only provided at runtime and the agent has no control over its value. One method to guarantee optimality with respect to the runtime information is to directly incorporate $\overline{p}$ into the state as an additional environment variable and solve \eqref{prob:opt} for all possible values for $\overline{p}$. Such an approach would fall under the framework presented in \cite{rudiger}. However, if $\overline{p}$ is continuous, this requires discretization which can blow up the state-space.
-% In Example \ref{ex:toy_ex2}, we can easily find a discretization of $p$ to guarantee optimality without a state-space explosion, however, this is not true in general. \todo[inline]{give the values} 
+Information is only provided at runtime and the agent has no control over its value. One method to guarantee optimality with respect to the runtime information is to directly incorporate $\overline{p}$ into the state as an additional environment variable and solve \eqref{prob:opt} for all possible values for $\overline{p}$. Such an approach would fall under the framework presented in \cite{rudiger}. However, if $\overline{p}$ is continuous, this requires discretization which can blow up the state-space. In Example \ref{ex:toy_ex2}, we can easily find a discretization of $p$ to guarantee optimality without a state-space explosion, however, this is not true in general.
 
-% Another approach is to re-synthesize online when the value of $\overline{p}$ changes. Such an approach requires re-solving \eqref{prob:opt} at every instant $\overline{p}$ changes. 
-%  However, the computational effort required to solve \eqref{prob:opt}
-% is prohibitively high for an on-board deployment. Hence, we propose pre-synthesizing offline a set of \emph{representative strategies} for specific instantiations of $\overline{p}$.
+Another approach is to re-synthesize online when the value of $\overline{p}$ changes. Such an approach requires re-solving \eqref{prob:opt} at every instant $\overline{p}$ changes. However, the computational effort required to solve \eqref{prob:opt} is prohibitively high for an on-board deployment. Hence, we propose pre-synthesizing offline a set of \emph{representative strategies} for specific instantiations of $\overline{p}$.
 
 Given a set of representative strategies associated with instances of the runtime information, the task at runtime then becomes one of choosing a strategy depending on the current value of $\overline p$. As we have a finite set of strategies to choose from, the resulting behaviour of the agent will be \emph{approximately optimal}. Thus, we consider the problem of synthesizing an \emph{approximately optimal switching function} that also guarantees $\spec$.
 
@@ -64,12 +61,10 @@ for every $i \geq 0$,  it holds that $\symb_{\out,i} ={\rho_\out}_{\tau(\overlin
 \end{defn}
 
 Informally, we want to be able to \emph{switch} between pre-computed strategies based on values of the runtime information. In order to not violate the specification, switching needs to take into account the prefix of the play. We formalize this task below. 
+
    We are given a game $(\game,\varphi)$, 
    a set $\{\overline{p}_i\in \mathcal{P}\}_{i=1}^{N}$ of representative values of the runtime information, and 
-    strategies $\{{\rho_\out^\ast}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ such that ${\rho_\out^\ast}_i$ solves \eqref{prob:opt} for $\overline{p}_i$. 
-
-   %FIXME: What is i? \pi is not used in first bullet point, and we don't have a guarantee for every overline p. DONE
-   Given $\epsilon > 0$, compute a collection $\{\mathcal S_i\}_{i=1}^N$ of subsets of $\mathbb{R}^n$ such that $\overline{p}_i \in \mathcal{S}_i$, and a  switching function $\tau : \prefs(\game) \times \mathcal P^+ \to \{1,\ldots,N\}$ that satisfies the following conditions.
+    strategies $\{{\rho_\out^\ast}_i\in \mathcal{M}_\out\}_{i=1}^{N}$ such that ${\rho_\out^\ast}_i$ solves \eqref{prob:opt} for $\overline{p}_i$. Given $\epsilon > 0$, compute a collection $\{\mathcal S_i\}_{i=1}^N$ of subsets of $\mathbb{R}^n$ such that $\overline{p}_i \in \mathcal{S}_i$, and a  switching function $\tau : \prefs(\game) \times \mathcal P^+ \to \{1,\ldots,N\}$ that satisfies the following conditions.
    \begin{itemize}
        \item For all $i =1,\ldots,N$ and all $\overline p \in \mathcal S_i \cap \mathcal P$ it holds that
     \begin{align}
@@ -87,7 +82,7 @@ Informally, we want to be able to \emph{switch} between pre-computed strategies 
  In the next Section we discuss how to compute, using off-the-shelf synthesis methods, representative strategies that are \emph{correct}, that is, they satisfy $\spec$, and optimal for a given runtime information vector $\overline{p}$.
 
  Then, we provide a method for computing a switching function
- for the synthesized representative strategies that is also guaranteed to be \emph{correct}, and is approximately optimal with respect to suitably chosen lower and upper bound functions $L$ and $U$. As formalized in Problem~\ref{prob:switching}, correctness means that every play resulting from applying the switching function to the given strategies satisfies the specification $\spec$. Approximate optimally is with respect to the optimal value $C^\ast(\overline{p})$ for each runtime information value $\overline{p} \in \mathcal P$.
+ for the synthesized representative strategies that is also guaranteed to be \emph{correct}, and is approximately optimal with respect to suitably chosen lower and upper bound functions $L$ and $U$. As formalized previously, correctness means that every play resulting from applying the switching function to the given strategies satisfies the specification $\spec$. Approximate optimally is with respect to the optimal value $C^\ast(\overline{p})$ for each runtime information value $\overline{p} \in \mathcal P$.
 
 % In Section~\ref{sec:synth_strats}, we show how to
 % synthesize representative strategies that are \emph{correct}, that is, they satisfy $\spec$, and optimal for a given runtime information vector $\overline{p}$. 
