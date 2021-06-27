@@ -324,17 +324,8 @@ fail me to tell of \ldots
 \utabstract
 \index{Abstract}%
 \indent
-This document has the form of a ``fake'' doctoral dissertation
-in order to provide an example of such, but it is actually a
-copy of Miguel Lerma's documentation for the Mathematics
-Department Computer Seminar of 25 March 1998 updated in July 2001
-and following by Craig McCluskey to meet the March 2001
-requirements of the Graduate School.
 
-This document and its source file show to write a Doctoral Dissertation using 
-\LaTeX{} and the utdiss2 package. 
-
-
+As autonomous systems become more widely used in society, they will necessarily have to make more decisions in order to meet increasingly complex objectives. However, to facilitate greater deployment of autonomous systems, especially in safety-critical contexts, it is crucial provide guarantees that the decisions made by these systems will be safe and achieve the desired objective. My dissertation studies techniques for assuring decision-making in complex and large-scale autonomous systems. I use synthesis techniques from the fields of formal methods to provide guarantees of correctness with respect to specifications provided in temporal logic. Synthesis methods often suffer from scalability issues limiting their applicability in realistic systems. To address this issue, I provide abstraction methods and decentralized synthesis architectures to provide guarantees in systems with partial-information as well as large numbers of interacting agents. I present a systematic approach to assured decision-making in this dissertation that is agnostic to the specifics of the implementation details of the autonomous systems. I argue that such an approach avoids having to assure systems case-by-case and will facilitate certification and deployment of autonomous systems in more application areas. I demonstrate this concept in traffic management for urban air mobility operations and provide a synthesis architecture that can adapt to changing specifications or vehicle capabilities. 
 
 \tableofcontents   % Table of Contents will be automatically
                    % generated and placed here.
@@ -358,10 +349,10 @@ This document and its source file show to write a Doctoral Dissertation using
 % dissertation).
 %
 
-\include{chapter-introduction}
+\include{Introduction/chapter-introduction}
 
 \part{Design-Time Synthesis}
-\include{Surveillance/main}
+\include{Surveillance/main} \label{sec:SurveiilanceChapter}
 \include{RuntimeInfo-ICRA/root}
 
 \part{Multi-Agent Runtime Enforcement}

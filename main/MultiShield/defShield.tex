@@ -120,7 +120,7 @@ With this objective, a shield plans optimally in the short term, without conside
 %For a single deviation period of length $k$, the accumulated cost
 %$c_{\mathsf{acc}}(\otrace,\otrace')$ is bounded from above by $k$ for $c_\bools$, and by $|\Proc| \cdot k$ for $c_{\#}$.
 
-\iftrue MEAN-PAYOFF
+\iftrue
 \paragraph*{Minimizing the limit-average interference cost}
 The second objective which we consider requires the shield to optimize along an infinite horizon.
 
@@ -161,7 +161,7 @@ Let  $b\in\nats$. The set $\assump(b)\subseteq (\alphabet \times \oalphabet \tim
 
 We incorporate assumptions on the system in the definition of cost-optimal shields.
 We modify Definition~\ref{def:locally-optimal} (locally-optimal shields) by restricting the sets of deviation periods to those corresponding to traces in $\assump \subseteq (\alphabet \times \oalphabet \times \oalphabet)^\infty$. More precisely, in the supremum  for $\shield$ we replace $\DevSet(\trace,\shield)$ by $\DevSet(\trace,\shield) \cap \{(\otrace\parallel\otrace')\mid \exists\; \itrace: (\itrace\parallel\otrace\parallel\otrace')\in \assump\}$ and analogously for $\shield'$. 
-\iftrue MEAN-PAYOFF
+\iftrue Note that the mean-payoff
 Definition~\ref{def:mp-optimal} is adapted analogously.
 \fi
 
