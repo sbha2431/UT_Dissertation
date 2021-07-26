@@ -1,11 +1,11 @@
-\section{Related Work}
+\section{Related work}
 \label{sec_relatedl}
-Monitoring distributed systems is an active area of research (see~\cite{FrancalanzaPS18} for a survey).
-Significant effort has focused on providing efficient monitoring solutions by exploiting distribution~\cite{FalconeJNBB15,FrancalanzaS15,BauerF16}. While our work is not comparable to monitoring, exploring similar ideas for shielding is one avenue for future work.\looseness=-1
-
-In the context of enforcement, in case of an error the proposed solutions either stop system execution~\cite{Schneider00}, or suppress, insert, or delay actions~\cite{LigattiBW09,FalconeFM12}. The approach in~\cite{LuoR13} generates monitors that detect  and prevent violations by one-step lookahead. Due to the limitation of one-step lookahead, this method can cause deadlocks. An alternative approach~\cite{ZhangW14} circumvents this problem by using model checking to determine for each  event whether it should be blocked, which is done online. In contrast, shields are synthesized offline, accounting for the effect of the shield on the future execution.
+%Monitoring distributed systems is an active area of research (see~\cite{FrancalanzaPS18} for a survey).
+%Significant effort has focused on providing efficient monitoring solutions by exploiting distribution~\cite{FalconeJNBB15,FrancalanzaS15,BauerF16}. While our work is not comparable to monitoring, exploring similar ideas for shielding is one avenue for future work.\looseness=-1
 %
-None of these mentioned, nor previous works on shield synthesis~\cite{BloemKKW15,KonighoferABHKT17}, considers quantitative specifications about how violations should be mitigated. In contrast, we synthesize shields with minimal interference cost, building on techniques for quantitative synthesis~\cite{jing2013}.
+%In the context of enforcement, in case of an error the proposed solutions either stop system execution~\cite{Schneider00}, or suppress, insert, or delay actions~\cite{LigattiBW09,FalconeFM12}. The approach in~\cite{LuoR13} generates monitors that detect  and prevent violations by one-step lookahead. Due to the limitation of one-step lookahead, this method can cause deadlocks. An alternative approach~\cite{ZhangW14} circumvents this problem by using model checking to determine for each  event whether it should be blocked, which is done online. In contrast, shields are synthesized offline, accounting for the effect of the shield on the future execution.
+%%
+%None of these mentioned, nor previous works on shield synthesis~\cite{BloemKKW15,KonighoferABHKT17}, considers quantitative specifications about how violations should be mitigated. In contrast, we synthesize shields with minimal interference cost, building on techniques for quantitative synthesis~\cite{jing2013}.
 
 % Bettina NOTE: I think software is not that important
 %\cite{VechevYY09} describes a method for inferring synchronization for concurrent programs given a bound on the synchronization cost. Their cost is defined on the level of program code, while we consider accumulated execution costs (over infinite executions).
@@ -13,16 +13,14 @@ None of these mentioned, nor previous works on shield synthesis~\cite{BloemKKW15
 
 
 
-\iffalse
-Runtime verification is an active area of research (see~ \cite{LecturesOnRuntimeVerification} for an introduction  and state of the art).  In particular, monitoring distributed systems attracts significant attention due to the fact that such systems are notoriously difficult to design and implement. A recent survey on runtime verification of distributed systems can be found in~\cite{Francalanza2018}.  Significant effort in this area  is focused on providing efficient monitoring  solutions by exploiting distribution, such as, for example exploiting the structure of the system~\cite{FalconeJNBB15 or the specification~\cite{FrancalanzaS15,BauerF16}. While works on monitoring are not directly comparable to our work, which is concerned with synthesizing enforcement shields, exploring similar ideas for shield distribution is a promising avenue for future work.
+Runtime verification is an active area of research (see~ \cite{LecturesOnRuntimeVerification} for an introduction  and state of the art).  In particular, monitoring distributed systems attracts significant attention due to the fact that such systems are notoriously difficult to design and implement. Significant effort in this area  is focused on providing efficient monitoring  solutions by exploiting distribution, such as, for example exploiting the structure of the system~\cite{FalconeJNBB15} or the specification~\cite{FrancalanzaS15,BauerF16}. While works on monitoring are not directly comparable to our work, which is concerned with synthesizing enforcement shields, exploring similar ideas for shield distribution is a promising avenue for future work.
 
 In the context of enforcement, the proposed solutions either halt on detecting a violation~\cite{Schneider00}, suppress and insert actions~\cite{LigattiBW09}, or buffer and delay actions~\cite{FalconeFM12}.
 None of these approaches is appropriate for reactive systems where the shield must act upon erroneous outputs on-the-fly, i.e.,
 without delay and without knowing what future inputs/outputs are. In particular, shields cannot insert or delete time steps, and cannot halt in the case of a violation. In the context of distributed systems, this corresponds to blocking or delaying the execution of threads. Specifically, the approach in~\cite{LuoR13} generates monitors that detect  and prevent possible violations by one-step lookahead. Due to the limitation of one-step lookahead this method can cause deadlocks. An alternative approach~\cite{ZhangW14} uses static analysis to guarantee finding a failure-free interleaving whenever one exists. This method uses model checking to determine for each  event whether it should be blocked, which is done online. In contrast, shields are synthesized offline using reactive synthesis, thus accounting for the effect of the shield's  actions on the future execution of the system.
 Furthermore, none of these mentioned considers quantitative specifications expressing preference on how violations should be mitigated. In~\cite{VechevYY09} the authors describe a method for inferring synchronization for concurrent programs, allowing as many interleavings as possible, given a bound on the synchronization cost. The cost is associated with synchronization constructs in the program code and defined on the program level, while we consider accumulated costs (over infinite executions).
 
-Recently introduces, shield synthesis~\cite{BloemKKW15,KonighoferABHKT17} has attracted a lot of attention in the past couple of years, but none of the previous works considers quantitative objectives. In contrast, we synthesize shields with minimal interference cost, by extending and applying techniques for quantitative synthesis~\cite{jing2013,ChatterjeeHJ05}.
-\fi
+Recently introduced, shield synthesis~\cite{BloemKKW15,KonighoferABHKT17} has attracted a lot of attention in the past couple of years, but none of the previous works considers quantitative objectives. In contrast, we synthesize shields with minimal interference cost, by extending and applying techniques for quantitative synthesis~\cite{jing2013}.
 
 
 

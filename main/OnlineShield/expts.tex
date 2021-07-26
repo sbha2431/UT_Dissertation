@@ -1,10 +1,10 @@
-\section{Experimental Evaluation}
+\section{Experimental evaluation}
 We evaluate the performance of the runtime decentralized enforcer synthesis framework in the context of collision-avoidance for multi-agent systems. Specifically, we use the collision-avoidance safety function defined in Scenario~3 and the pathfinder construction described in Scenario~7. 
  The implementation of the system for ensuring safety from collisions uses the general pseudocode presented in Algorithm \ref{Trajectory_update}.
  
  
 
-\subsubsection*{Comparison with Centralized Shields}
+\subsubsection*{Comparison with centralized shields}
 
 We compare the modified trajectories of two agents equipped with decentralized enforcers that are synthesized at runtime with two other agents whose behaviors are modified by a centralized shield synthesized at design-time using the algorithm from Section~\ref{sec:quantshielding} in a 5x5 grid world. This algorithm runs in time that is exponential in the number  $|\mathcal{U}|$ of agents as discussed in Section~\ref{sec:quantshielding}. In general, the optimization of the plans of cooperative robots is PSPACE-hard \cite{hardness}.
 The intended trajectories of the agents in both scenarios are the same. 
@@ -343,7 +343,7 @@ As shown in these scenarios, the look-ahead parameter $\ell$ impacts the modifie
 \label{tab:fullresults}
 \end{table}
 
-\subsubsection*{Scalability}
+\subsubsection{Scalability}
 
 
 We built a multi-agent system where the agents are equipped with the decentralized enforcer framework for collision-avoidance in Python. The distributed nature of the system is modeled using shared memory. The size of the grid world, the look-ahead length $\ell$, the communication constant $d$, and the length $k$ of the maximum deviation by one use of the pathfinder are user inputs. The original trajectories for the agents are random. We record the effect of $\ell$ and $k$ on the synthesis time for modified behavior. 
@@ -354,7 +354,7 @@ For comparison, we also show the exact size of the graph constructed by the path
 Table \ref{tab:fullresults} shows that the synthesis time does not depend on the number of states in the environment. This observation is consistent with the earlier analysis. The worst case is when all the agents interfere with one another and they have global information. In this scenario, only the agent with the highest priority can progress without modifications. Every other agent has to wait for the agents with a lower priority to fix their trajectories. Table \ref{tab:fullresults} shows that that the synthesis time is in the order of a few seconds. 
 
 
-\subsubsection*{ROS/Gazebo Simulation}
+\subsubsection{ROS/Gazebo simulation}
 
 In this section, we demonstrate the implementation of the enforcers in a high-fidelity simulation discrete environment showed in Figure~\ref{fig:sims}. The transition of each vehicle from one cell to another cell is synchronized and timed, i.e.,  when a vehicle is assigned its target cell, it transits to the target cell and waits until all the other vehicles reach their targets before moving towards its next target. 
 We \emph{do not} use any in-built obstacle avoidance library for low level collision avoidance.

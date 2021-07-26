@@ -7,19 +7,21 @@ The synthesis approach in the previous chapter relies on offline planning. The a
 For example, consider a motion-planning problem for a service robot as shown in Figure~\ref{fig:gazeboworld}. A high-level mission for the robot is to meet the human infinitely often, while ensuring that it always has sufficient battery power (rechargeable by returning to a charging station). Given the probability of the human's location based on past observations (runtime information), the proposed approach finds the human in a shorter period of time (compared to strategies that ignore this probability information), while satisfying the safety specification. 
 
 For another, more complex example, consider the coordination of landing a collection of autonomous air vehicles in urban air mobility (UAM) operations \cite{goyal2018urban,gipson2017nasa}. 
-We seek to optimize performance (reduce  maximum delay in aircraft landing) while ensuring safe takeoff and landing operations \cite{thipphavong2018urban}. The on-demand nature of UAM means knowledge of air traffic demands is not available at design time. This necessitates a method that can use traffic information gained at runtime to adjust behavior for improved performance and safety. Previous approaches implement runtime safety enforcement \cite{bhnfm, AlshiekhShield,Konighofer2017,8815233}, but cannot handle more general specifications. 
+We seek to optimize performance (reduce  maximum delay in aircraft landing) while ensuring safe takeoff and landing operations \cite{thipphavong2018urban}. The on-demand nature of UAM means knowledge of air traffic demands is not available at design time. This necessitates a method that can use traffic information gained at runtime to adjust behavior for improved performance and safety. 
 
 \begin{figure}
      \centering
     \input{RuntimeInfo-ICRA/figs/gazeboworld.tex}
-    \caption{Path planning environment for a turtlebot (in blue) to infinitely often service a human (in red). The robot can recharge at a charging station (in green).}
+    \caption{Environment for a turtlebot to infinitely often service a human. The robot can recharge at a charging station.}
     \label{fig:gazeboworld}
 \end{figure}
 
-
+\section{Related work}
 
 We consider the \emph{runtime information} as a (possibly continuous) parameter associated with the environment. The work in~\cite{jangcontinuous} allows for near-optimal behaviour on continuous executions, however the authors focus on a specialized cost metric. Additionally, their method relies on online re-synthesis, which is not feasible for real-time deployment. This work was later extended in~\cite{Ehlerscost} to account for delay costs arising from a potentially adversarial environment. However, it relies on the discretization of the continuous parameter space, which fails to scale with the number of atomic propositions in the synthesis problem. 
-In the service robot example, this information is a probability vector over possible human locations. In the UAM example, the information is the current incoming air traffic density. 
+In the service robot example, this information is a probability vector over possible human locations. In the UAM example, the information is the current incoming air traffic density.  
+
+Other previous approaches implement runtime safety enforcement \cite{bhnfm, AlshiekhShield,Konighofer2017,8815233}, that can guarantee safety requirements at runtime, but cannot handle more general specifications.
 
 Our approach incorporates parametrized runtime information by switching between pre-computed strategies. First, for a given set of \emph{candidate instantiations} of the parameter we synthesize offline optimal strategies that satisfy all task specifications. Next, we obtain bounds on the suboptimality incurred by the use of these policies at \emph{all} other parameter values. This computation does not require discretization of the parameter space. At runtime, we dynamically switch strategies based on the these suboptimality bounds, thereby incorporating runtime information into the offline synthesis of correct-by construction policies. 
 To this end, we derive a switching function that guarantees the resulting execution is provably correct, and near-optimal.

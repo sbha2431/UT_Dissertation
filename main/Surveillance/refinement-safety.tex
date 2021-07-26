@@ -10,7 +10,7 @@ The root node is labelled with $s_\belief^\init$.
 If $v$ is a node annotated with the belief set $(l_a,B_t) \in \states_\belief$, and  $v'$ is a child of $v$ in $\counterex_\abstr$ labelled with an abstract state $(l_a',A_t')$, then, by the construction of $G_\abstr$ there exists at least one state $(l_a',B_t')$ such that $((l_a,B_t),(l_a',B_t')) \in T_\belief$ and $B_t' \subseteq \gamma(A_t')$. We annotate the node $v'$ with one such state $(l_a',B_t')$. The counterexample analysis procedure based on this annotation is given in Algorithm~\ref{algo:cex-analysis-safety}.
 If each of the leaf nodes of the tree is annotated with a belief set $(l_a,B_t)$ for which $(l_a,B_t) \not\models p_k$, then the new annotation gives us a concrete counterexample tree $\counterex_\belief$, which by construction concertizes $\counterex_\abstr$. Conversely, if there exists a leaf node annotated with $(l_a,B_t)$ such that $(l_a,B_t) \models p_k$, then we can conclude that the constructed element of $\trees(\counterex_\abstr)$ is not a concrete counterexample tree  for $\counterex_\abstr$, so based on the currently constructed annotation we cannot conclude that $\counterex_\abstr$ is concretizable.  
 
-If none of the trees in $\trees(\counterex_\abstr)$ is a concrete counterexample for $\counterex_\abstr$ we can conclude that $\counterex_\abstr$ is not concretizable, and use this to refine the partition $\part$.
+If none of the trees in $\trees(\counterex_\abstr)$ is a concrete counterexample for $\counterex_\abstr$ we can conclude that $\counterex_\abstr$ is not concretizable, and use this to refine the partition $\partition$.
 
 %\comment{
 \begin{algorithm}[h!]
@@ -40,16 +40,16 @@ If none of the trees in $\trees(\counterex_\abstr)$ is a concrete counterexample
 
 \bigskip
 
-\begin{theorem}
+\begin{thm}
 If for some tree in $\trees(\counterex_\abstr)$ Algorithm~\ref{algo:cex-analysis-safety} returns {\sc concretizable}, then $\counterex_\abstr$ is concretizable. If, on the other hand, for all trees in $\trees(\counterex_\abstr)$ it returns a path in $\counterex_\abstr$ annotated with concrete belief states in $S_\belief$, then $\counterex_\abstr$ is spurious, i.e., not concretizable.
-\end{theorem}
-{\it Proof.}\ \ 
+\end{thm}
+\begin{proof}
 By applying Algorithm~\ref{algo:cex-analysis-safety} in order to analyze all trees in $\trees(\counterex_\abstr)$, we check for each such tree if it is a concrete counterexample tree, that is, each of its leaf nodes violates $p_k$. By definition, Algorithm~\ref{algo:cex-analysis-safety} returns {\sc concretizable} precisely when this is the case, that is when $\counterex_\abstr$ is concretizable. If for each tree in $\trees(\counterex_\abstr)$ the algorithm returns a path $\pi$ whose last state is annotated with $s_\belief$ for which $s_\belief \models p_k$, then this path demonstrates that the corresponding tree is not a concrete counterexample. If this is the case for all trees in $\trees(\counterex_\abstr)$, then $\counterex_\abstr$ is indeed spurious.
 \qed
-
+\end{proof}
 \begin{figure}
 \begin{center}
-\input{figs/simple-safety-counterex-1.tex}
+\input{Surveillance/figs/simple-safety-counterex-1.tex}
 \end{center}
 
 \caption{Abstract counterexample discussed in Example~\ref{ex:simple-safety-unconcretizable}. The leaf nodes of the tree are labelled with the abstract belief set $A = \{Q_1,Q_2\}$.}
@@ -59,13 +59,13 @@ By applying Algorithm~\ref{algo:cex-analysis-safety} in order to analyze all tre
 
 \bigskip
 
-\begin{example}\label{ex:simple-safety-unconcretizable}
+\begin{eg}\label{ex:simple-safety-unconcretizable}
 Let $G$ be the surveillance game structure from Example~\ref{ex:simple-surveillance-game}, and consider the surveillance game $(G,\LTLglobally p_5)$. 
 
-We now consider an abstraction partition $\part = \{Q_1,Q_2\}$ that consists of the set $Q_1$, corresponding to the first two columns of the grid in Figure~\ref{simple-grid} and the set $Q_2$ containing the locations from the other three columns of the grid.
+We now consider an abstraction partition $\partition = \{Q_1,Q_2\}$ that consists of the set $Q_1$, corresponding to the first two columns of the grid in Figure~\ref{simple-grid} and the set $Q_2$ containing the locations from the other three columns of the grid.
 
-Figure~\ref{fig:simple-safety-counterex-1} shows a counterexample tree $\counterex_\abstr$ in the abstract game $(\alpha_\part(G),\LTLglobally p_5)$. The analysis in Algorithm~\ref{algo:cex-analysis-safety} annotates node $v_1$ with the concrete belief set $\{17,23\}$, and the leaf node $v_3$ with the set $\{16,18,22,24\}$. This is the only possible annotation of the tree with states in $G_\belief$, i.e., $\counterex_\abstr$ contains a single tree. Thus, this counterexample tree $\counterex_\abstr$ is determined to be unconcretizable.\qed
-\end{example}
+Figure~\ref{fig:simple-safety-counterex-1} shows a counterexample tree $\counterex_\abstr$ in the abstract game $(\alpha_\partition(G),\LTLglobally p_5)$. The analysis in Algorithm~\ref{algo:cex-analysis-safety} annotates node $v_1$ with the concrete belief set $\{17,23\}$, and the leaf node $v_3$ with the set $\{16,18,22,24\}$. This is the only possible annotation of the tree with states in $G_\belief$, i.e., $\counterex_\abstr$ contains a single tree. Thus, this counterexample tree $\counterex_\abstr$ is determined to be unconcretizable.\qed
+\end{eg}
 
 \bigskip
 
@@ -79,26 +79,26 @@ Since $\counterex_\abstr$ is a counterexample we have $(l_a^n,A_t^n) \not \model
 
 \bigskip
 
-We now describe a procedure to compute a partition $\part'$ that refines the current partition $\part$ based on the path $\pi_\abstr$ and the sequence $(l_a^0,B_t^0),\ldots,(l_a^n,B_t^n)$. Intuitively, we split the sets that appear in $A_t^n$ in order to ensure that in the refined abstract game the corresponding abstract state satisfies the surveillance predicate $p_k$. We may have to also split sets appearing in abstract states on the path to $v_n$. This is to ensure that imprecision introduced earlier on this path does not propagate by including more than the desired newly split sets, and thus leading to the same violation of $p_k$.
+We now describe a procedure to compute a partition $\partition'$ that refines the current partition $\partition$ based on the path $\pi_\abstr$ and the sequence $(l_a^0,B_t^0),\ldots,(l_a^n,B_t^n)$. Intuitively, we split the sets that appear in $A_t^n$ in order to ensure that in the refined abstract game the corresponding abstract state satisfies the surveillance predicate $p_k$. We may have to also split sets appearing in abstract states on the path to $v_n$. This is to ensure that imprecision introduced earlier on this path does not propagate by including more than the desired newly split sets, and thus leading to the same violation of $p_k$.
 
-Formally, if $\inabs_\part(A_t^n) = \{B_{n,1},\ldots,B_{n,m_n}\}$, then we split some of the sets $B_{n,1},\ldots,B_{n,m_n}$ to obtain from $A_t^n$ a set $A'_n = \{B_{n,1}',\ldots,B_{n,m_n'}'\}$ such that $|\gamma(C^n)| \leq k$, where  
+Formally, if $\inabs_\partition(A_t^n) = \{B_{n,1},\ldots,B_{n,m_n}\}$, then we split some of the sets $B_{n,1},\ldots,B_{n,m_n}$ to obtain from $A_t^n$ a set $A'_n = \{B_{n,1}',\ldots,B_{n,m_n'}'\}$ such that $|\gamma(C^n)| \leq k$, where  
 $$C^n = \{B_{n,i}' \in A'_n \mid B_{n,i}' \cap B_t^n \neq \emptyset\}.$$
 
-This property intuitively means that if we consider the sets in $A'_n$ that have non-empty intersection with $B_t^n$, an abstract state composed of those sets will satisfy $p_k$. Since $(l_a^n,B_t^n)$ satisfies $p_k$, we can find a partition $\part^n \preceq \part$ that guarantees this property, as shown in Algorithm~\ref{algo:refinement-safety}.
+This property intuitively means that if we consider the sets in $A'_n$ that have non-empty intersection with $B_t^n$, an abstract state composed of those sets will satisfy $p_k$. Since $(l_a^n,B_t^n)$ satisfies $p_k$, we can find a partition $\partition^n \preceq \partition$ that guarantees this property, as shown in Algorithm~\ref{algo:refinement-safety}.
  
-What remains, in order to eliminate the counterexample, is to ensure that after the refinement only these sets are reachable via the considered path, by propagating this split backwards, obtaining a sequence of partitions $\part \succeq \part^n \succeq \ldots \succeq \part^0$ refining $\part$. 
+What remains, in order to eliminate the counterexample, is to ensure that after the refinement only these sets are reachable via the considered path, by propagating this split backwards, obtaining a sequence of partitions $\partition \succeq \partition^n \succeq \ldots \succeq \partition^0$ refining $\partition$. 
 
-Given $\part^{j+1}$, we compute $\part^j$ as follows. For each $j$, we define a set $C^j \subseteq \mathcal{P}(L)$ (for $j=n$, the set $C^n$ was defined above). Suppose we have defined $C^{j+1}$ for some $j \geq 0$, and $\inabs_{\part^j}(A_t^j) = \{B_{j,1},\ldots,B_{j,m_j}\}$. We split some of the sets $B_{j,1},\ldots,B_{j,m_j}$ to obtain from $A_t^j$ a set $A'_j = \{B_{j,1}',\ldots,B_{j,m_j'}'\}$ where there exists $C^j \subseteq A'_j$ with
+Given $\partition^{j+1}$, we compute $\partition^j$ as follows. For each $j$, we define a set $C^j \subseteq \mathcal{P}(L)$ (for $j=n$, the set $C^n$ was defined above). Suppose we have defined $C^{j+1}$ for some $j \geq 0$, and $\inabs_{\partition^j}(A_t^j) = \{B_{j,1},\ldots,B_{j,m_j}\}$. We split some of the sets $B_{j,1},\ldots,B_{j,m_j}$ to obtain from $A_t^j$ a set $A'_j = \{B_{j,1}',\ldots,B_{j,m_j'}'\}$ where there exists $C^j \subseteq A'_j$ with
 \[\gamma(C^j) = \{l_t \in \gamma(A_t^j) \mid \post(l_a^j,\{l_t\}) \cap \gamma(A_t^{j+1}) \subseteq \gamma(C^{j+1})\}.\]
 This means that using the new partition we can express precisely the set of states that do not lead to sets in $A_{j+1}'$ that we are trying to avoid. 
-The fact that an appropriate partition $\part$ can be computed, follows from the choice of the leaf node $v_n$. 
-The procedure for computing the partition $\part' = \part^0$ that refines $\part$ based on  $\pi_\abstr$ is formalized in Algorithm~\ref{algo:refinement-safety}.
+The fact that an appropriate partition $\partition$ can be computed, follows from the choice of the leaf node $v_n$. 
+The procedure for computing the partition $\partition' = \partition^0$ that refines $\partition$ based on  $\pi_\abstr$ is formalized in Algorithm~\ref{algo:refinement-safety}.
 
 \bigskip 
 
-\begin{example}
-We continue with the unconcretizable abstract counterexample tree from Example~\ref{ex:simple-safety-unconcretizable}, shown in Figure~\ref{fig:simple-safety-counterex-1}. We illustrate the refinement procedure for the path $v_0,v_1,v_3$. For node $v_3$, we split $Q_1$ and $Q_2$ using the set $B = \{16,18,22,24\}$, obtaining the sets $Q_1' = Q_1 \cap \{16,18,22,24\} = \{16\}$, $Q_2' = Q_1\setminus\{16\}$, $Q_3' = Q_2 \cap \{16,18,22\} = \{18,22,24\}$ and $Q_4' = Q_2 \setminus \{18,22,24\}$. We thus obtain a new partition $\part_{v_3} \preceq \part$. In order to propagate the refinement backwards (to ensure eliminating $\counterex_\abstr$) we compute the set of locations in $Q_2$ from which the target can move only to a location in $Q_1'$ or $Q_3'$. These are the locations $17$ and $23$. This requires splitting $Q_4'$ into $Q_5' = \{17,23\}$ and $Q_6' = Q_4' \setminus \{17,23\}$. The root node $v_0$ is labelled with the precise belief set, so no further refinement is required. Thus, the refined partition is $\part' = \part_{v_1}= \{Q_1',Q_2',Q_3',Q_5',Q_6'\}$.  \qed
-\end{example}
+\begin{eg}
+We continue with the unconcretizable abstract counterexample tree from Example~\ref{ex:simple-safety-unconcretizable}, shown in Figure~\ref{fig:simple-safety-counterex-1}. We illustrate the refinement procedure for the path $v_0,v_1,v_3$. For node $v_3$, we split $Q_1$ and $Q_2$ using the set $B = \{16,18,22,24\}$, obtaining the sets $Q_1' = Q_1 \cap \{16,18,22,24\} = \{16\}$, $Q_2' = Q_1\setminus\{16\}$, $Q_3' = Q_2 \cap \{16,18,22\} = \{18,22,24\}$ and $Q_4' = Q_2 \setminus \{18,22,24\}$. We thus obtain a new partition $\partition_{v_3} \preceq \partition$. In order to propagate the refinement backwards (to ensure eliminating $\counterex_\abstr$) we compute the set of locations in $Q_2$ from which the target can move only to a location in $Q_1'$ or $Q_3'$. These are the locations $17$ and $23$. This requires splitting $Q_4'$ into $Q_5' = \{17,23\}$ and $Q_6' = Q_4' \setminus \{17,23\}$. The root node $v_0$ is labelled with the precise belief set, so no further refinement is required. Thus, the refined partition is $\partition' = \partition_{v_1}= \{Q_1',Q_2',Q_3',Q_5',Q_6'\}$.  \qed
+\end{eg}
 
 \bigskip
 
@@ -106,19 +106,19 @@ We continue with the unconcretizable abstract counterexample tree from Example~\
 \begin{algorithm}[h!]
 
 %\small
-\KwIn{safety surveillance game $(G,\LTLglobally p_k)$,\newline abstraction partition $\part$,\newline unconcretizable path $\pi = v_0,\ldots,v_n$ in $\counterex_\abstr$}
-\KwOut{an abstraction partition $\part'$ such that $\part' \preceq \part$}
+\KwIn{safety surveillance game $(G,\LTLglobally p_k)$,\newline abstraction partition $\partition$,\newline unconcretizable path $\pi = v_0,\ldots,v_n$ in $\counterex_\abstr$}
+\KwOut{an abstraction partition $\partition'$ such that $\partition' \preceq \partition$}
 
 \smallskip
 
 let $(l_a^j,A_t^j)$ be the label of $v_j$;\\
 let $(l_a^j,B_t^j)$ be the annotation of $v_j$;
 \begin{flalign*}
-A  :=&  \{Q \cap B_t^n\mid Q \in \inabs_\part(A_t^n) , Q \cap B_t^n \neq \emptyset \}\cup &\\
-& \{Q \setminus B_t^n\mid Q \in \inabs_\part(A_t^n) , Q \setminus B_t^n \neq \emptyset \};
+A  :=&  \{Q \cap B_t^n\mid Q \in \inabs_\partition(A_t^n) , Q \cap B_t^n \neq \emptyset \}\cup &\\
+& \{Q \setminus B_t^n\mid Q \in \inabs_\partition(A_t^n) , Q \setminus B_t^n \neq \emptyset \};
 \end{flalign*}
 
-$\part' := (\part \setminus \inabs_\part(A_t^n))  \cup A$;\\
+$\partition' := (\partition \setminus \inabs_\partition(A_t^n))  \cup A$;\\
 $C := \{ Q\in A \mid Q \cap B_t^n \neq \emptyset\}$;
 
 \For{$j = n-1,\ldots,0$}{
@@ -126,15 +126,15 @@ $C := \{ Q\in A \mid Q \cap B_t^n \neq \emptyset\}$;
 $B :=  \{l_t \in \gamma(A_t^j) \mid \post(l_a,\{l_t\}) \subseteq \gamma(C)\}$\;
 \noindent
 \begin{flalign*}
-A  := &\{Q \cap B\mid Q \in \inabs_{\part'}(A_t^j) , Q \cap B \neq \emptyset \}\cup &\\
-& \{Q \setminus B\mid Q \in \inabs_{\part'}(A_t^j) , Q \setminus B \neq \emptyset \};
+A  := &\{Q \cap B\mid Q \in \inabs_{\partition'}(A_t^j) , Q \cap B \neq \emptyset \}\cup &\\
+& \{Q \setminus B\mid Q \in \inabs_{\partition'}(A_t^j) , Q \setminus B \neq \emptyset \};
 \end{flalign*}
 
 
-$\part' := (\part' \setminus \inabs_{\part'}(A_t^j))  \cup A$\;
+$\partition' := (\partition' \setminus \inabs_{\partition'}(A_t^j))  \cup A$\;
 $C := \{ Q\in A \mid Q \cap B \neq \emptyset\}$;
 } 
-\KwRet{$\part'$}
+\KwRet{$\partition'$}
 
 \smallskip
 \bigskip
@@ -144,25 +144,26 @@ $C := \{ Q\in A \mid Q \cap B \neq \emptyset\}$;
 \end{algorithm}
 %}
 
-Let $\part$ and $\part'$ be two counterexample partitions such that $\part' \preceq \part$. Let $\counterex_\abstr$ be an abstract counterexample  tree in $(\alpha_\part(G),\LTLglobally p_k)$. We define $\gamma_{\part'}(\counterex_\abstr)$ to be the set of abstract counterexample trees in $(\alpha_{\part'}(G),\LTLglobally p_k)$ such that $\counterex'_\abstr \in \gamma_{\part'}(\counterex_\abstr)$ iff $\counterex'_\abstr$ differs from $\counterex_\abstr$ only in the node labels and for every node in $\counterex_\abstr$ labelled with $(l_a,A_t)$, the corresponding node in $\counterex'_\abstr$ is labelled with an abstract state $(l_a,A_t')$ such that $\gamma(A_t') \subseteq \gamma(A_t)$.
+Let $\partition$ and $\partition'$ be two counterexample partitions such that $\partition' \preceq \partition$. Let $\counterex_\abstr$ be an abstract counterexample  tree in $(\alpha_\partition(G),\LTLglobally p_k)$. We define $\gamma_{\partition'}(\counterex_\abstr)$ to be the set of abstract counterexample trees in $(\alpha_{\partition'}(G),\LTLglobally p_k)$ such that $\counterex'_\abstr \in \gamma_{\partition'}(\counterex_\abstr)$ iff $\counterex'_\abstr$ differs from $\counterex_\abstr$ only in the node labels and for every node in $\counterex_\abstr$ labelled with $(l_a,A_t)$, the corresponding node in $\counterex'_\abstr$ is labelled with an abstract state $(l_a,A_t')$ such that $\gamma(A_t') \subseteq \gamma(A_t)$.
  
 The theorem below states the progress property  of Algorithm~\ref{algo:refinement-safety}, namely, applying Algorithm~\ref{algo:refinement-safety} to the paths obtained for each of the trees in $\trees(C_\abstr)$ is guaranteed to eliminate the considered counterexample. Note that we can easily apply Algorithm~\ref{algo:refinement-safety} to the trees in $\trees(C_\abstr)$ sequentially, each application starting with the refined partition from the previous iteration. In practice, these applications can be merged to consider the trees in parallel.
 
 
-\begin{theorem}If $\part'$ is the refined partition obtained by applying Algorithm~\ref{algo:refinement-safety} to all the trees in $\trees(C_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\part(G),\LTLglobally p_k)$, then $\gamma_{\part'}(\counterex_\abstr) = \emptyset$, and also $\gamma_{\part''}(\counterex_\abstr) = \emptyset$ for every partition $\part''$ where $\part'' \preceq \part'$.
-\end{theorem}
-{\it Proof.}\ \ 
-Let $\part'$ be the refined partition obtained by applying Algorithm~\ref{algo:refinement-safety} to all the trees in $\trees(C_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\part(G),\LTLglobally p_k)$.
+\begin{thm}If $\partition'$ is the refined partition obtained by applying Algorithm~\ref{algo:refinement-safety} to all the trees in $\trees(C_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\partition(G),\LTLglobally p_k)$, then $\gamma_{\partition'}(\counterex_\abstr) = \emptyset$, and also $\gamma_{\partition''}(\counterex_\abstr) = \emptyset$ for every partition $\partition''$ where $\partition'' \preceq \partition'$.
+\end{thm}
 
-For every tree in $\trees(C_\abstr)$ and corresponding path $(l_a^0,B_t^0)\ldots (l_a^m,B_t^m)$ in the tree with which we have refined the abstraction, every abstract partition $\part'' \preceq \part'$, and every prefix of a run $(l_a^0,A_t^0)\ldots (l_a^m,A_t^m)$ in $\alpha_{\part''}(G)$ with $\alpha_{\part''}(B_t^i) = A_t^i$ we have that $A_t^m \models p_k$. That is, the refinement performed by Algorithm~\ref{algo:refinement-safety} ensures that in every finer abstraction the abstraction of the paths with respect to which the partition was refined is precise enough to ensure that the safety property is not violated on this path.
+\begin{proof}
+	Let $\partition'$ be the refined partition obtained by applying Algorithm~\ref{algo:refinement-safety} to all the trees in $\trees(C_\abstr)$ for an unconcretizable abstract counterexample $\counterex_\abstr$ in $(\alpha_\partition(G),\LTLglobally p_k)$.
+	
+	For every tree in $\trees(C_\abstr)$ and corresponding path $(l_a^0,B_t^0)\ldots (l_a^m,B_t^m)$ in the tree with which we have refined the abstraction, every abstract partition $\partition'' \preceq \partition'$, and every prefix of a run $(l_a^0,A_t^0)\ldots (l_a^m,A_t^m)$ in $\alpha_{\partition''}(G)$ with $\alpha_{\partition''}(B_t^i) = A_t^i$ we have that $A_t^m \models p_k$. That is, the refinement performed by Algorithm~\ref{algo:refinement-safety} ensures that in every finer abstraction the abstraction of the paths with respect to which the partition was refined is precise enough to ensure that the safety property is not violated on this path.
+	
+	Now, assume for the sake of contradiction that $\gamma_{\partition''}(\counterex_\abstr) \neq \emptyset$, and let $\counterex_\abstr'' \in\gamma_{\partition''}(\counterex_\abstr)$. By the definition of $\gamma$ and $\trees$, we have that there exists a tree $T$ in $\trees(\counterex_\abstr)$ that is also an element of $\trees(\counterex_\abstr'')$. Thus, for some $(l_a^0,B_t^0)\ldots (l_a^m,B_t^m)$ in $T$ with respect to which we have refined the abstraction, it holds that $(l_a^0,\alpha_{\partition''}(B_t^0))\ldots (l_a^m,\alpha_{\partition''}(B_t^m))$ is a path in $\counterex_\abstr''$. By the property above, we have $\alpha{\partition''}(B_t^m)\models p_k$, which contradicts to the choice of $\counterex_\abstr''$ as a counterexample in $\alpha_{\partition''}(G)$. This concludes the proof that $\gamma_{\partition''}(\counterex_\abstr) = \emptyset$.
+	\qed
+\end{proof}
 
-Now, assume for the sake of contradiction that $\gamma_{\part''}(\counterex_\abstr) \neq \emptyset$, and let $\counterex_\abstr'' \in\gamma_{\part''}(\counterex_\abstr)$. By the definition of $\gamma$ and $\trees$, we have that there exists a tree $T$ in $\trees(\counterex_\abstr)$ that is also an element of $\trees(\counterex_\abstr'')$. Thus, for some $(l_a^0,B_t^0)\ldots (l_a^m,B_t^m)$ in $T$ with respect to which we have refined the abstraction, it holds that $(l_a^0,\alpha_{\part''}(B_t^0))\ldots (l_a^m,\alpha_{\part''}(B_t^m))$ is a path in $\counterex_\abstr''$. By the property above, we have $\alpha{\part''}(B_t^m)\models p_k$, which contradicts to the choice of $\counterex_\abstr''$ as a counterexample in $\alpha_{\part''}(G)$. This concludes the proof that $\gamma_{\part''}(\counterex_\abstr) = \emptyset$.
-\qed
-\bigskip
-
-\begin{example}\label{ex:simple-safety-realizability}
-In the surveillance game $(G,\LTLglobally p_5)$, where $G$ is the surveillance game structure from Example~\ref{ex:simple-surveillance-game}, the agent has a winning strategy. After $6$ iterations of the refinement loop we arrive at an abstract game $(\alpha_{\part^*}(G),\LTLglobally p_5)$, where the partition $\part^*$ consists of $11$ automatically computed sets (as opposed to the $22$ locations reachable by the target in $G$), which in terms of the belief-set construction means $2^{11}$ versus $2^{22}$ possible belief sets in the respective games.
+\begin{eg}\label{ex:simple-safety-realizability}
+In the surveillance game $(G,\LTLglobally p_5)$, where $G$ is the surveillance game structure from Example~\ref{ex:simple-surveillance-game}, the agent has a winning strategy. After $6$ iterations of the refinement loop we arrive at an abstract game $(\alpha_{\partition^*}(G),\LTLglobally p_5)$, where the partition $\partition^*$ consists of $11$ automatically computed sets (as opposed to the $22$ locations reachable by the target in $G$), which in terms of the belief-set construction means $2^{11}$ versus $2^{22}$ possible belief sets in the respective games.
 
 In the game $(G,\LTLglobally p_2)$, on the other hand, the agent does not have a winning strategy, and the algorithm establishes this after one refinement, after which, using a partition of size $4$,  it finds a concretizable abstract counterexample.
 \qed
-\end{example}
+\end{eg}

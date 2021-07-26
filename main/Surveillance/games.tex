@@ -1,6 +1,6 @@
 We begin by defining a formal model for describing surveillance strategy synthesis problems, in the form of a two-player game between an agent and a target, in which the agent has only partial information about the target's location. We first present the game structure with all its components, and then explain each component. We broadly categorize the structure's components into \emph{sensing} and \emph{transitions}. 
 
-Since the focus of this paper is on high-level decision making, we abstract the sensing capabilities into a generic model. This ensures that most sensor models in practice can be captured in the presented framework. 
+Since the focus of this dissertation is on high-level decision making, we abstract the sensing capabilities into a generic model. This ensures that most sensor models in practice can be captured in the presented framework. 
 
 \subsection{Notation}\label{sec:notation}
 We first introduce some notation necessary for the formal definitions in the remainder of the section. For a finite set $B$, we denote with $|B|$ the number of elements in B. Given a set $B$, we denote with $\mathcal{P}(B) = \{B' \mid B'\subseteq B\}$ the powerset (set of all subsets) of $B$. Note that $|\mathcal{P}(B)|=2^{|B|}$. 
@@ -8,7 +8,7 @@ We first introduce some notation necessary for the formal definitions in the rem
 We use $\mathbb N$ to denote the set of natural numbers, and $\mathbb N_{>0}$ to denote the set of positive natural numbers.
 
 
-\subsection{Surveillance Game Structures}\label{sec:surveillance-games}
+\subsection{Surveillance game structures}\label{sec:surveillance-games}
 Given an environment with a discrete finite set of possible locations $L$, we define a \emph{surveillance game structure} to be  a tuple $G  = (\states,s^\init,\trans,\sense,\mathcal{M},\obs)$, where:
 \begin{itemize}
 \item $\states = L \times L$ is the \emph{set of states}, where for each state $(l_a,l_t) \in S$ we interpret $l_a \in L$ as the location of the agent, and $l_t \in L$ as the location of the target;
@@ -37,7 +37,7 @@ Given an environment with a discrete finite set of possible locations $L$, we de
 \label{fig:simple-sensing}
 \end{figure}
 
-\subsubsection*{\textbf{Sensing and observation}} In the following, we define the \emph{sensing} and \emph{observation} components of the surveillance game structure. We first present the observation function $\obs$ informally. Simply, $\obs$ maps the joint state of the agent and target to a set of possible locations of the target. The function $\obs$ incorporates the information from all available sensor modalities and static sensors available to the agent. More precisely, $\obs$ combines the information the agent receives from its own sensors, here given by the $\sense$ function, and the information received by the static sensors $\mathcal M$. 
+\subsubsection{Sensing and observation} In the following, we define the \emph{sensing} and \emph{observation} components of the surveillance game structure. We first present the observation function $\obs$ informally. Simply, $\obs$ maps the joint state of the agent and target to a set of possible locations of the target. The function $\obs$ incorporates the information from all available sensor modalities and static sensors available to the agent. More precisely, $\obs$ combines the information the agent receives from its own sensors, here given by the $\sense$ function, and the information received by the static sensors $\mathcal M$. 
 
 We begin by presenting the function $\sense$ in detail. As stated above, the function $\sense$ maps a state $(l_a,l_t)$ to a pair $(b,U) \in \mathbb{B} \times (\mathcal{P}(L) \cup \{\bot\})$ such that $b$ indicates whether location $l_t$ can be sensed by the agent when it is located at $l_a$.
 
@@ -203,7 +203,7 @@ The function $sense$ requires only an estimate of the discrete state of the targ
 \end{figure}
 
 
-\subsubsection*{\textbf{Transitions}} We now define the \emph{transition} components of the surveillance game. 
+\subsubsection{Transitions} We now define the \emph{transition} components of the surveillance game. 
 The transition relation $T$ encodes the one-step move of both the target and the agent, where the target moves first and the agent moves second. 
 
 We consider a discrete-time discrete-space, model. In particular, the discretization of time should take into account the sampling rate for the sensors in the modelled system. More precisely, we assume that in the discrete model the agent receives sensing information before each of its transitions. Thus, intermittent presence of the target in the range of a sensor as it moves will remain undetected in case the target is out of the sensors' range next time they are scanned.
@@ -235,7 +235,7 @@ In this example, the function $\sense$ encodes straight-line visibility with per
 
 
 
-\subsection{Belief-Set Game Structures}
+\section{Belief-Set Game Structures}
 
 In surveillance strategy synthesis we need to state properties of, and reason about, the information which the agent has, i.e. its \emph{belief} about the location of the target. To this end, we can employ a powerset construction which is commonly used to transform a partial-information game into a perfect-information one, by explicitly tracking the knowledge one player has as a set of possible states of the other player.
 
@@ -255,7 +255,7 @@ For a given surveillance game structure $G  = (\states,s^\init,\trans,\sense,\ma
 Intuitively, the set $B_t'$ consists of all possible successor locations of the target for some output $\obs(l_a,l_t')$ of the sensors.  
 
 \bigskip
-\noindent{\textit{Remark:}} In this model, before making a move, the agent updates its belief about the target, based of the current output of the sensors. Thus, the belief set at each step consists of the locations the target can be in, after it moves (since it moves first). Since the target moves again immediately after the agent moves, the agent does not update its belief after it completes its own move. We note that the results in this paper can be easily extended to the case when the belief is updated after each player's move by explicitly incorporating turn-switching in the model. We choose not do so, for simplicity of the presentation.
+\noindent{\textit{Remark:}} In this model, before making a move, the agent updates its belief about the target, based of the current output of the sensors. Thus, the belief set at each step consists of the locations the target can be in, after it moves (since it moves first). Since the target moves again immediately after the agent moves, the agent does not update its belief after it completes its own move. We note that the results in this chapter can be easily extended to the case when the belief is updated after each player's move by explicitly incorporating turn-switching in the model. We choose not do so, for simplicity of the presentation.
 
 \begin{figure}
 \input{Surveillance/figs/simple-belief-transitions.tex}
@@ -290,7 +290,7 @@ A \emph{strategy for the agent in $G_\belief$} is a function $f_a : \states_\bel
 
 The outcome of given strategies $f_a$ and $f_t$ for the agent and the target in $G_\belief$, denoted $\outcome(G_\belief,f_a,f_t)$, is a run $s_0,s_1,\ldots$ of $G_\belief$ such that for every $i \geq 0$, we have $s_{i+1} = f_a(s_0,\ldots,s_i,B_t^i)$, where $B_t^i = f_t(s_0,\ldots,s_i)$.
 
-\subsection{Temporal Surveillance Objectives}
+\subsection{Temporal surveillance objectives}
 Since the states of a belief-set game structure track the information that the agent has, we can state and interpret surveillance objectives over its runs. We now formally define the surveillance properties in which we are interested. 
 
 We consider a set of \emph{surveillance predicates} $\SP = \{p_k \mid k \in \nats_{>0}\}$, where for $k \in \nats_{>0}$ we say that a state $(l_a,B_t)$ in the belief game structure satisfies $p_k$ (denoted $(l_a,B_t) \models p_k$) iff 
@@ -320,7 +320,7 @@ A more relaxed requirement is that the agent's uncertainty never grows above $5$
 \end{eg}
 
 
-\subsection{Incorporating Task Specifications}
+\subsection{Incorporating task specifications}
 We can integrate LTL objectives not related to surveillance, i.e., \emph{task specifications}, by considering, in addition to $\SP$, a set $\AP$ of atomic predicates interpreted over states of $G$. In order to define the semantics of $p \in \AP$ over states of $G_\belief$, we restrict ourselves to predicates observable by the agent through the function $\obs$. 
 Formally, we require that for $p \in \AP$, and states $(l_a,l_t)$ and $(l_a,\widetilde l_t)$ with $\widetilde l_t \in \obs(l_a,l_t)$ it holds that $(l_a,l_t) \models p$ iff $(l_a,\widetilde l_t) \models p$. One class of such predicates are those that depend only on the agent's location.
 
@@ -330,11 +330,11 @@ Suppose that $\mathit{at\_goal}$ is a predicate true exactly when the agent is a
 \qed
 \end{eg}
 
-\subsection{Surveillance Synthesis Problem}
+\subsection{Surveillance synthesis problem}
 A \emph{surveillance game} is a pair $(G,\varphi)$, where $G$ is a surveillance game structure and $\varphi$ is a surveillance objective. A \emph{winning strategy for the agent for $(G,\varphi)$} is a strategy $f_a$ for the agent in the corresponding belief-set game structure $G_\belief$ such that for every strategy $f_t$ for the target in $G_\belief$ it holds that $\outcome(G_\belief,f_a,f_t) \models \varphi$. Analogously, a \emph{winning strategy for the target for $(G,\varphi)$} is a strategy $f_t$ such that, for every strategy $f_a$ for the agent in $G_\belief$, it holds that $\outcome(G_\belief,f_a,f_t) \not\models \varphi$.
 
 \bigskip
-{\bf Surveillance synthesis problem:} Given a surveillance game $(G,\varphi)$, compute a winning strategy for the agent for $(G,\varphi)$, or determine that such a strategy does not exist.
+{\bf Problem:} Given a surveillance game $(G,\varphi)$, compute a winning strategy for the agent for $(G,\varphi)$, or determine that such a strategy does not exist.
 
 
 It is well-known that two-player perfect-information games with LTL objectives over finite-state game structures are determined~\cite{BorelDeterminacy}, that is exactly one of the players has a winning strategy. This means that the agent does not have a winning strategy for a given surveillance game, if and only if the target has a winning strategy for this game. We refer to winning strategies of the target as \emph{counterexamples}.

@@ -1,4 +1,4 @@
-\section{Experimental Evaluation}
+\section{Experimental evaluation}
 \label{sec_exp}
 
 Now we describe the results of applying our shield synthesis method to several examples. We use the reactive synthesis tool \texttt{Slugs}~\cite{EhlersR16} to compute locally-optimal shields
@@ -161,7 +161,7 @@ the synthesis time (in seconds) to construct the permissive strategy and the loc
 \end{figure}
 
 
-\subsection{UAV Mission Planning}\label{sec:results_casestudy}
+\subsection{UAV mission planning}\label{sec:results_casestudy}
 We synthesized shields for 3 unmanned aerial vehicles (UAVs) simulated using ROS/Gazebo for the case study outlined in Section \ref{sec:casestudy}. As shown in Figure \ref{fig:warehouse}, the environment consists of 2 rows of shelves. We assume there are 12 discrete package pick up points in each row of shelves along with the drop off location and charging station. The input of each UAV controller is its location in $(x,y,z)$. The possible outputs of each UAV consist of 17 trajectories precomputed using a minimum-snap trajectory generator that moves the UAV from one discrete state to another.
 We consider a safety specification $\spec_{dist}$ which captures the requirement that the controllers should not choose trajectories that bring them within distance less than a given threshold $r$. The output of each UAV is chosen from the set $T = \{1,2,\ldots,17\}$ where each integer corresponds to a particular trajectory choice. Let the function $dist: T \times T \to \nats$  map each pair of trajectories $traj_i,traj_j \in T$ to the closest distance between them. 
 We define the safety specification as

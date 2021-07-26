@@ -8,7 +8,7 @@ In this section we report on the application of the proposed method for surveill
 
 We apply the \texttt{slugs} reactive synthesis tool~\cite{EhlersR16} to the abstract surveillance games in order to synthesize the surveillance strategies. The experiments were performed on an Intel i5-5300U 2.30 GHz CPU with 8 GB of RAM. 
 
-\subsection{Effect of Abstractions on Belief}
+\subsection{Effect of abstractions on belief}
 The aim of this experiment is to illustrate the effect of different abstractions (generated using different abstraction partitions) on the evolution of belief sets. Naturally, the finer the abstraction, the slower the growth of the size of the belief set over time, and hence the easier it is to satisfy the specification. However, the increased precision of the abstraction comes at the cost of increased synthesis time. 
 
 Figure~\ref{fig:case1} shows a gridworld divided into 7 abstraction partitions. The surveillance objective requires the agent to infinitely often know precisely the location of the target (either see it, or have a belief consisting of one cell). Additionally, it has to perform the task of patrolling (visiting infinitely often) the green 'goal' cell. Formally, the specification is $\LTLglobally\LTLfinally p_1 \wedge \LTLglobally\LTLfinally \mathit{goal}$. The agent can move up to 3 grid cells away at each step. The sensor mode, that is, the observation function, used here is 'line-of-sight' with a range of 5 cells. The agent cannot see through obstacles (shown in red) and cannot see farther than 5 cells away.  We assume in this example that we have perfect sensing i.e., when the target is sensed, the agent knows its true location. There are no static sensors. 
@@ -141,7 +141,7 @@ Table \ref{tab:exp1} compares the sizes of the corresponding abstract games, and
 
 
 
-\subsection{Automated Abstraction Refinement}
+\subsection{Automated abstraction refinement}
 We now present an experiment to demonstrate the working of abstraction refinement procedure. 
 
 

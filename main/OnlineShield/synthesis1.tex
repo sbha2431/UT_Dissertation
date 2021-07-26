@@ -1,14 +1,14 @@
-\section{Online Synthesis}
+\section{Online synthesis}
 Informally, the enforcer $S[u,t]$ onboard agent $u$ can only modify the trajectory of agent $u$. 
 Every enforcer has access to a \emph{pathfinder} that modifies the corresponding trajectory. If a potential safety violation is detected, the enforcer on the agent with the lowest priority calls the pathfinder first. The order $\prec_t$ determines the next agent potentially required to modify its trajectory.
 The pathfinder resolves conflicts, if any, within the group. If a new agent comes into the group, the pathfinder is called by the enforcer on the lowest priority agent. The trajectory of an agent is not modified if it is not involved in a safety violation. 
 An \emph{ordering mechanism} maintains the order $\prec_t$ among the agents. When an agent reaches its final state, then its intended trajectory is updated and the ordering mechanism also updates the priorities.
 
-\subsubsection*{Pathfinder}
+\subsection{Pathfinder}
 
 Informally, the pathfinder returns a new path whenever called. It constructs a graph and searches for a path in the graph from a vertex corresponding to the current location to a vertex in a target set corresponding to the agent's final state. This graph does not have any outgoing edges from vertices that correspond to unsafe configurations. After a single call to the pathfinder, the maximum length of the modified trajectory is at most $\ell + k$. where $\ell \leq k < d$ is some constant. But such a path may not always exist. In this case, the pathfinder returns a path that at the minimum keeps the system safe.
 
-\paragraph{Assumption}
+\paragraph*{Assumption}
 The graph $G$ is 2-edge connected  and there is self loop on every vertex in $G$.
 
 The self loop at every vertex in $G$ ensures that the agents can loiter.
@@ -129,10 +129,10 @@ The target set $F$ is $\{(v^f_{u} ,t') | t+ d(v_u,v_u^f) \leq t' \leq t + d(v_u,
 %The alternate target set corresponds to all the states that are not occupied by agents with higher priorities.
 \end{eg}
 
-\subsubsection*{Occupancy Graph}
+\subsection{Occupancy graph}
 The occupancy graph $O^t_u$ is similar to the pathfinder graph, however none of the edges are removed from the occupied states. The occupied states are labeled with the corresponding agents. Formally, the occupancy graph $O^t_{u} = (V', E')$ where $V'=V\times[t,t+d(v_u,v_u^f)+k] \setminus \{(v,t')|~v~$ is occupied by highest priority agent at $ t'\}$. There is an edge with label $e$ between $(v,t)$ and $(v',t' +1)$, if in $G$ there is an edge $(v,v')$ with label $e$. If $u' \in \Vlabel(v,t)$ and $priority(u) \geq priority(u')$, then $u' \in \Vlabel((v,t))$.  
 
-\subsubsection*{General Pathfinder Graph}
+\subsubsection{General pathfinder graph}
 
 Next, we present the pathfinder construction for any local safety property $\Safety$ for agent $u$. For this, we need the safety function $\bar{\varphi}_u(t)$ defined as:
 \begin{equation}

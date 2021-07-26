@@ -1,7 +1,7 @@
 
 
 
-\subsection{Problem Formulation}
+\section{Problem formulation}
 
 
 
@@ -40,7 +40,7 @@
 
 
 
-\subsubsection{Global system}
+\subsection{Global system}
 The global system is the composition of the vertihub controllers. Assume we have $N$ vertihub controllers $\mathcal{T}_1 \dots \mathcal{T}_N$. Recall that I defined a connectivity graph $G_{\mathcal{T}}$ as a directed graph with each vertex corresponding to a controller. Two controllers are \emph{connected} if they share an edge in the connectivity graph. Let $connect(\mathcal T_i)$ be the set of hub controllers $\mathcal{T}_j$ where $i \neq j$, that share an edge with $\mathcal{T}_i$. For example, in Figure~\ref{fig:RegionsOutline}, overlapping hub regions share an edge in the corresponding directed graph in Figure~\ref{fig:Environment_directed}, and therefore the corresponding controllers are connected. 
 
 Formally, the global system is a tuple $(\mathcal{O}^{\text{init}},\Phi, \mathcal{T})$ where $\mathcal{O}^{\text{init}} = \{O_1,\dots,O_M\}$ is the global set of requests across all vertihubs, $\Phi: \{\mathcal{T}_1, ..., \mathcal{T}_N\} \rightarrow 2^{|\mathcal{O^{\text{init}}}|}$ is the \emph{request allocation function} such that $\Phi(\mathcal{T}_i)$ is the request set allocated to hub $\mathcal{T}_i$, and $ \mathcal{T}= \left(S, s_{\text{init}},\Delta, \text{AP},L\right)$ is a networked composition of $N$ hub controllers $\mathcal{T}_1,\dots,\mathcal{T}_N$ such that:
@@ -84,7 +84,7 @@ Put simply, we construct the transition function $\Delta$ as the composition of 
 
 
 
-\subsubsection{Vertihub violation cost}
+\subsection{Vertihub violation cost}
 Each vertihub $\mathcal{T}_i$ is given a prioritized safety specification $\mathcal{P}_i$ and request allocation $\Phi(\mathcal{T}_i) = s_{\text{init}_i}$. Given a request allocation function $\Phi$, the \emph{violation cost} of vertihub $\mathcal{T}_i$ executing a finite trace $\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}})$ 
 is denoted $\lambda_{\Phi(\mathcal{T}_i)}(\tau_i,\mathcal{P}_i)$. We denote the \emph{optimal} violation cost of $\mathcal{T}_i$ for a request allocation function $\Phi$ as $\lambda_{\Phi(\mathcal{T}_i)}^* = \min_{\tau_i \in \text{Traces}(\mathcal{T}_i,s_{\text{final}})} \lambda_{\Phi(\mathcal{T}_i)}(\tau_i,\mathcal{P}_i)$. 
 %where $\tau_i^*$ is the \emph{minimally violating trace} for tower $\mathcal{T}_i$ corresponding to request allocation $\Phi(\mathcal{T}_i)$. 
@@ -119,7 +119,7 @@ The cost of the global system $\mathcal{T}$ is dependent on the conjunction of t
 % \subsubsection{Optimal request allocation}
 % The optimal $\lambda^{\ast}$ as the optimal cost
 
-\subsubsection{Minimum-violation planning problem statement} 
+\subsection{Minimum-violation planning problem statement} 
 Given a set of $N$ hub controllers $\mathcal{T}_1 \dots \mathcal{T}_N$, a connectivity graph $G_{\mathcal{T}}$ and a prioritized safety specification for each controller $\mathcal{P}_1,\dots,\mathcal{P}_N$ with $\mathcal{P} = \mathcal{P}_1 \wedge \dots \wedge \mathcal{P}_N $, construct a request allocation function $\Phi$ and corresponding trace $\tau^* = \{\tau_1,\dots,\tau_N\}$ where  $\tau_i \in  \text{Traces}(\mathcal{T}_i,s_{\text{final}})$ that minimizes the lack of safety for the entire system. Formally,
 
 \begin{equation}
@@ -127,7 +127,7 @@ Given a set of $N$ hub controllers $\mathcal{T}_1 \dots \mathcal{T}_N$, a connec
 \end{equation}
 
 
-\subsection{Solution Approach}
+\section{Solution approach}
 
 Motivated by the cost structure in (\ref{eq:global-cost}), we decompose the traffic management problem into two subproblems:
 \begin{enumerate}
@@ -145,7 +145,7 @@ Motivated by the cost structure in (\ref{eq:global-cost}), we decompose the traf
 The second problem can be solved using minimum-violation planning as in~\cite{Tumova:2013:ACC,Tumova:2013:LCS}.
 To solve the first problem, we need to find the globally optimal request allocation for all the vertihubs. This is a combinatorially hard problem. To solve the problem in a distributed manner, we propose an auction-based algorithm. In each round, each vertihub identifies potential requests to be reallocated and offers each of these requests to other connected vertihubs.  The request with highest cost is then selected, and a connected vertihub accepts this request if it can accommodate the extra request with less cost than the original vertihub. Finally, the request will be reallocated to the vertihub that can accommodate the request with the lowest cost. This auction-based request allocation ensures that the overall cost decreases in each round and terminates when no more requests can be reallocated without extra cost.
 
-\subsubsection{Algorithm} 
+\subsection{Algorithm} 
 Given a request allocation $\Phi$, we define the cost of vertihub $\mathcal{T}_i$ accommodating a request $O$ as
 \begin{equation}
 	C_i^\Phi(O) = \min_{\tau_i} \lambda_{\mathcal{O}^i_O}(\tau_i, \mathcal{P}_i) - \min_{\tau_i} \lambda_{\mathcal{O}^i_{\not{O}}}(\tau_i, \mathcal{P}_i),

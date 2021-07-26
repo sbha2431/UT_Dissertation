@@ -1,9 +1,9 @@
-\section{Shields  for Multi-Agent Systems}
+\section{Shields  for multi-agent systems}
 \label{def_shields}
 
 In this section, we first describe how to attach a  shield to a multi-agent system. Then, we define shields formally, and discuss different interference requirements on shields for multi-agent systems.
 
-\subsection{Attaching the Shield}
+\subsection{Attaching the shield}
 
 A shield $\shield = (\states,q_{0},\ialphabet\times\oalphabet,\oalphabet,\delta,\lambda)$ is a reactive system that is attached to a multi-agent system
 $\design=(\{ \proc_1,\ldots,\proc_n \},\ialphabet,  \oalphabet)$.
@@ -18,7 +18,7 @@ Formally, given a multi-agent reactive system $\design = (\{ \proc_1,\ldots,\pro
 
 
 
-\subsection{Shield Definition}\label{sec_correctness}
+\subsection{Shield definition}\label{sec_correctness_shield}
 
 Now we define the basic  requirements that a shield must satisfy: namely it should enforce correctness without deviating from the system's output unnecessarily.
 
@@ -37,10 +37,10 @@ A \emph{shield} for a given safety specification $\spec$ is a reactive system $\
 such that  for any multi-agent system $\design=( \{\proc_1,\ldots,\proc_n\},\ialphabet,  \oalphabet)$ it holds that $(\design \comp \shield) \models \spec$ and $\shield$  does not deviate from $\design$ unnecessarily.
 \end{defn}
 
-\subsection{Interference Costs and Shield Optimality}
+\subsection{Interference costs and shield optimality}
 \label{sec_interf}
 
-In Section~\ref{sec_correctness} we defined the qualitative requirements that a shield must meet. In many applications, there are additional quantitative properties a shield should optimize, expressing \emph{in what way} it should interfere with the system.
+In Section~\ref{sec_correctness_shield} we defined the qualitative requirements that a shield must meet. In many applications, there are additional quantitative properties a shield should optimize, expressing \emph{in what way} it should interfere with the system.
 Now  we define several different interference cost functions and  optimization objective.
 
 \subsubsection{Interference cost functions}
@@ -134,7 +134,7 @@ $c_{\mathsf{mp}}(\shield) \leq c_{\mathsf{mp}}(\shield').$
 \fi
 
 
-\subsection{Assumptions on the Occurrences of Faults}\label{sec_assumptions}
+\subsection{Assumptions on the occurrences of faults}\label{sec_assumptions}
 
 A shield has to enforce the global safety specification for any possible  implementation of the multi-agent system.
 However, often we have some knowledge about the the system which
@@ -146,7 +146,7 @@ but that through external faults an arbitrary number of correct outputs are repl
 used a subset construction:  when $\design$ emits a wrong output, the shield begins to track all possible correct behaviours of $\design$ under the current input, with the rationale that $\design$ meant to give a correct output, but which one is unknown.
 %With further observations the shield gradually refines its knowledge about the current state of the design.
 
-In this paper, we take a new view, in which the system is supposed to have a real safety bug, manifested by the interaction between the agents. This case is especially important in the multi-agent  setting.
+In this chapter, we take a new view, in which the system is supposed to have a real safety bug, manifested by the interaction between the agents. This case is especially important in the multi-agent  setting.
 When developing multi-agent systems, the individual agents are often implemented separately, with individual goals in mind, and then combined to obtain the final system. Since each agent has to satisfy its own objective, the design of a single agent often neglects some global safety requirements.
 However, it is often realistic to assume that the length of all sequences of wrong outputs is bounded. This assumption can be made e.g., if the agents  interact only rarely, and when they do,  they interact only for a bounded period of time.\looseness=-1
 
@@ -165,7 +165,7 @@ We modify Definition~\ref{def:locally-optimal} (locally-optimal shields) by rest
 Definition~\ref{def:mp-optimal} is adapted analogously.
 \fi
 
-\subsection{Fair Shielding}
+\subsection{Fair shielding}
 Now we define one more constraint on the shield's interference: we require that a shield is \emph{fair} with respect to the different agents.
 The definition of fair shields uses the notion of \emph{minimal correcting sets}:
 a minimal correcting set for a wrong trace is the minimal set of agents such that modifying some of the outputs of these agents results in correct output.

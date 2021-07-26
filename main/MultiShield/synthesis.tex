@@ -1,4 +1,4 @@
-\section{Synthesis of Shields for Multi-Agent Systems}
+\section{Synthesis of shields for multi-agent systems}
 \label{sec_synth}
 
 In this section, we study the synthesis of
@@ -22,7 +22,7 @@ The synthesis algorithms for \emph{$c_{\mathsf{mp}}$-optimal} shields and  \emph
 \fi
 We also present a synthesis algorithm for \emph{fair} shields. The first step above is common for both algorithms, the other two depend on the interference requirements.\looseness=-1
 
-\subsection{Constructing and Solving the Safety Game}
+\subsection{Constructing and solving the safety game}
 
 Let $\varphi$ be a safety specification represented as a safety automaton $\varphi = (Q, q_0, \alphabet, \delta, F)$.
 Let $W \subseteq F$ be the winning region of $\varphi$ when considered as a safety game.
@@ -47,7 +47,7 @@ We use standard algorithms for safety games (e.g.~\cite{Mazala01})
 to compute the winning region $W^s$ and the most permissive winning strategy $\rho^s: G \times \ialphabet \rightarrow 2^{\oalphabet}$ of $\mathcal G^s$.
 \looseness=-1
 
-\subsection{Synthesis with Assumptions on the Occurrences of Faults}
+\subsection{Synthesis with assumptions on the occurrences of faults}
 
 Our goal is to synthesize cost-optimal shields under the assumption that the length of sequences of wrong outputs is bounded by some
 constant $b$. Therefore, we construct a new game graph, that incorporates this knowledge and that can be used to synthesize
@@ -75,7 +75,7 @@ and $\Acc^{a}$ is such that  $\Acc^{a}(\overline{\pi})=\top$ iff\looseness=-1
 Intuitively, the counter $v$ tracks the length of the current sequence of wrong outputs by the system, and is reset to $0$ when the output of the system is correct. If $v$ exceeds the bound $b$, it remains $b+1$ forever.
 Using this counter $v$, we encode the assumption on the system. Thus, the set $\Acc^a$ of wining plays in $\mathcal G^a$ consists of all infinite plays that violate the assumption plus the infinite plays that visit infinitely often a state in which the output of the shield does not deviate from the system's output. Hence, $\Acc^a$ is a GR(1)  condition.
 
-\subsection{Synthesis of Locally-Optimal Shields}\label{sec:shieldsynth-local}
+\subsection{Synthesis of locally-optimal shields}\label{sec:shieldsynth-local}
 
 Next, we propose a procedure to synthesize shields that minimize the cost per deviation period assuming  that
 all sequences of wrong outputs are bounded.
@@ -106,7 +106,7 @@ We use standard algorithms~\cite{ZwickP96} to compute an optimal strategy in the
 We can also devise a synthesis procedure for $c_{\mathsf{mp}}$-optimal shields \emph{with} assumptions on the occurrences of system faults. In this case, we build the new game graph $\mathcal G^{opt}$ by adding a mean-payoff objective $\Val^{opt}(\overline{\pi})$ to the game graph $\mathcal G^{a}$. The objective is defined via the edge labeling function $cost^{opt}$, where $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = c(\osymb,\osymb')$ if $g^{opt}$ has value of the counter less than or equal to $b$, and $cost^{opt}(g^{opt},(\isymb,\osymb),\osymb') = 0$ otherwise. Thus, plays violating the assumption  have limit-average cost $0$, while all other plays have non-negative cost. Hence, plays violating the assumption cannot increase the cost of a strategy, meaning that an optimal shield can again be computed by solving a mean-payoff game.
 \fi
 
-\subsection{Synthesis of Fair Shields}
+\subsection{Synthesis of fair shields}
 We now turn to the synthesis of fair shields. For this, we augment the states of $\mathcal G^s$  with Boolean variables that track information about the minimal correcting sets for each transition.  We use these flags to encode the fairness requirements for the  agents.
 
 Let $\Correct(g,\isymb,\osymb,W)$ be the set of all minimal sets of agents such that correcting the output of these agents results in a successor state of $g$ that is in $W$.

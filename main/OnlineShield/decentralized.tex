@@ -1,7 +1,7 @@
-\section{Online Enforcers}
+\section{Online enforcers}
 \label{sec:formulation}
 
-\subsubsection*{Environment and Agents}
+\subsection{Environment and agents}
 We model the region of operation of the agents as a deterministic environment $(G,\Elabel)$ with a consistent node labeling $\Vlabel$. The set of all agents is $\Agents$, and it is the same as the set of all node labels. At time $t \in \mathcal{T}$, an agent $u$ is said to be at location $v$ if $u \in \Vlabel(v,t)$. We note that a location $v$ can have more than one label, i.e., more than one agent can be at the same location at a given time. The set $\Sigma$ of edge labels of $G$ is the set of actions available to the agents.
 An agent can move from a vertex $v$ to a vertex $v'$ in one time unit through an action $s \in \Sigma$, if and only if there is an edge with the corresponding edge label $s$ between $v$ and $v'$. 
  If $(v,w)$ is a trajectory, and agent $u$ follows the trajectory starting at time $t$, then at time $t+i$, where $i$ is an integer such that $i \leq |w|$, the state of the agent $u$ is $\hat{\delta}(v,w[0:i])$. Furthermore, $\Vlabel(v,t) = \{u\}$ and $\Vlabel(\hat{\delta}(v,w[0:i]),t+i) = \emptyset$. 
@@ -19,12 +19,12 @@ Formally,
 Associated with any agent is a unique priority from $[1,|\Agents|]$, defined as $priority: \Agents \times \Time \to [1,|\Agents|]$, such that $priority(u_1,t) = priority(u_2,t)$ implies $u_1 = u_2$. At any time $t$, the priorities of the agents induce a total order $\prec_t$ among them. 
 For agents $u_1$ and $u_2$ in $\Agents$, $u_1 \prec_t u_2$ if and only if $priority(u_1,t) < priority(u_2,t)$.
 
-\subsubsection*{Communication}
+\subsection{Communication}
 The agents in the system can communicate when they are close to each other. Moreover, two agents $u_i$ and $u_j$ can also communicate if there is a sequence of agents $c_1\dots c_k$ such that $c_1$ is $u_i$, and $c_k$ is $u_j$ and there is a path of length less than or equal to $d$ between agents $c_{i}$ and $c_{i+1}$. Here $d$ is a positive integer referred to as the \emph{communication constant}. 
 %At any time, there can be at most $|\Agents|$ such groups. 
 At any time $t$, $\Agents_{u_i}(t)$ denotes the communication group of agent $u_i$. The agents in the same communication group know the partial trajectories of the other agents in the group upto length $\ell$. Formally, every agent $u$ knows the partial trajectory $(v_{u'},w_{u'})[0:\ell]$ of every other agent $u'$ in its communication group, where $(v_{u'},w_{u'})$ is the trajectory for agent $u'$. Henceforth, $\ell$ is referred to as the \emph{look-ahead}.
 
-\subsubsection*{Safety Functions}
+\subsection{Safety functions}
 A \emph{safety} property $\Safety$ is a function $\Safety: 2^P \to \Bool$ from the vertex labeling to Booleans, where $P~=~V \times 2^\Agents$.
 As the vertex labels themselves depend on time, we extend the notion of safety to safety at time $t$. If the vertex labeling at time $t$ is safe, then $\Safety(t) = \top$.
 
@@ -41,7 +41,7 @@ Then, the property $\Safety(t)$ defined as
 %A safety property $\Safety$ is a \emph{local safety property} if  $$\Safety(t) = \top \Leftrightarrow  \forall i \in [1,|\Agents|] ~\Safety_i(t) = \top.$$ 
 Observe that the safety function defined in Scenario~3 is a local safety property.
 
-\subsubsection*{Enforcers}
+\subsection{Enforcers}
 Informally, the purpose of an enforcer is to take a (possibly incorrect) trajectory produced by a running system and to transform it into a trajectory that is safe with respect to a local safety function $\Safety$ that we want to enforce. Abstractly, an enforcer can be seen as a function that transforms trajectories. 
 
 Denote by $S[u,t]$ the enforcer acting on agent $u$ at time $t$. $S[u,t]$ is a pair of \emph{partial} functions $\langle S_1[u,t],S_2[u,t] \rangle$. $S_1[u,t]$ accepts a finite trajectory for each agent in the system and returns a modified trajectory for agent $u$. $S_2[u,t]$ accepts a vector of current priorities and a vector of Booleans $goal_{u,t}$ for the agents in the system. It returns a vector of priorities with only the priority of its corresponding agent $u$ possibly changed. Formally, the enforcer on agent $u$ at time $t$ is a pair of partial functions $\langle S_1[u,t],S_2[u,t] \rangle$ such that
@@ -59,7 +59,7 @@ on agent $u$ at time $t$ is a pair of partial functions $\langle S_1[u,t],S_2[u,
 \end{align}
 \noindent where $\Lang_I = [1,|\Agents|] \times V \times \Actions^{\leq \ell}$ and $\Lang_O = [1,|\Agents|] \times V \times \Actions^{\leq \ell'}.$
 
-\subsubsection*{Composition of enforcers}
+\subsection{Composition of enforcers}
 
 When multiple agents act in the same system, their trajectories and their priorities are modified only by their respective enforcers. However, the individual enforcers act together to make the system safe. The joint behavior of enforcers are captured by functional composition.  We first define \emph{composition of enforcers} for two agents $u_1$ and $u_2$ at time $t$. If $u_1 \prec_t u_2$ then
 
@@ -83,7 +83,7 @@ This composition can be extended to an arbitrary number of enforcers by composin
 \label{fig:eg7}
 \end{figure*}
 
-\subsubsection*{Properties of enforcers}
+\subsection*{Properties of enforcers}
 We define the desired properties for a set of enforcers. 
 %Let the set $\{p_{u}~|~u \in \Agents\}$ be the trajectories of the agents at time $t$. 
 For any agent $u$ in $\Agents$, let $S[u,t]$ be the enforcer acting on agent $u$ at time $t$, $p_u$ its original trajectory at time $t$ and $p'_u$ its modified trajectory at time $t$.  
@@ -110,7 +110,7 @@ If there exists a centralized shield~\cite{bloem2014sat} that is correct, then t
 \end{defn}
 
  
-We later prove that boundedness and correctness ensure that all agents progress in finite time, while still guaranteeing the safety of the system. We now state the problem studied in this paper.
+We later prove that boundedness and correctness ensure that all agents progress in finite time, while still guaranteeing the safety of the system. We now state the problem studied in this chapter.
 
 
 Given a set $\Agents = \{u_1,\dots,u_n\}$ of agents and a set $\{(v_u,w_u)~|~u \in \Agents \text{ and } |w_u| \leq \ell \}$ of their trajectories, 

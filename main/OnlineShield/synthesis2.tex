@@ -1,9 +1,9 @@
-\subsubsection*{Ordering Mechanism}
+\subsubsection{Ordering mechanism}
 The priorities of the agents cannot remain static with time. Otherwise, some agent might be forced to change its trajectory infinitely often. 
 %The $S_2$ component maintains the order among agents dynamically.
 In the sequel, we present the ordering mechanism. 
 
-\paragraph*{Overview of Ordering Mechanism for Two Agents}
+\paragraph*{Overview of ordering mechanism for two agents}
 
 \noindent Consider a system with two agents $a$ and $b$ that have communicated, i.e., observed each other's trajectories. Agent $a$ maintains a flag $c_a^b$ and agent $b$ maintains a flag $c^a_b$. If agent $a$ has reached its final state after communicating with agent $b$, then the flag $c^b_a$ is set to 1. 
 Suppose agent $b$ is yet to reach its final state and there is a safety violation after $a$ has completed its goal, then in order to ensure freedom from locks, agent $a$ is forced to modify its trajectory. When agent $b$ reaches its final state, both agents have uniformly completed their goals and the flags are reset to $0$. The above procedure is equivalent to the standard binary semaphores algorithm to achieve process synchronization ~\cite{silberschatz2018operating}. 
@@ -102,7 +102,7 @@ ytick={-1,0,...,14},]
 \end{figure}
 \end{eg}
 
-\paragraph*{Extension to Arbitrary Number of Agents}
+\paragraph*{Extension to arbitrary number of agents}
 
 We extend the procedure outlined above to multiple agents. Each pair of agents $u_i$ and $u_j$ maintain two Booleans between them (each of them is analogous to a binary semaphore) that are used to measure relative progress. 
 %\Dj{That is,} each agent maintains a vector of \Dj{Booleans} corresponding to all the other agents in the system. 
@@ -219,7 +219,7 @@ $\prec_t$ as defined is a total order. %completing the proof.
 \label{fig:flow}
 \end{figure*}
 
-\subsubsection*{Decentralized Enforcement}
+\subsubsection{Decentralized enforcement}
 
 So far, we have described the components of the enforcers onboard an agent. In traditional shield synthesis, $S_1$ is a function that is fully constructed and used as the shield \cite{BloemKKW15}. In contrast, here $S_1$ is a partial function that is constructed when required.  Figure~\ref{fig:flow}a presents the algorithm to determine the calls to the pathfinder and Figure~\ref{fig:flow}b presents the ordering mechanism to update the priorities by modifying the corresponding flags. Scenario~10 demonstrates the use of the flags to ensure a total order among the agents.
 

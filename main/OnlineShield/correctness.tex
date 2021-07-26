@@ -1,5 +1,5 @@
 %\subsubsection*{Complexity.}
-\noindent The main complexity result of the paper, where we bound the worst-case synthesis time, is formalized in the theorem below.
+\noindent The main complexity result of the chapter, where we bound the worst-case synthesis time, is formalized in the theorem below.
 % \Dj{Given look-ahead $\ell$ and maximum deviation length $k$ from a single call, the} pathfinder constructs a graph for agent $u$ of size at most $(k+\ell) |\Agents|$. If $k$ and $\ell$ are fixed, then the size of the graph constructed by the \Dj{pathfinder} is $\text{LINEAR}(|\Agents|)$. \Dj{Moreover,} the number of edges in this graph is \Dj{also} at most $(k+\ell)|\Agents|$. The time complexity of solving a search in this graph is $\mathcal{O}((k+\ell)|\Agents|)$. \Dj{In the worst case,} all the agents are in the same communication group and the lowest priority agent may have to modify its trajectory at must $|\Agents| - 1$ times. \Dj{Hence,} the enforcer on an agent can take up to $\mathcal{O}(|\Agents|^2)$ time to modify its trajectory. 
 \begin{thm}
 Given fixed look-ahead $\ell$ and maximum deviation length $k$, the enforcer on an agent takes $\mathcal{O}(|\Agents|^2)$ time to modify the corresponding agent's trajectory. 

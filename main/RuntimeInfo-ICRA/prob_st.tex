@@ -10,7 +10,7 @@ We represent \emph{runtime information} as $n$-dimensional real vectors, for a g
 \subsubsection*{Assumption}
 For every $\overline p \in \mathcal{P}$ and every strategy $\rho_\out\in\mathcal{M}_\out$ such that $\rho_\out\models\spec$, there exists a strategy $\rho_\inp \in\mathcal{M}_\inp$ such that $  J(\Pi(\rho_\out,\rho_\inp), \overline p) \geq J(\Pi(\rho_\out,\rho_\inp'), \overline p)$ for every $\rho_\inp'\in\mathcal{M}_\inp$. 
 
-Assumption~\ref{ass:max-cost} ensures a well-defined cost function using the metric $J$. We can thus define
+The above assumption ensures a well-defined cost function using the metric $J$. We can thus define
 \begin{align}
 C(\rho_\out,\overline{p}) = max_{\rho_\inp \in\mathcal{M}_\inp}J(\Pi(\rho_\out,\rho_\inp), \overline p)
 \end{align}
@@ -43,7 +43,7 @@ where $T_i$ is the time taken to reach room $i$ under the robot strategy $\rho_\
 % \end{example}
 
 
-Information is only provided at runtime and the agent has no control over its value. One method to guarantee optimality with respect to the runtime information is to directly incorporate $\overline{p}$ into the state as an additional environment variable and solve \eqref{prob:opt} for all possible values for $\overline{p}$. Such an approach would fall under the framework presented in \cite{rudiger}. However, if $\overline{p}$ is continuous, this requires discretization which can blow up the state-space. In Example \ref{ex:toy_ex2}, we can easily find a discretization of $p$ to guarantee optimality without a state-space explosion, however, this is not true in general.
+Information is only provided at runtime and the agent has no control over its value. One method to guarantee optimality with respect to the runtime information is to directly incorporate $\overline{p}$ into the state as an additional environment variable and solve \eqref{prob:opt} for all possible values for $\overline{p}$. Such an approach would fall under the framework presented in \cite{Ehlerscost}. However, if $\overline{p}$ is continuous, this requires discretization which can blow up the state-space. In Example \ref{ex:toy_ex2}, we can easily find a discretization of $p$ to guarantee optimality without a state-space explosion, however, this is not true in general.
 
 Another approach is to re-synthesize online when the value of $\overline{p}$ changes. Such an approach requires re-solving \eqref{prob:opt} at every instant $\overline{p}$ changes. However, the computational effort required to solve \eqref{prob:opt} is prohibitively high for an on-board deployment. Hence, we propose pre-synthesizing offline a set of \emph{representative strategies} for specific instantiations of $\overline{p}$.
 

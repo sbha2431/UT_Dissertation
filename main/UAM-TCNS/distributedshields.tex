@@ -1,5 +1,5 @@
 %In this section, we present a correct-by-design approach to decentralized controller synthesis with assume-guarantee contracts.
-We first formalize the notion of assume-guarantee contracts, then we demonstrate the incorporation of these contracts as a GR(1) winning condition to a two-player game, which we solve using reactive synthesis~\cite{Piterman06,bloem2012synthesis}. 
+We first formalize the notion of assume-guarantee contracts, then we demonstrate the incorporation of these contracts as a GR(1) winning condition to a two-player game, which we solve using reactive synthesis~\cite{Piterman06,bloem2012}. 
 
 \subsection{Assume-guarantee contracts}
 
@@ -18,7 +18,7 @@ Similarly, all vertiport controllers also impact the implementation of their cor
  
  In this setting, we introduce two classes of contracts: contracts between connected vertihub controllers and contracts between a vertihub and its corresponding vertiport controllers. 
  
- \subsubsection*{\textbf{Vertihub controller contracts}}
+ \subsubsection{Vertihub controller contracts}
 % For ease of notation, the following definitions are with respect to the assumptions and guarantees of the $i^{th}$ hub controller. 
  An \emph{assume-guarantee contract} for a vertihub controller $\design_i$ with connected hub controller $\design_j$ is a tuple $\mathcal \phi_{\design_i}^{\design_j} = (A_{\design_i}^{\design_j},B_{\design_i}^{\design_j})$ where
 \begin{itemize}
@@ -34,15 +34,15 @@ $$ \varphi_{\design_1}' := A_{\design_2}^{\design_1} \implies \varphi_{\design_1
 Simply, if the assumption on $\design_2$ holds, then the original specification must be satisfied in addition to contract specification $B_{\design_2}^{\design_1}$. The same procedure follows for $\design_2$. \end{eg}
 
 
-\subsubsection*{\textbf{Vertiport controller contracts}}
+\subsubsection{Vertiport controller contracts}
 Each vertihub controller must also make contracts with the vertiport controllers in its region. The procedure follows analogously as in the previous section as we assume that all outputs from the individual controllers are \emph{pairwise disjoint}. Hence, we can form separate contracts with each vertiport controller. Formally, we define a contract between a vertihub controller $\design_i$ and one of its vertiport controllers $\shield_i^j$ as $ \phi_{\shield^j_i}^{\design_i} = (A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ where $(A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ are, analogous to the hub contracts, the assumptions and guarantees on the vertiport controller respectively, expressed as temporal logic specifications of the form in~\eqref{eq:formalspechub}. 
 
-\subsubsection*{\textbf{Symmetric contracts}}
+\subsubsection{Symmetric contracts}
 We say contracts between two reactive systems $\design_i$ and $\design_j$ denoted by $\phi_{\design_i}^{\design_j}  $ and $\phi_{\design_j}^{\design_i}$ are \emph{symmetric} if $A_{\design_i}^{\design_j} = B_{\design_j}^{\design_i}$ and $A_{\design_j}^{\design_i} = B_{\design_i}^{\design_j}$. 
 
 Informally, this means that the assumptions $\design_i$ makes on the outputs of $\design_j$ corresponds to the \emph{guarantees} $\design_j$ gives on its own outputs. All the contracts we will use in the synthesis procedure will be symmetric as this will guarantee that the assumptions each reactive system make on the outputs of other systems will actually hold. 
 
-\subsubsection*{\textbf{Joint winning condition}}
+\subsubsection{Joint winning condition}
 The addition of the contract specifications to the original user-provided specifications modifies the winning condition presented in~\eqref{eq:problem}. The following lemma presents the modified winning condition for hub controller $\design_i$ when contracts are incorporated. 
 \begin{lemma}
 For a set of vertihub controllers $\design$, hub connectivity graph $G_\design$, the winning condition for controller $\design_i \in \design$ with the set of vertiport controllers $\shield_i^j$ for $j = 1,\ldots,m$ is given by
@@ -54,13 +54,13 @@ where $J = connect(\design_i)$.
 % \begin{proof}
 % Follows from the construction of $\varphi_{\design_i}$.
 % \end{proof}
-\textcolor{black}{Note that~\eqref{eq:contractproblem} is in the same form as the specifications in~\eqref{eq:formalspechub} which allows us to use efficient GR(1) synthesis techniques~\cite{bloem2012synthesis}.} We state this formally in the following lemma. 
+\textcolor{black}{Note that~\eqref{eq:contractproblem} is in the same form as the specifications in~\eqref{eq:formalspechub} which allows us to use efficient GR(1) synthesis techniques~\cite{bloem2012}.} We state this formally in the following lemma. 
 \begin{lemma}\label{lemma:gr1}
 The winning condition in \eqref{eq:contractproblem} is GR(1).
 \end{lemma}
 
 
-\paragraph*{\textbf{Remark}} We note that the values in the assume-guarantee contracts are heavily dependent on the topology of the environment and the connections (see Fig. 3). For example, a hub with many connecting hubs may not be able to guarantee quick transit of vehicles through its regions. Generating these contracts automatically based on the given graph $G_{\design}$ is a subject of future work. In this paper, the contract values are chosen manually. 
+\paragraph*{\textbf{Remark}} We note that the values in the assume-guarantee contracts are heavily dependent on the topology of the environment and the connections (see Fig. 3). For example, a hub with many connecting hubs may not be able to guarantee quick transit of vehicles through its regions. Generating these contracts automatically based on the given graph $G_{\design}$ is a subject of future work. In this dissertation, the contract values are chosen manually. 
 
 
 \subsection{Controller synthesis}
@@ -68,7 +68,7 @@ We first present an overview of the synthesis procedure. Informally, we avoid th
 The synthesis procedure for a vertihub controller $\design_i$ consists of the following steps:
 \begin{itemize}
  \item[1)] First, we synthesize all the vertiport controllers $\shield_i^j$ for $j=1,\ldots,m$ operating under $\design_i$. For each controller $\shield_i^j$ we construct a game $\game_{i}^j$ with the acceptance condition given by the user-provided specification $\varphi_{\shield_i^j}$. We then augment the acceptance condition to include the contract specification $\phi_{\shield_i^j}^{\design_i}$. 
-  \item[2)] As shown in Lemma~\ref{lemma:gr1}, the winning condition stemming from augmenting $\varphi_i$ with the contract specifications is a GR(1) condition. We solve each game $\game_{i}^j$ using GR(1) reactive synthesis~\cite{bloem2012synthesis}. 
+  \item[2)] As shown in Lemma~\ref{lemma:gr1}, the winning condition stemming from augmenting $\varphi_i$ with the contract specifications is a GR(1) condition. We solve each game $\game_{i}^j$ using GR(1) reactive synthesis~\cite{bloem2012}. 
   \item[3)] We compose the joint vertiport controllers to form $\shield_i$. We construct a game $\game_{i}$ from the given specification $\varphi_{\design_i}$ for the vertihub controller $\design_i$, again augmenting the acceptance condition with the vertiport contract specifications $\phi^{\shield_i^1}_{\design_i} \wedge \ldots \wedge \phi^{\shield_i^m}_{\design_i}$. We now additionally augment the acceptance condition with contract specifications $\phi_{\design_i}^{\design_j}$ from all connected vertihub controllers $\design_j \in connect(\design_i)$. Similar to before, this results in another GR(1) acceptance condition and we can compute a winning strategy. 
 \item[4)] The process is repeated for each hub controller.
 \end{itemize}
@@ -76,13 +76,13 @@ The synthesis procedure for a vertihub controller $\design_i$ consists of the fo
 %In the following subsections we present the synthesis of the shield $\shield_i$. For notational clarity we omit the subscript $i$ in the following description. 
 
 
-\subsubsection*{\textbf{Game construction}}
+\subsubsection{Game construction}
 Recall that computing the output function $\lambda_i$ corresponding to the reactive system $\design_i$ is framed as finding the winning strategy obtained from solving a game. The game construction is identical for the vertiport and vertihub controllers, just with different specifications and contracts. For brevity, we present the game construction for the synthesis for vertihub controller $\design_i$.
 
 Let $\varphi_{\design_i} = \LTLglobally S_i \wedge \LTLglobally \LTLfinally P_i$ with $P_i,S_i \in Q_i$ be the user-provided specification for reactive system $\design_i = (Q_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_i,\lambda_i)$. The corresponding game $\game$ is constructed as follows: $\game = \left(Q,q_0, \alphabet, \delta,\Acc \right)$
 where $Q = Q_i$, $q_{0} = q_{0_i}$, $\alphabet = (\ialphabetx{i} \times \oalphabetx{i})$, $\delta = \delta_i$, and $\Acc$ is the winning condition presented in Equation~\eqref{eq:contractproblem}. 
 The task is to synthesize a strategy $\rho$ that maps the current state $q_i$ and environment input $\sigma_i$ to an action $\sigma_0$ such that for all possible input sequences $\sigma_i \in \ialphabetx{i}^*$ we will have $\Acc(\pi) = \top$.
-From Lemma~\ref{lemma:gr1}, we know that $\Acc$ is a GR(1) winning condition. Hence, we are able to use the techniques in~\cite{bloem2012synthesis} in order to efficiently synthesize a strategy $\rho: Q\times\ialphabetx{i} \rightarrow \oalphabetx{i}$. Setting the output function $\lambda_i$ corresponding to hub controller $\design_i$ to be the winning strategy $\rho$ for game $\game$ as defined above  leads to the following lemma. 
+From Lemma~\ref{lemma:gr1}, we know that $\Acc$ is a GR(1) winning condition. Hence, we are able to use the techniques in~\cite{bloem2012} in order to efficiently synthesize a strategy $\rho: Q\times\ialphabetx{i} \rightarrow \oalphabetx{i}$. Setting the output function $\lambda_i$ corresponding to hub controller $\design_i$ to be the winning strategy $\rho$ for game $\game$ as defined above  leads to the following lemma. 
 \begin{lemma}
 $\design_i \models \varphi_i$ if $\rho \models \varphi_i'$ and $ \left(\bigwedge_{j=1}^m A_{\shield_i^j}^{\design_i} \bigwedge_{\design_j\in J} A_{\design_j}^{\design_i} \right)$ holds. 
 \end{lemma}

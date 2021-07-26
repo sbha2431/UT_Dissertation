@@ -1,9 +1,9 @@
-\subsection{Notation and Setting}\label{sec:background}
+\section{Notation and setting}\label{sec:background}
 In this section, we present the relevant technical notation for the minimum violation synthesis problem in the UAM setting. 
 
 %\input{UAM-NFM/Figures/regionspace}
 
-\subsubsection{Requests}
+\subsection{Requests}
 We define a request as a tuple $ O = \left(r,T,c \right)$ where
 \begin{itemize}
     \item $r \in \mathcal{R}$ is the request class from a predefined set of classes $
@@ -20,11 +20,11 @@ Tower $\mathcal{T}_1$ is given a set of $N$ requests to handle $\mathcal{O}^{\te
 
 
 
-\subsubsection{Transition system model for vertihub controller}
+\subsection{Transition system model for vertihub controller}
 Recall that in the previous section, I defined the vertihub and vertiport controller models as \emph{reactive systems}. However, in the case of minimum-violation planning, we focus purely on correctness with respect to finite-time linear temporal logic specifications. As such, the current methodology cannot yet handle the full expressiveness of the reactive system definition. For the purposes of the minimum-violation planning approach we henceforth model a vertihub controller is modeled as a tuple referred to as a labeled weighted finite transition system $\mathcal{T}_i = \left(S_i, s_{\text{init}_i},\Delta_i, \text{AP}_i,L_i \right)$ where
 
 \begin{itemize}
-    \item $S_i$ is a finite state space.  It is the set of all currently unapproved requests. Formally, if there are currently $m$ unapproved requests, we write $S_i = \{O_{i,1} \dots O_{i,m}\}$. We note that the state space can also include additional features of interest such as number of vehicles in the airspace, their landing/take-off statuses, and others. However, for notational simplicity we do not include these in the definition presented in this paper. In practice, these features, alongside the relevant modifications to the transition function, are straightforward to include. 
+    \item $S_i$ is a finite state space.  It is the set of all currently unapproved requests. Formally, if there are currently $m$ unapproved requests, we write $S_i = \{O_{i,1} \dots O_{i,m}\}$. We note that the state space can also include additional features of interest such as number of vehicles in the airspace, their landing/take-off statuses, and others. However, for notational simplicity we do not include these in the definition presented in this dissertation. In practice, these features, alongside the relevant modifications to the transition function, are straightforward to include. 
     \item $s_{\text{init}_i} \in S_i$ is the initial set of requests $\mathcal{O}^{\text{init}}_i$.
     \item $\Delta_i \subseteq S_i \times S_i$ is the deterministic transition function that governs how requests evolve. We have $\left(S^t_i,S^{t+1}_i \right) \in \Delta_i$ if:
 
@@ -36,7 +36,7 @@ Recall that in the previous section, I defined the vertihub and vertiport contro
     \item  $L:S\rightarrow 2^{\text{AP}}$ is the labeling function.
 \end{itemize}
 
-I note that this is a much less general model than the reactive system approach. Handling the full expressiveness of reactive systems is a subject of future work in minimum-violation planning. 
+Note that this is a much less general model than the reactive system approach. Handling the full expressiveness of reactive systems is a subject of future work in minimum-violation planning. 
 
 At every timestep, the decision problem for the controller is to choose a set $O_{i,a}^t \subseteq S^{t}_i$ of requests to approve. The controller will also have the option to reroute the request to neighboring controllers
 
@@ -53,7 +53,7 @@ The aim of the transition system $\mathcal{T}_i$ is to reach a \emph{goal state}
 
 The goal of this approach is to synthesize a trace for each vertihub such that requests are accepted in a manner that satisfies all regulations. However, if this is not possible, it must approve requests in a way that minimally violates regulations. we employ linear temporal logic due to its ability to formally express a wide array or requirements. Specifically, we employ finite linear temporal logic (FLTL) to precisely describe the safety-oriented regulations. Note this FLTL has been used in the context of autonomous driving to formally represent road safety laws for planning~\cite{Tumova:2013:ACC,Tumova:2013:LCS}. 
 
-\subsubsection{Finite linear temporal logic}
+\subsection{Finite linear temporal logic}
 An FLTL formula is built up from the same logical notation as the LTL formulas defined earlier. The main point of contrast is that an FLTL formula $\psi$ over a set $\text{AP}$ of atomic propositions is interpreted over a finite word
 $w = l_0 l_1 \ldots l_n \in (2^{\text{AP}})^{n+1}$,
 and we write $w \models \psi$ if $w$ satisfies $\psi$.
@@ -68,7 +68,7 @@ if and only if $p \in l_i$ for all $i \in \{0, \ldots, n\}$. Please refer to~\ci
 
 
 
-A  \emph{non-deterministic finite automaton} (NFA) is a  tuple $\mathcal A = (Q,q_{\text{init}},\Sigma,\delta,F)$ where $Q$ is a finite set of states; $q_{\text{init}} \in Q$ is the initial state; $\Sigma$ is the input alphabet; $\delta \subseteq Q \times \Sigma \times Q$ is a non-deterministic transition relation; and $F \subseteq Q$ is the set of accepting states. 
+A \emph{non-deterministic finite automaton} (NFA) is a  tuple $\mathcal A = (Q,q_{\text{init}},\Sigma,\delta,F)$ where $Q$ is a finite set of states; $q_{\text{init}} \in Q$ is the initial state; $\Sigma$ is the input alphabet; $\delta \subseteq Q \times \Sigma \times Q$ is a non-deterministic transition relation; and $F \subseteq Q$ is the set of accepting states. 
 
 Given an input word $w = w(1),\dots,w(n)$, a \emph{run} of $\mathcal A$ is a sequence $\rho = q_0q_1,\dots,q_n$, such that $q_0 = q_{\text{init}}$, and $q_{i-1},w(i),q_i \in \delta$ for all $1 \leq i \leq n$. We say a run is \emph{accepting} if $q_n \in F$. It can be shown that for any given FLTL formula $\varphi$ over $\text{AP}$, there exists an NFA $\mathcal{A}$ with alphabet $\Sigma = 2^{\text{AP}}$ that accepts all and only words over $\text{AP}$ that satisfy $\varphi$. Automatic translation of FLTL to NFA is proposed in \cite{}.
 
@@ -79,7 +79,7 @@ Consider now a run $\rho$ in automaton $\mathcal A$ over a word $w \in \Sigma^{n
 
 
 
-\subsubsection{Prioritized safety specification}
+\subsection{Prioritized safety specification}
 A \emph{prioritized safety specification} is a tuple
 $\mathcal{P} = (\text{AP}, \Omega, \Psi, \varpi)$ where
 $\text{AP}$ is a set of atomic propositions,
@@ -104,7 +104,7 @@ $\psi \in \Omega$.
 
 Note that the requirements at level i are strictly more important than those at level i+1, i.e., the system first attempts to minimize the amount of violation of level-1 requirements. Then among all the policies that minimize the violation of level-1 requirements, it attempts to minimize the amount of violation of level-2 requirements, and so on. In Example~\ref{ex:prioritized safety}, the first specification is the highest priority and the remaining specifications are all of equal priority. We use this example in the case study detailed in the Experimental Results section.
 
-\subsubsection{Lack of safety}
+\subsection{Lack of safety}
 Consider an FLTL formula $\psi$ over $\text{AP}$ and a finite word $w = l_0 l_1 \ldots l_n \in (2^{\text{AP}})^{n+1}$.
 The \emph{lack of safety} of $w$ with respect to $\psi$ is defined as
 \begin{equation}

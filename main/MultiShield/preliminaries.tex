@@ -1,8 +1,8 @@
 \section{Preliminaries}
 \label{sec_prel}
 
-\subsubsection{Basic notations}
-We consider reactive systems with a finite set
+\subsubsection*{Basic notations}
+As in the previous chapter, we consider reactive systems with a finite set
 $\inp$ ($\out$) of Boolean \emph{inputs (outputs)}.
 The input alphabet is
 $\ialphabet=2^\inp$, the output alphabet is $\oalphabet=2^O$, and
@@ -20,7 +20,7 @@ A \emph{language} is a set $\lang
 %We denote the set of all languages as $\langset = 2^{\alphabet^\infty}$.
 
 
-\subsubsection{Reactive systems}
+\subsubsection*{Reactive systems}
 
 Each agent in the multi-agent system, as well as the shield, is a \emph{reactive system} which is defined by a
 6-tuple $\proc = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$,
@@ -39,7 +39,7 @@ $\mathcal{\proc}$ is denoted $\lang(\mathcal{\proc}) = \{\itrace \parallel \otra
 \alphabet^\infty \mid \mathcal{\proc}(\itrace) = \otrace\}$.
 
 \iffalse
-\subsubsection{Serial composition of reactive systems}
+\subsubsection*{Serial composition of reactive systems}
 Consider two reactive systems  $\proc = (\states,q_{0},\ialphabet,\oalphabet,\delta,\lambda)$ and $\shield = (\states', q_{0}',\ialphabet\times\oalphabet, \oalphabet,\delta',\lambda')$.
 The \emph{serial composition} of $\proc$ and $\shield$ is obtained by feeding the input and output of $\proc$ to $\shield$ and results in a new reactive system $\proc \comp \shield=(\hat{\states}, \hat{q_{0}}, \ialphabet,\oalphabet, \hat{\delta},
 \hat{\lambda})$, where
@@ -49,7 +49,7 @@ The \emph{serial composition} of $\proc$ and $\shield$ is obtained by feeding th
    $\hat{\lambda}((q,q'),\isymb) = \lambda'(q',(\isymb,\lambda(q, \isymb)))$.
 \fi
    
-\subsubsection{Multi-agent reactive systems}
+\subsubsection*{Multi-agent reactive systems}
 A \emph{multi-agent reactive system} $\design$ is a tuple $(\proc, \ialphabet,  \oalphabet)$, where $\proc = \{\proc_1,\ldots,\proc_n\}$ is a set of agents, where each $\proc_i = (\states_i, q_{0,i},\ialphabeti,\oalphabeti,\delta_i,\lambda_i)$ is a reactive system.
 %
 While multiple agents may be able to read the same input variables to indicate
@@ -65,7 +65,7 @@ union of the outputs of all $\proc_i \in \proc$ according to $\lambda_i$.
 
 
 
-\subsubsection{Specifications}
+\subsubsection*{Specifications}
 
 A \emph{specification} $\spec$ defines a set $\lang(\spec) \subseteq \alphabet^\infty$ of allowed traces.
 %
@@ -77,7 +77,7 @@ $\varphi$ is called a \emph{safety specification} if every trace $\trace$ that i
 We represent a safety specification $\varphi$ by a safety automaton
 $\varphi = (Q, q_0, \alphabet, \delta, F)$, where $F\subseteq Q$ is a set of safe states.
 
-\subsubsection{Games}
+\subsubsection*{Games}
 %
 A game is a tuple $\game = (\gstates,
 \ginit, \alphabet, \delta, \Acc, \Val)$,
@@ -132,7 +132,7 @@ e_0 e_1 e_2 \dots \in \delta^\omega, \Val(\overline{\pi}) = \lim \sup_{n\rightar
 \fi
 
 
-\subsubsection{Properties of traces}
+\subsubsection*{Properties of traces}
 A finite trace $\trace
 \in \alphabet^*$ is \emph{wrong} w.r.t. a specification $\varphi$, if the corresponding play cannot be won,
 i.e., if there is no way for the system to guarantee that any
