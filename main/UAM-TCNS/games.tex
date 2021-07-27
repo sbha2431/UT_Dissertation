@@ -5,8 +5,8 @@ The vertihub controller for region $V_6$ in Figure~\ref{fig:RegionsOutline} cont
 Hence, $V_6$ can force vehicles incoming from $V_5$ to loiter in the handoff region $H_{56}$ until it is safe to allow them to enter.
 \end{eg}
 
-The number of vehicles allowed inside each vertihub is upper bounded both by the separation standards between the vehicles as well as with the complexity of the airspace (e.g., intersection with general aviation traffic etc.).
-Vertihubs cannot accept vehicles (i.e., accept a handoff) if the additional vehicle exceeds the maximum operational capacity or induces a conflict. Furthermore, vertiports cannot allow vehicles to take-off if it will violate the maximum operational capacity of the vertihub, and must force incoming vehicles to loiter if all of their pads are occupied. In order to avoid violating airspace requirements and to avoid build up of loitering vehicles (which can delay vehicles desiring to pass through or create safety issues), a vertiport must coordinate with its corresponding vertihub. We model the vertihub controller and vertiport controllers as \emph{reactive systems}.
+The number of vehicles allowed inside each vertihub is upper bounded both by the separation standards between the vehicles as well as with the complexity of the airspace (e.g., intersection with general aviation traffic, etc.).
+Vertihubs cannot accept vehicles (i.e., accept a handoff) if the additional vehicle exceeds the maximum operational capacity or induces a conflict. Furthermore, vertiports cannot allow vehicles to take-off if it will violate the maximum operational capacity of the vertihub they are located in, and must force incoming vehicles to loiter if all of their pads are occupied. In order to avoid violating airspace requirements and to avoid build up of loitering vehicles (which can delay vehicles desiring to pass through or create safety issues), a vertiport must coordinate with its corresponding vertihub. We model the vertihub controller and vertiport controllers as \emph{reactive systems}.
 %The hub can then act tactically by blocking a vehicle's entry to the region by making it loiter in a \emph{handoff region}.
 
 \paragraph*{\textbf{Definition}}
@@ -56,7 +56,7 @@ All of these requirement guarantees (and others) can be expressed as \emph{tempo
 A \emph{linear temporal logic (LTL) specification} $\varphi$ defines a set of allowed traces $L(\varphi) \subseteq \plays(\design)$ for the reactive system $\design$.  A reactive system $\design$ is \emph{winning} with respect to specification $\varphi$ iff $L(\design) \subseteq L(\varphi)$ and is denoted $\design \models \varphi$. Given a set of propositions \texttt{AP}, a formula in LTL describes a language in $(2^{\texttt{AP}})^\omega$. LTL extends Boolean logic by the introduction of temporal operators such as $\bigcirc$ (next time), $\LTLglobally$ (always), $\LTLfinally$ (eventually), and $\mathcal{U}$ (until). 
 
 
- Informally, the main problem addressed in this chapter is designing \emph{controllers} for vertihubs and vertiports that guarantee all safety and progress requirements, assuming they have been correctly captured in the design process. More formally, the task of computing a satisfying controller in reactive systems involves constructing the function $\lambda$ and can be typically framed as computing the \emph{winning strategy of a game}. 
+ Informally, the main problem addressed in this chapter is designing \emph{controllers} for vertihubs and vertiports that guarantee all safety and progress requirements assuming they have been correctly captured in the design process. More formally, the task of computing a satisfying controller in reactive systems involves constructing the function $\lambda$ and can be typically framed as computing the \emph{winning strategy of a game}. 
 
 
 
@@ -66,7 +66,7 @@ A \emph{game structure} is a tuple
 $\game = (\states, \state_0, \alphabet, \delta,\Acc)$,
 where 
 \begin{itemize}
-\item $\states$ is a finite set of states, $\state_0 \in \states$ the initial state,
+\item $\states$ is a finite set of states, $\state_0 \in \states$ is the initial state,
 \item $\alphabet = (\ialphabet \times \oalphabet)$ is the alphabet of actions available to the environment and the controller respectively, 
 \item $\delta: \states \times \alphabet \rightarrow \states$
 is a complete transition function, that maps each state, input (environment action) and output (controller action) to a successor state.

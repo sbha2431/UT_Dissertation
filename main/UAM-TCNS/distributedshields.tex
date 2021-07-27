@@ -3,10 +3,10 @@ We first formalize the notion of assume-guarantee contracts, then we demonstrate
 
 \subsection{Assume-guarantee contracts}
 
-We employ a decentralized synthesis process, whereby each controller is synthesized without an awareness of the specification and implementation details of both the vehicles in the fleet, as well as the controllers in connected vertihubs.
+We employ a decentralized synthesis process. Each controller is synthesized without an awareness of the specification and implementation details of both the vehicles in the fleet as well as the controllers in connected vertihubs.
 However, a vertihub controller's outputs impact the controllers of its neighboring vertihubs. 
 In order to ensure that controllers don't hinder each others' abilities to satisfy their local specifications, every controller must additionally satisfy \emph{contract specifications} for each neighboring vertihub.
-Similarly, all vertiport controllers also impact the implementation of their corresponding vertihub controllers. Therefore, the vertiport controllers must also satisfy contract specifications with their hub controller and vice versa. 
+Similarly, all vertiport controllers impact the implementation of their corresponding vertihub controllers. Therefore, the vertiport controllers must also satisfy contract specifications with their hub controller and vice versa. 
 
  These contract specifications take the form of \emph{assume-guarantee} contracts. 
  Informally, a vertihub controller gives a \emph{guarantee} of satisfying a contract specification with a neighboring vertihub controller.
@@ -20,7 +20,7 @@ Similarly, all vertiport controllers also impact the implementation of their cor
  
  \subsubsection{Vertihub controller contracts}
 % For ease of notation, the following definitions are with respect to the assumptions and guarantees of the $i^{th}$ hub controller. 
- An \emph{assume-guarantee contract} for a vertihub controller $\design_i$ with connected hub controller $\design_j$ is a tuple $\mathcal \phi_{\design_i}^{\design_j} = (A_{\design_i}^{\design_j},B_{\design_i}^{\design_j})$ where
+ An \emph{assume-guarantee contract} for a vertihub controller $\design_i$ with connected hub controller $\design_j$ is a tuple $\mathcal \phi_{\design_i}^{\design_j} = (A_{\design_i}^{\design_j},B_{\design_i}^{\design_j})$ where:
 \begin{itemize}
 \item $A_{\design_i}^{\design_j}$ is an assumption on the outputs of $\design_j$ as it pertains to ${\design_i}$ expressed as a specification in the form shown in Equation ~\eqref{eq:formalspechub}. 
 \item $B_{\design_i}^{\design_j}$ is a specification also in the form shown in Equation ~\eqref{eq:formalspechub}  which $\design_i$ must guarantee on the outputs pertaining to $\design_j$.
@@ -35,12 +35,12 @@ Simply, if the assumption on $\design_2$ holds, then the original specification 
 
 
 \subsubsection{Vertiport controller contracts}
-Each vertihub controller must also make contracts with the vertiport controllers in its region. The procedure follows analogously as in the previous section as we assume that all outputs from the individual controllers are \emph{pairwise disjoint}. Hence, we can form separate contracts with each vertiport controller. Formally, we define a contract between a vertihub controller $\design_i$ and one of its vertiport controllers $\shield_i^j$ as $ \phi_{\shield^j_i}^{\design_i} = (A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ where $(A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ are, analogous to the hub contracts, the assumptions and guarantees on the vertiport controller respectively, expressed as temporal logic specifications of the form in~\eqref{eq:formalspechub}. 
+Each vertihub controller must also make contracts with the vertiport controllers in its region. The procedure follows analogously as in the previous section, as it is assumed that all outputs from the individual controllers are \emph{pairwise disjoint}. Hence, we form separate contracts with each vertiport controller. Formally, we define a contract between a vertihub controller $\design_i$ and one of its vertiport controllers $\shield_i^j$ as $ \phi_{\shield^j_i}^{\design_i} = (A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ where $(A_{\shield_i^j}^{\design_i},B_{\shield_i^j}^{\design_i})$ are, analogous to the hub contracts, the respective assumptions and guarantees on the vertiport controller, expressed as temporal logic specifications of the form in~\eqref{eq:formalspechub}. 
 
 \subsubsection{Symmetric contracts}
 We say contracts between two reactive systems $\design_i$ and $\design_j$ denoted by $\phi_{\design_i}^{\design_j}  $ and $\phi_{\design_j}^{\design_i}$ are \emph{symmetric} if $A_{\design_i}^{\design_j} = B_{\design_j}^{\design_i}$ and $A_{\design_j}^{\design_i} = B_{\design_i}^{\design_j}$. 
 
-Informally, this means that the assumptions $\design_i$ makes on the outputs of $\design_j$ corresponds to the \emph{guarantees} $\design_j$ gives on its own outputs. All the contracts we will use in the synthesis procedure will be symmetric as this will guarantee that the assumptions each reactive system make on the outputs of other systems will actually hold. 
+Informally, this means that the assumptions $\design_i$ makes on the outputs of $\design_j$ corresponds to the \emph{guarantees} $\design_j$ gives on its own outputs. All the contracts we will use in the synthesis procedure will be symmetric, as this will guarantee that the assumptions each reactive system makes on the outputs of other systems will actually hold. 
 
 \subsubsection{Joint winning condition}
 The addition of the contract specifications to the original user-provided specifications modifies the winning condition presented in~\eqref{eq:problem}. The following lemma presents the modified winning condition for hub controller $\design_i$ when contracts are incorporated. 
@@ -60,11 +60,11 @@ The winning condition in \eqref{eq:contractproblem} is GR(1).
 \end{lemma}
 
 
-\paragraph*{\textbf{Remark}} We note that the values in the assume-guarantee contracts are heavily dependent on the topology of the environment and the connections (see Fig. 3). For example, a hub with many connecting hubs may not be able to guarantee quick transit of vehicles through its regions. Generating these contracts automatically based on the given graph $G_{\design}$ is a subject of future work. In this dissertation, the contract values are chosen manually. 
+\paragraph*{\textbf{Remark}} We note that the values in the assume-guarantee contracts are heavily dependent on the topology of the environment and the connections. For example, a hub with many connecting hubs may not be able to guarantee quick transit of vehicles through its regions. Generating these contracts automatically based on the given graph $G_{\design}$ is a subject of future work. In this dissertation, the contract values are chosen manually. 
 
 
 \subsection{Controller synthesis}
-We first present an overview of the synthesis procedure. Informally, we avoid the centralized synthesis problem by creating a series of smaller synthesis problems that are connected through the architecture introduced in Section III and the contract specifications introduced in Section IVA.
+We first present an overview of the synthesis procedure. Informally, we avoid the centralized synthesis problem by creating a series of smaller synthesis problems that are connected through the architecture and contract specifications introduced earlier.
 The synthesis procedure for a vertihub controller $\design_i$ consists of the following steps:
 \begin{itemize}
  \item[1)] First, we synthesize all the vertiport controllers $\shield_i^j$ for $j=1,\ldots,m$ operating under $\design_i$. For each controller $\shield_i^j$ we construct a game $\game_{i}^j$ with the acceptance condition given by the user-provided specification $\varphi_{\shield_i^j}$. We then augment the acceptance condition to include the contract specification $\phi_{\shield_i^j}^{\design_i}$. 
@@ -86,10 +86,8 @@ From Lemma~\ref{lemma:gr1}, we know that $\Acc$ is a GR(1) winning condition. He
 \begin{lemma}
 $\design_i \models \varphi_i$ if $\rho \models \varphi_i'$ and $ \left(\bigwedge_{j=1}^m A_{\shield_i^j}^{\design_i} \bigwedge_{\design_j\in J} A_{\design_j}^{\design_i} \right)$ holds. 
 \end{lemma}
-\begin{proof}
-%Proof:
+\paragraph{Proof sketch}:
 The proof relies on the game construction having an identical state space as the reactive system and the definition of $\varphi_i'$ being \emph{both} the original user-provided specification $\varphi_i$ as well as the contract specification. Since the game strategy satisfies $\varphi_i'$, then the same strategy must also satisfy $\varphi$ iff the assumptions made on neighboring vertihubs and interior vertiports are satisfied.
-\end{proof}
 \textcolor{black}{Informally, the lemma states that the hub controller $\design_i$ satisfies its given specification $\varphi_i$ if the synthesized strategy $\rho$ from the game $\game$ is winning with respect to the contract augmented specification $\varphi_i'$ and the contract assumptions hold.}
 \paragraph*{\textbf{Remark}} The above lemma is only a statement of \emph{sufficiency}. This is because the contract specifications that form $\varphi_i'$ are not unique. If $\rho \nvDash \varphi_i'$, for a particular set of contracts, this does not mean there does not exist a $\lambda_i$ such that $\design_i \models \varphi$.
 
@@ -171,7 +169,7 @@ If there exists a set of controllers $\design = [ \design_1,  \dots, \design_k ]
 % \end{description}
 % \end{proof}
 
-We remark that this construction guarantees correctness if there exists a set of winning strategies in the game construction, leading to a proof by construction using \textit{Lemmas} $2,3$. However, since the game acceptance condition is augmented with contract-induced specifications, the construction cannot always guarantee that such a controller exists. 
+We remark that this construction guarantees correctness if there exists a set of winning strategies in the game construction, leading to a proof by construction. However, since the game acceptance condition is augmented with contract-induced specifications, the construction cannot always guarantee that such a controller exists. 
 
 %For future work, we aim to generate the assume-guarantee contracts in an automated fashion. 
 

@@ -1,5 +1,5 @@
 \subsection{Controller models}
-\subsubsection*{Vertihub controller}We model the controller of each vertihub $V_i$ as a reactive system $\design_i = (\states_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_{i},\lambda_{i})$ with input and output variables $I_i$ and $O_i$ respectively. The specific instantiation of such a controller is problem-specific, however, we present an illustrative example. 
+\subsubsection*{Vertihub controller}We model the controller of each vertihub $V_i$ as a reactive system $\design_i = (\states_i,q_{0_i},\ialphabetx{i},\oalphabetx{i},\delta_{i},\lambda_{i})$ with input and output variables $I_i$ and $O_i$ respectively. Although the specific instantiation of such a controller is problem-specific, in the following, we present an illustrative example. 
 
 % \begin{itemize}
 %     \item $Q_i$ is a set of states,
@@ -9,7 +9,7 @@
 %     \item the output function $\lambda_i$ maps the current state and environment input to a controller output.
 % \end{itemize}
 \begin{eg}
-Consider the environment in Figure~\ref{fig:RegionsOutline} with vehicles moving between origin-destination vertiports. Each region $V_i$ is a vertihub with corresponding vertihub controller $\design_i$ where 
+Consider the environment in Figure~\ref{fig:RegionsOutline} with vehicles moving between origin-destination vertiports. Each region $V_i$ is a vertihub with corresponding vertihub controller $\design_i$ where: 
 \begin{itemize}
     \item The state space $Q_i$ is the number of vehicles currently in the airspace of $V_i$, as well as the current delay time of any loitering vehicles in the airspace.
     \item $q_{0_i}$ is the starting airspace configuration of aircraft in $V_i$.
@@ -42,7 +42,7 @@ Figure \ref{fig:dist_shield} illustrates the relationship between hubs and verti
 
 
 \begin{eg}
-Continuing the running example based on Figure~\ref{fig:RegionsOutline}, each vertiport controller in the region $V_i$ has a corresponding set of input variables denoted $\inp_i^j$ and a resulting alphabet $\ialphabetx{i}^j$. This input corresponds to vehicles requesting to land that have been cleared by the corresponding vertihub controller  $\design_i$ and vehicles desiring to take off at one of its pads.
+Continuing the example based on Figure~\ref{fig:RegionsOutline}, each vertiport controller in $V_i$ has a corresponding set of input variables denoted $\inp_i^j$ and a resulting alphabet $\ialphabetx{i}^j$. This input corresponds to vehicles requesting to land that have been cleared by the corresponding vertihub controller  $\design_i$ and vehicles desiring to take off.
 Hence, the output of $\design_i$ forms part of the input of $\shield^i_j$ for $j = 1,\dots,m$.
 The output of the vertiport controller is the accepted or rejected take-off and landing requests as well as the number of remaining available landing pads which will then form part of the input to the hub controller. 
 \end{eg}
@@ -92,10 +92,10 @@ $\shield^i=(\overline{\states}_i, \overline{q}_{0_i},\overline{\Sigma}_{\inp_i},
 
 
 
-Next, we define the composition of the joint vertiport controllers $\shield^i$ %\textcolor{magenta}{[note that in the composition definition below you use $S_i$ to denote the vertiport controller composition]} and the corresponding hub controller $\design_i$. 
-Formally, we compose the two systems in serial fashion in the following way: $\design_i \comp \shield_i := \mathcal V_i =
+Next, we define the composition of the joint vertiport controllers $\shield^i$. %\textcolor{magenta}{[note that in the composition definition below you use $S_i$ to denote the vertiport controller composition]} and the corresponding hub controller $\design_i$. 
+Formally, we compose the two systems in serial fashion as follows: $\design_i \comp \shield_i := \mathcal V_i =
 (\hat{\states}_i, \hat{q}_{0_i}, \hat{\Sigma}_{\inp},\oalphabetx{i}, \hat{\delta}_i,
-\hat{\lambda}_i)$, with 
+\hat{\lambda}_i)$, with: 
 \begin{itemize}
     \item states $\hat{\states}_i = \states_i \times \overline{\states}_i$,
     $\hat{q_{0}}_i = (q_{0_i},\overline{q}_{0_i})$,
@@ -111,7 +111,7 @@ Formally, we compose the two systems in serial fashion in the following way: $\d
 
 Finally, the \emph{global system} $ \mathcal V = \{ \mathcal V_1 \dots \mathcal V_k \}$ is the composition of all $V_i$ and the definition proceeds analogously to the composition of the vertiports. The architecture of the defined composition in an example environment with two hub controllers is illustrated in Figure \ref{fig:dist_shield}. We remark that the \emph{global composition} is of the form of a multi-agent reactive system as studied in \cite{multiagentshield}.
 
-In the next 2 subsections, we define the properties that we want the global system to satisfy and formally define the synthesis problem.
+In the next two subsections, we define the properties that we want the global system to satisfy and formally define the synthesis problem.
 In Section \ref{sec:distshield}, we present our synthesis procedure for the vertiport and hub controllers and prove the global system stemming from their composition will satisfy all required properties. 
 
 
@@ -125,7 +125,7 @@ Recall that each hub controller is required to satisfy a user provided specifica
 
 \noindent where $S_i, P_i \subseteq Q_i$. 
 
-Similarly, each vertiport controller must also satisfy its own user-provided specification, and is defined the same way. For vertiport controller $\shield^j_i$ we have $\varphi_{\shield^{j}_i} = \LTLglobally S_{i}^j \wedge \LTLglobally \LTLfinally P_{i}^j$ where $S_{i}^j, P_{i}^j \subseteq Q_i^j$. 
+Similarly, each vertiport controller must also satisfy its own user-provided specification and is defined the same way. For vertiport controller $\shield^j_i$ we have $\varphi_{\shield^{j}_i} = \LTLglobally S_{i}^j \wedge \LTLglobally \LTLfinally P_{i}^j$ where $S_{i}^j, P_{i}^j \subseteq Q_i^j$. 
 
 For each region $V_i$, we denote the conjunction of all the vertiport specifications $\varphi_{\shield^{j}_i}$ for $j=1,\ldots,m$ with the corresponding vertihub specification $\varphi_{\design_i}$ as $\varphi_i := \varphi_{\design_i} \bigwedge \left( \varphi_{\shield^{1}_i} \wedge \ldots \wedge 
 \varphi_{\shield^{m}_i}\right)$. 
@@ -174,7 +174,7 @@ Informally, this translates to enforcing safety while guaranteeing progress.
 
 % The second class of requirements, which we denote as $\varphi_f$ are \emph{route-based} requirements. An example of such a requirement may be not allowing too many UAVs to pass through the same region at the same time on their route.  Since these involve UAVs coordinating across multiple regions, the shield of each region cannot be responsible for the satisfaction of such specifications as each shield can only observe UAVs within its region. We will require the UAV routes be computed in a decentralized manner, and thus they will need to dynamically coordinate at run-time to avoid the violation of such specifications. 
 
-Given (1) environment structure with $k$ vertihubs, (2) $m$ corresponding vertiports for each hub, (3) hub connectivity graph $G_D$, and (4) GR(1) specifications $\varphi_{\design_1},\dots, \varphi_{\design_k}$ for each vertihub and vertiport specifications $\varphi_{\shield_i^j}$ for all $i = 1,\ldots,k$ and $j=1,\ldots,m$ synthesize a set of hub controllers $\design = [\design_1, \ldots, \design_k]$ and their corresponding vertiport controllers $\shield^i_j$ for all $i = 1,\dots, k$ and $j = 1,\dots, m$ such that the global composition of all controllers is \emph{winning} with respect to $\bigwedge_{i=1\dots k}\varphi_i$.
+Given (1) environment structure with $k$ vertihubs, (2) $m$ corresponding vertiports for each hub, (3) hub connectivity graph $G_D$, and (4) GR(1) specifications $\varphi_{\design_1},\dots, \varphi_{\design_k}$ for each vertihub and vertiport specifications $\varphi_{\shield_i^j}$ for all $i = 1,\ldots,k$ and $j=1,\ldots,m$ synthesize a set of hub controllers $\design = [\design_1, \ldots, \design_k]$ and their corresponding vertiport controllers $\shield^i_j$ for all $i = 1,\dots, k$ and $j = 1,\dots, m$, such that the global composition of all controllers is \emph{winning} with respect to $\bigwedge_{i=1\dots k}\varphi_i$.
 Formally, synthesize hub and vertiport controllers such that:
 \begin{equation}\label{eq:problem}
 \left( \design_1 \comp \left( S_1^1 \comp \dots S_1^m \right) \right) \comp \dots \left( \design_k \comp \left( S_k^1 \comp \dots S_k^m \right) \right) \models \bigwedge_{i=1\dots k}\varphi_i
