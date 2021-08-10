@@ -91,7 +91,7 @@ called a \emph{play}, where $\state_0$ is the initial state, and for every $i \g
 %The set $L(\game)$ is the set of all plays in the game $\game$.
 
 
-We consider winning conditions expressed from a fragment of LTL specifications called \emph{Generalized Reactivity 1} (GR(1)), which is common in a variety of practical applications~\cite{Moarref18,Alonso18,bh18,Maoz2015}.
+We consider winning conditions expressed from a fragment of LTL specifications called \emph{Generalized Reactivity 1} (GR(1)), which is common in a variety of practical applications~\cite{Moarref18,Alonso18,Maoz2015}.
 A GR(1) winning condition is defined by sets of states $S_\inp, S_\out \subseteq \states$, $E_i \subseteq \states$ for $i=1,\ldots,m$ and $F_j \subseteq \states$ for $j=1,\ldots,n$, and consists of all plays $ \pi$ such that if $\pi \in \LTLglobally S_\inp \cap \LTLglobally\,\LTLfinally\, E_{i}$ for all $i=1,\ldots,m$, then $\pi \in \LTLglobally S_\out \cap \LTLglobally\,\LTLfinally\, F_{j}$ for all $j=1,\ldots,n$. Intuitively, for a play $ \pi$ to be winning, whenever the environment satisfies the assumptions $\LTLglobally\, S_\inp,\LTLglobally\,\LTLfinally\, E_{1},\ldots,\LTLglobally\,\LTLfinally\, E_{m}$, then the controller must satisfy all the guarantees $\LTLglobally\, S_\out,\LTLglobally\,\LTLfinally\, F_{j},\ldots,\LTLglobally\,\LTLfinally\, F_{n}$. By abuse of logical operators, we abbreviate GR(1)  conditions as
 $$\left(\LTLglobally\, S_\inp \wedge \bigwedge_{i=1}^{m}  \LTLglobally\,\LTLfinally\, E_{i}\right) \implies
 \left(\LTLglobally\, S_\out \wedge \bigwedge_{j=1}^{n} \LTLglobally\,\LTLfinally\,F_{j}\right).$$

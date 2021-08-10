@@ -16,6 +16,14 @@
 \usepackage{utdiss2}  		% Dissertation package style file.
 
 
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Optional packages used for this sample dissertation. If you don't  %
 % need a capability in your dissertation, feel free to comment out   %
@@ -182,10 +190,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %\singlespacing
-%\oneandonehalfspacing
+\oneandonehalfspacing
 
 %\singlespacequote
-\oneandonehalfspacequote
+%\oneandonehalfspacequote
 
 \topmargin 0.125in	% Adjust this value if the PostScript file output
 			% of your dissertation has incorrect top and 
@@ -303,16 +311,39 @@
 % Dedication and/or epigraph are optional, but must occur here.      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%\begin{dedication}
-%\index{Dedication@\emph{Dedication}}%
-%Dedicated to my wife Shirley.
-%\end{dedication}
+\begin{dedication}
+\index{Dedication@\emph{Dedication}}%
+Dedicated to my Amma, Appa, and Paati. Without their endless love and support, none of the work in this dissertation would be possible.
+\end{dedication}
 
 
 \begin{acknowledgments}		% Optional
 \index{Acknowledgments@\emph{Acknowledgments}}%
-I wish to thank the multitudes of people who helped me. Time would
-fail me to tell of \ldots
+
+First and foremost, I would like to thank my parents for all their love and support over the years. Amma and Appa, you were always my biggest supporters. You pushed me when I needed it and gave me a safety net to fall on. None of this work would have been possible without you behind me.  
+
+I would like to thank my advisor Ufuk Topcu for his guidance and mentorship through the years. I know you were always incredibly busy and yet you never made it feel like you were too busy to lend me an ear or critical eye when I needed it. I appreciate everything you have done and continue to do for the students in the group. 
+
+Speaking of the students in the group, I would be remiss if I did not thank my fellow PhD students at the Autonomous Systems Group. Not only was every single person always available to help with research, but the friendships we built outside of work will last forever. It has been an honour for me to work in an environment surrounded by such incredibly talented, helpful, and wonderful people. 
+
+%Starting a PhD as an international student was hard, but I was lucky to have Murat who was in the same boat as me. We helped each other navigate the tough first year and I am deeply grateful for his presence. 
+
+Not only did we PhD students work together, but we also lived and partied together! My years at the CrackHouse with Mitch, Dan, Nick Deak, Steve, and Mustafa was one of the highlights of my time at UT. I will always have fond memories of us eating pizza and watching football on a Sunday (especially after a rather raucous Saturday night). We somehow spent almost every waking hour with each other and still got through it with our friendships intact! The credit must go to our vigorous bus-law sessions that kept the peace and aired out grievances. 
+
+Nick Deak, you became an honorary member of the research group. Though it took me a few years to tell you and Mitch apart, I have always enjoyed our video games discussions, playing squash, and engaging in some light besmirchment at your expense. 
+
+To my fellow Aussie Steve, you were there from pretty much the beginning of my PhD all the way to the end. You were an incredible source of support and help through the years and I am proud to call you one of my closest friends. The Turkey Boys Mustafa and Yagiz, the two of you are brilliant researchers, and I know if I ever have an idea, I can always go to Yagiz for support on making it great, and Mustafa for reasons it is terrible. 
+
+Of course, my adventures in the US may never have taken off at all without the infinite well of love and friendship of Matt and Karen. They were there from the first week of my undergraduate studies to the end of my PhD. I remember the days that our skills combined made for one competent engineer. Now we are the well on the way to having three!
+
+To my loving and brilliant partner Maansi, even though you were doing your own (much more valuable and interesting) research, you always made time to help and were a source of strength for me during the final PhD years. There is no one else I would rather go through a pandemic with! 
+
+Being away from home in Australia was tough, but it was made significantly easier by the Murthy family. They gave me a place I could call home. The drives to and from the airport with Siva Athimber engrossed in fascinating conversation was always something I looked forward to. Vidya Athai, the life advice you dispensed was invaluable to me and I hope you never stop giving me more! 
+
+I want to thank my collaborators for all of their insights and technical discussions that led to this dissertation. In particular I would like to thank Natasha Neogi for not just her technical acumen, but her mentorship and counsel. 
+
+Finally, I want to thank city of Austin for ensuring I would have a good time during my PhD, not a short time. I have had many nights to remember (and plenty more I do not). No Friday night would be complete without our perfectly optimized circuit culminating in Barbarella. Here's hoping to many more!
+ 
 \end{acknowledgments}
 
 
@@ -349,9 +380,10 @@ As autonomous systems become more widely used in society, they will necessarily 
 % dissertation).
 %
 
+
 \include{Introduction/chapter-introduction}
 
-\part{Design-Time Synthesis}
+\part{Design-Time Synthesis}\setcounter{page}{10}
 \include{Surveillance/main} \label{sec:SurveiilanceChapter}
 \include{RuntimeInfo-ICRA/root}
 

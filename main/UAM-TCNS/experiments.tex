@@ -132,7 +132,7 @@ We present the synthesis times for the vertihub and vertiport controllers in Tab
 There is an exponential increase in the synthesis time as the number of vertiports in each region is increased.
 %Thus, this technique works best when there is not be a large number of vertiports assigned to each vertihub.
 The state space of the controllers does not depend on the number of vehicles allowing us to simulate datasets involving large numbers of vehicles. \textcolor{black}{
-The centralized synthesis method in~\cite{bh18} could not be run even in the smallest case as the state space is too large. A decentralized, hierarchical procedure is necessary to handle systems of the necessary size and complexity that UAM will require. Other decentralized techniques such as~\cite{bhnfm} can only handle very restrictive classes of specifications and could not be used to generate controllers in this setting.}
+The centralized synthesis method in~\cite{multiagentshield} could not be run even in the smallest case as the state space is too large. A decentralized, hierarchical procedure is necessary to handle systems of the necessary size and complexity that UAM will require. Other decentralized techniques such as~\cite{bhnfm} can only handle very restrictive classes of specifications and could not be used to generate controllers in this setting.}
 
 We note that since the synthesis for each vertihub is independent of one another once the contracts are generated, the synthesis procedure for the global system is trivially parallelizable. 
 
