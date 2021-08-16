@@ -1,7 +1,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Incorporating Runtime Information into Reactive Synthesis}\blfootnote{The chapter material is published in~\cite{9196581}. Abraham Vinod provided feedback on technical ideas including the sub-optimality bound and Rayna Dimitrova helped design the switching function. Both assisted in proofreading the publication}
+\chapter{Incorporating Runtime Information into Reactive Synthesis}%\blfootnote{The chapter material is published in~\cite{9196581}. Abraham Vinod provided feedback on technical ideas including the sub-optimality bound and Rayna Dimitrova helped design the switching function. Both assisted in proofreading the publication}
 
 
 The synthesis approach in the previous chapter relies on offline planning. The autonomous system has to react to an uncontrolled environment, and guarantee correctness with respect to a given mission specification for all possible behaviours of the environment for all time points in the future. However, due to limits on communication, sensing, or computational power, the autonomous agent may have access to information that may be available only at the time of execution. Traditional offline planning approaches either ignore this information or can only make use of it at the cost of heavy computation or high memory requirements~\cite{Ehlerscost,jangcontinuous}. This chapter proposes a correct-by-construction switching strategy that utilizes such information at runtime for improved performance while guaranteeing the satisfaction of high-level mission specifications, and also alleviates the shortcomings of existing methods to enable real-time deployment. 
